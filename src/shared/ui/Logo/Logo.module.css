@@ -1,0 +1,51 @@
+.logoLink {
+  display: inline-flex;
+  align-items: center;
+  text-decoration: none;
+  gap: 12px;
+  color: #1b2e1a;
+  border-radius: 6px;
+  outline: none;
+  transition:
+    transform 0.1s ease-in-out,
+    opacity 0.15s ease-in-out;
+  transform: scale(1);
+  will-change: transform;
+}
+
+.star {
+  transform-origin: 20px 20px;
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.logoLink:hover .star,
+.logoLink:focus-visible .star {
+  transform: rotate(90deg) scale(1.1);
+}
+
+.logoLink:focus-visible {
+  box-shadow: 0 0 0 3px rgba(171, 210, 122, 0.4);
+}
+
+.logoLink:active {
+  transform: scale(0.96);
+}
+
+.icon {
+  width: 40px;
+  height: 40px;
+  display: block;
+  flex-shrink: 0;
+}
+
+.text {
+  font-family:
+    ui-sans-serif,
+    system-ui,
+    -apple-system,
+    sans-serif;
+  font-size: 22px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  -webkit-font-smoothing: antialiased;
+}
