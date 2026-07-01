@@ -15,10 +15,12 @@
   padding: 0 12px;
   font-size: 14px;
 }
+
 .sm.counter {
   padding: 0 8px;
   min-width: 32px;
 }
+
 .sm.filter {
   padding-right: 6px;
 }
@@ -29,6 +31,7 @@
   padding: 0 24px;
   font-size: 16px;
 }
+
 .md.filter {
   padding-right: 16px;
 }
