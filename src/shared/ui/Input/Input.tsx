@@ -1,5 +1,6 @@
-import React, { InputHTMLAttributes, TextareaHTMLAttributes } from 'react';
+import { InputHTMLAttributes, TextareaHTMLAttributes } from 'react';
 import styles from './Input.module.css';
+import searchIcon from '@/shared/assets/img/search-icon.svg'; // ← импорт
 
 export interface InputProps {
   value?: string;
@@ -18,7 +19,8 @@ export interface InputProps {
   required?: boolean;
   maxLength?: number;
   isSearch?: boolean;
-  isForm?: boolean;  
+  isForm?: boolean;
+  onSearch?: () => void;
 }
 
 export const Input: React.FC<InputProps> = ({
@@ -38,7 +40,8 @@ export const Input: React.FC<InputProps> = ({
   required = false,
   maxLength,
   isSearch = false,
-  isForm = false,  
+  isForm = false,
+  onSearch,
   ...props
 }) => {
   const inputClasses = `
@@ -49,6 +52,12 @@ export const Input: React.FC<InputProps> = ({
     ${isForm ? styles.form : ''}
     ${className}
   `.trim();
+
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    if (e.key === 'Enter' && isSearch && onSearch) {
+      onSearch();
+    }
+  };
 
   if (multiline) {
     return (
@@ -65,6 +74,7 @@ export const Input: React.FC<InputProps> = ({
           autoFocus={autoFocus}
           required={required}
           maxLength={maxLength}
+          onKeyDown={handleKeyDown}
           {...(props as TextareaHTMLAttributes<HTMLTextAreaElement>)}
         />
         {error && errorText && (
@@ -75,21 +85,32 @@ export const Input: React.FC<InputProps> = ({
   }
 
   return (
-    <div className={styles.wrapper}>
-      <input
-        className={inputClasses}
-        type={type}
-        value={value}
-        onChange={onChange}
-        placeholder={placeholder}
-        name={name}
-        id={id}
-        disabled={disabled}
-        autoFocus={autoFocus}
-        required={required}
-        maxLength={maxLength}
-        {...(props as InputHTMLAttributes<HTMLInputElement>)}
-      />
+    <div className={`${styles.wrapper} ${isSearch ? styles.searchWrapper : ''}`}>
+      <div className={styles.inputWrapper}>
+        {isSearch && (
+          <img 
+            src={searchIcon} 
+            alt="Поиск" 
+            className={styles.searchIcon}
+            onClick={onSearch}
+          />
+        )}
+        <input
+          className={inputClasses}
+          type={type}
+          value={value}
+          onChange={onChange}
+          placeholder={placeholder}
+          name={name}
+          id={id}
+          disabled={disabled}
+          autoFocus={autoFocus}
+          required={required}
+          maxLength={maxLength}
+          onKeyDown={handleKeyDown}
+          {...(props as InputHTMLAttributes<HTMLInputElement>)}
+        />
+      </div>
       {error && errorText && (
         <span className={styles.errorText}>{errorText}</span>
       )}

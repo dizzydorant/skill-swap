@@ -23,9 +23,35 @@
 
 /* поиск */
 .input.search {
-  padding: 12px;
+  padding: 12px 12px 12px 40px;  /* ← убрали лишнюю ; */
   max-width: 527px;
   width: 100%;
+}
+
+/* иконка поиска */
+.searchWrapper {
+  position: relative;
+}
+
+.inputWrapper {
+  position: relative;
+  width: 100%;
+}
+
+.searchIcon {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
+  z-index: 1;
+  transition: opacity 0.2s;
+}
+
+.searchIcon:hover {
+  opacity: 0.7;
 }
 
 /* формы */
@@ -34,7 +60,8 @@
   width: 100%;
   padding: 12px 20px;
 }
-/* плейсхолден */
+
+/* плейсхолдер */
 .input::placeholder {
   color: #9ca3af;
   font-size: 16px;
@@ -68,6 +95,7 @@
 .input.disabled::placeholder {
   color: #d1d5db;
 }
+
 /* описание */
 textarea.input {
   height: 96px;
@@ -76,11 +104,13 @@ textarea.input {
   font-family: inherit;
   padding: 12px 20px;
 }
-/* описаине форма */
+
+/* описание форма */
 textarea.input.form {
   max-width: 436px;
   width: 100%;
 }
+
 /* ошибка текст */
 .errorText {
   margin-top: 6px;
@@ -88,4 +118,3 @@ textarea.input.form {
   color: #ef4444;
   line-height: 1.4;
 }
-

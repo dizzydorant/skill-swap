@@ -1,16 +1,23 @@
-import  { useState } from 'react';
-import { Input } from '@/shared/ui/Input';
-import styles from './CatalogPage.module.css';
+import { useState } from 'react'
+import { Input } from '@/shared/ui/Input'
+import styles from './CatalogPage.module.css'
 
 export default function CatalogPage() {
-  const [search, setSearch] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [search, setSearch] = useState('')
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
+
+  // обработчик поиска
+  const handleSearch = () => {
+    if (search.trim()) {
+      console.log('Поиск:', search)
+      // здесь будет логика поиска
+    }
+  }
 
   return (
     <main className={styles.container}>
-      
-{/* поиск */}
+      {/* поиск */}
       <div className={styles.section}>
         <Input
           type="search"
@@ -18,19 +25,22 @@ export default function CatalogPage() {
           isSearch
           value={search}
           onChange={(e) => setSearch(e.target.value)}
+          onSearch={handleSearch}
         />
         {search && (
-          <p style={{ 
-            marginTop: '8px',
-            fontFamily: 'Roboto, sans-serif',
-            fontSize: '14px',
-            color: '#6b7280'
-          }}>
+          <p
+            style={{
+              marginTop: '8px',
+              fontFamily: 'Roboto, sans-serif',
+              fontSize: '14px',
+              color: '#6b7280',
+            }}
+          >
             Поиск: {search}
           </p>
         )}
       </div>
-{/* email */}
+      {/* email */}
       <div className={styles.section}>
         <h3 className={styles.label}>Email</h3>
         <Input
@@ -41,7 +51,7 @@ export default function CatalogPage() {
           onChange={(e) => setEmail(e.target.value)}
         />
       </div>
-{/* password */}
+      {/* password */}
       <div className={styles.section}>
         <h3 className={styles.label}>Пароль</h3>
         <Input
@@ -51,11 +61,9 @@ export default function CatalogPage() {
           value={password}
           onChange={(e) => setPassword(e.target.value)}
         />
-        <p className={styles.hint}>
-          Пароль должен содержать не менее 8 знаков
-        </p>
+        <p className={styles.hint}>Пароль должен содержать не менее 8 знаков</p>
       </div>
-{/* рамка error */}
+      {/* рамка error */}
       <div className={styles.section}>
         <h3 className={styles.label}>Ошибка</h3>
         <Input
@@ -65,7 +73,7 @@ export default function CatalogPage() {
           errorText="Это поле обязательно для заполнения"
         />
       </div>
-{/* описание */}
+      {/* описание */}
       <div className={styles.section}>
         <h3 className={styles.label}>Описание</h3>
         <Input
@@ -77,5 +85,5 @@ export default function CatalogPage() {
         />
       </div>
     </main>
-  );
+  )
 }
