@@ -1,4 +1,4 @@
-import { HTMLAttributes, FC, MouseEvent, useId } from 'react'
+import { HTMLAttributes, FC, MouseEvent, CSSProperties } from 'react'
 import cls from './Chip.module.css'
 
 export type ChipVariant = 'default' | 'counter'
@@ -28,10 +28,6 @@ export const Chip: FC<ChipProps> = (props) => {
   const isCounter = variant === 'counter'
   const hasDelete = Boolean(onDelete) && !isCounter
 
-  // Генерируем уникальный ID для каждого чипа, чтобы точечно покрасить его через тег <style>
-  const uniqueId = useId().replace(/:/g, '')
-  const chipId = `chip-${uniqueId}`
-
   const classNames = [
     cls.chip,
     isCounter ? cls.counter : '',
@@ -49,24 +45,15 @@ export const Chip: FC<ChipProps> = (props) => {
     }
   }
 
-  // Динамические цвета применяются только если они пришли из БД
-  const hasCustomColors = Boolean(bgColorFromDb || textColorFromDb)
+  // Безопасное и быстрое применение динамических цветов из БД
+  const inlineStyles: CSSProperties = {
+    ...otherProps.style, // Сохраняем внешние стили, если их передадут в компонент
+    ...(bgColorFromDb && { backgroundColor: bgColorFromDb }),
+    ...(textColorFromDb && { color: textColorFromDb }),
+  }
 
   return (
-    <div id={chipId} className={classNames} {...otherProps}>
-      {hasCustomColors && (
-        <style
-          dangerouslySetInnerHTML={{
-            __html: `
-          #${chipId} {
-            ${bgColorFromDb ? `background-color: ${bgColorFromDb} !important;` : ''}
-            ${textColorFromDb ? `color: ${textColorFromDb} !important;` : ''}
-          }
-        `,
-          }}
-        />
-      )}
-
+    <div className={classNames} style={inlineStyles} {...otherProps}>
       <span className={cls.label}>{label}</span>
 
       {hasDelete && (
