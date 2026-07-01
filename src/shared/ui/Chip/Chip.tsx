@@ -8,6 +8,7 @@ export interface ChipProps extends HTMLAttributes<HTMLDivElement> {
   className?: string
   variant?: ChipVariant
   disabled?: boolean
+  size?: 'sm' | 'md' // Добавлен пропс для размеров с макета (sm для карточки, md для интерактивного фильтра)
   bgColorFromDb?: string
   textColorFromDb?: string
   onDelete?: (e: MouseEvent<HTMLSpanElement>) => void
@@ -19,6 +20,7 @@ export const Chip: FC<ChipProps> = (props) => {
     className = '',
     variant = 'default',
     disabled,
+    size = 'sm', // По умолчанию маленький для карточки
     bgColorFromDb,
     textColorFromDb,
     onDelete,
@@ -30,6 +32,7 @@ export const Chip: FC<ChipProps> = (props) => {
 
   const classNames = [
     cls.chip,
+    cls[size], // Применяет класс sm или md
     isCounter ? cls.counter : '',
     hasDelete ? cls.filter : cls.info,
     disabled ? cls.disabled : '',
@@ -45,11 +48,10 @@ export const Chip: FC<ChipProps> = (props) => {
     }
   }
 
-  // Безопасное и быстрое применение динамических цветов из БД
   const inlineStyles: CSSProperties = {
-    ...otherProps.style, // Сохраняем внешние стили, если их передадут в компонент
-    ...(bgColorFromDb && { backgroundColor: bgColorFromDb }),
-    ...(textColorFromDb && { color: textColorFromDb }),
+    ...otherProps.style,
+    backgroundColor: bgColorFromDb ? bgColorFromDb : undefined,
+    color: textColorFromDb ? textColorFromDb : undefined,
   }
 
   return (
