@@ -11,12 +11,16 @@ export interface ChipItem {
 
 export interface ChipListProps extends HTMLAttributes<HTMLDivElement> {
   items: ChipItem[]
-  size?: 'sm' | 'md' // Передаем размер для адаптации формулы
+  size?: 'sm' | 'md'
+  counterBgColor?: string
+  counterTextColor?: string
 }
 
 export const ChipList: FC<ChipListProps> = ({
   items,
   size = 'sm',
+  counterBgColor,
+  counterTextColor,
   className = '',
   ...otherProps
 }) => {
@@ -94,12 +98,20 @@ export const ChipList: FC<ChipListProps> = ({
         <Chip
           key={item.id}
           label={item.label}
-          size={size} // Передаем размер в каждый дочерний чип
+          size={size}
           bgColorFromDb={item.bgColorFromDb}
           textColorFromDb={item.textColorFromDb}
         />
       ))}
-      <Chip variant="counter" label={`+${hiddenCount}`} size={size} data-variant="counter" />
+
+      <Chip
+        variant="counter"
+        label={`+${hiddenCount}`}
+        size={size}
+        data-variant="counter"
+        bgColorFromDb={counterBgColor}
+        textColorFromDb={counterTextColor}
+      />
     </div>
   )
 }
