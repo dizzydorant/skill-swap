@@ -1,0 +1,120 @@
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+/* стиль всего инпута */
+.input {
+  width: 100%;
+  height: 48px;
+  padding: 12px 20px;
+  font-family: Roboto, sans-serif;
+  font-size: 16px;
+  line-height: 1.5;
+  color: #1a1a1a;
+  background-color: #fff;
+  border: 1px solid #69735D;
+  border-radius: 12px;
+  transition: all 0.2s ease-in-out;
+  outline: none;
+  box-sizing: border-box;
+}
+
+/* поиск */
+.input.search {
+  padding: 12px 12px 12px 40px;  /* ← убрали лишнюю ; */
+  max-width: 527px;
+  width: 100%;
+}
+
+/* иконка поиска */
+.searchWrapper {
+  position: relative;
+}
+
+.inputWrapper {
+  position: relative;
+  width: 100%;
+}
+
+.searchIcon {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
+  z-index: 1;
+  transition: opacity 0.2s;
+}
+
+.searchIcon:hover {
+  opacity: 0.7;
+}
+
+/* формы */
+.input.form {
+  max-width: 436px;
+  width: 100%;
+  padding: 12px 20px;
+}
+
+/* плейсхолдер */
+.input::placeholder {
+  color: #9ca3af;
+  font-size: 16px;
+}
+
+.input:not(.disabled):hover {
+  border-color: #4a5540;
+}
+
+.input:not(.disabled):focus {
+  border-color: #69735D;
+  box-shadow: 0 0 0 4px rgba(105 115 93 / 15%);
+}
+
+.input.error {
+  border-color: #ef4444;
+}
+
+.input.error:not(.disabled):focus {
+  border-color: #ef4444;
+  box-shadow: 0 0 0 4px rgba(239 68 68 / 10%);
+}
+
+.input.disabled {
+  background-color: #f3f4f6;
+  color: #9ca3af;
+  cursor: not-allowed;
+  border-color: #d1d5db;
+}
+
+.input.disabled::placeholder {
+  color: #d1d5db;
+}
+
+/* описание */
+textarea.input {
+  height: 96px;
+  min-height: 96px;
+  resize: vertical;
+  font-family: inherit;
+  padding: 12px 20px;
+}
+
+/* описание форма */
+textarea.input.form {
+  max-width: 436px;
+  width: 100%;
+}
+
+/* ошибка текст */
+.errorText {
+  margin-top: 6px;
+  font-size: 14px;
+  color: #ef4444;
+  line-height: 1.4;
+}
