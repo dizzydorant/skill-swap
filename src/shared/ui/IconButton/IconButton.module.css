@@ -1,0 +1,84 @@
+.iconButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  width: 40px;  
+  height: 40px;
+  border-radius: 50%; 
+  border: 1px solid transparent;
+  background-color: transparent;
+  color: #1a202c; 
+  cursor: pointer;
+  box-sizing: border-box;
+  transition:
+    background-color 0.2s ease,
+    border-color 0.2s ease,
+    color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+/* Стилизация внутренних SVG, чтобы они аккуратно вставали по центру */
+.iconButton svg {
+  display: block;
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+}
+
+/* Состояние Focus (берём фирменную тень из проекта) */
+.iconButton:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 3px rgb(171 210 122 / 40%);
+}
+
+/* Вариант: clear (дефолтный прозрачный, для хедера и полей) */
+.clear {
+  background-color: transparent;
+}
+
+.clear:hover:not(:disabled) {
+  background-color: rgb(0 0 0 / 5%); 
+}
+
+.clear:active:not(:disabled) {
+  background-color: rgb(0 0 0 / 10%);
+}
+
+/* Вариант: primary (если кнопка должна быть зеленой) */
+.primary {
+  background-color: #abd27a;
+}
+
+.primary:hover:not(:disabled) {
+  background-color: #9bc26b;
+}
+
+.primary:active:not(:disabled) {
+  background-color: #8cb25c;
+}
+
+.outline {
+  border-color: #abd27a;
+}
+
+.outline:hover:not(:disabled) {
+  background-color: rgb(171 210 122 / 10%);
+}
+
+.outline:active:not(:disabled) {
+  background-color: rgb(171 210 122 / 20%);
+}
+
+/* Состояние Disabled (неактивно) */
+.iconButton:disabled {
+  background-color: #e2e8f0;
+  border-color: transparent;
+  color: #a0aec0;
+  cursor: not-allowed;
+}
+
+.clear:disabled {
+  background-color: transparent;
+  opacity: 0.5;
+}
