@@ -1,14 +1,20 @@
+export type SkillCategoryIconKey =
+  | 'briefcase'
+  | 'palette'
+  | 'global'
+  | 'book'
+  | 'home'
+  | 'lifestyle'
+
 export interface SkillSubcategory {
   id: number
   name: string
-  className: string
 }
 
 export interface SkillCategory {
   id: number
   name: string
-  icon: string
-  className: string
+  iconKey: SkillCategoryIconKey
   subCategories: SkillSubcategory[]
 }
 
@@ -16,91 +22,85 @@ export const skillCategories: SkillCategory[] = [
   {
     id: 1,
     name: 'Бизнес и карьера',
-    icon: '/icons/briefcase.svg',
-    className: 'category-business',
+    iconKey: 'briefcase',
     subCategories: [
-      { id: 101, name: 'Управление командой', className: 'category-business' },
-      { id: 102, name: 'Маркетинг и реклама', className: 'category-business' },
-      { id: 103, name: 'Продажи и переговоры', className: 'category-business' },
-      { id: 104, name: 'Личный бренд', className: 'category-business' },
-      { id: 105, name: 'Резюме и собеседование', className: 'category-business' },
-      { id: 106, name: 'Тайм-менеджмент', className: 'category-business' },
-      { id: 107, name: 'Проектное управление', className: 'category-business' },
-      { id: 108, name: 'Предпринимательство', className: 'category-business' },
+      { id: 101, name: 'Управление командой' },
+      { id: 102, name: 'Маркетинг и реклама' },
+      { id: 103, name: 'Продажи и переговоры' },
+      { id: 104, name: 'Личный бренд' },
+      { id: 105, name: 'Резюме и собеседование' },
+      { id: 106, name: 'Тайм-менеджмент' },
+      { id: 107, name: 'Проектное управление' },
+      { id: 108, name: 'Предпринимательство' },
     ],
   },
   {
     id: 2,
     name: 'Творчество и искусство',
-    icon: '/icons/palette.svg',
-    className: 'category-art',
+    iconKey: 'palette',
     subCategories: [
-      { id: 201, name: 'Рисование и иллюстрация', className: 'category-art' },
-      { id: 202, name: 'Фотография', className: 'category-art' },
-      { id: 203, name: 'Видеомонтаж', className: 'category-art' },
-      { id: 204, name: 'Музыка и звук', className: 'category-art' },
-      { id: 205, name: 'Актёрское мастерство', className: 'category-art' },
-      { id: 206, name: 'Креативное письмо', className: 'category-art' },
-      { id: 207, name: 'Арт-терапия', className: 'category-art' },
-      { id: 208, name: 'Декор и DIY', className: 'category-art' },
+      { id: 201, name: 'Рисование и иллюстрация' },
+      { id: 202, name: 'Фотография' },
+      { id: 203, name: 'Видеомонтаж' },
+      { id: 204, name: 'Музыка и звук' },
+      { id: 205, name: 'Актёрское мастерство' },
+      { id: 206, name: 'Креативное письмо' },
+      { id: 207, name: 'Арт-терапия' },
+      { id: 208, name: 'Декор и DIY' },
     ],
   },
   {
     id: 3,
     name: 'Иностранные языки',
-    icon: '/icons/global.svg',
-    className: 'category-languages',
+    iconKey: 'global',
     subCategories: [
-      { id: 301, name: 'Английский', className: 'category-languages' },
-      { id: 302, name: 'Французский', className: 'category-languages' },
-      { id: 303, name: 'Испанский', className: 'category-languages' },
-      { id: 304, name: 'Немецкий', className: 'category-languages' },
-      { id: 305, name: 'Китайский', className: 'category-languages' },
-      { id: 306, name: 'Японский', className: 'category-languages' },
-      { id: 307, name: 'Подготовка к экзаменам (IELTS, TOEFL)', className: 'category-languages' },
+      { id: 301, name: 'Английский' },
+      { id: 302, name: 'Французский' },
+      { id: 303, name: 'Испанский' },
+      { id: 304, name: 'Немецкий' },
+      { id: 305, name: 'Китайский' },
+      { id: 306, name: 'Японский' },
+      { id: 307, name: 'Подготовка к экзаменам (IELTS, TOEFL)' },
     ],
   },
   {
     id: 4,
     name: 'Образование и развитие',
-    icon: '/icons/book.svg',
-    className: 'category-education',
+    iconKey: 'book',
     subCategories: [
-      { id: 401, name: 'Личностное развитие', className: 'category-education' },
-      { id: 402, name: 'Навыки обучения', className: 'category-education' },
-      { id: 403, name: 'Когнитивные техники', className: 'category-education' },
-      { id: 404, name: 'Скорочтение', className: 'category-education' },
-      { id: 405, name: 'Навыки преподавания', className: 'category-education' },
-      { id: 406, name: 'Коучинг', className: 'category-education' },
+      { id: 401, name: 'Личностное развитие' },
+      { id: 402, name: 'Навыки обучения' },
+      { id: 403, name: 'Когнитивные техники' },
+      { id: 404, name: 'Скорочтение' },
+      { id: 405, name: 'Навыки преподавания' },
+      { id: 406, name: 'Коучинг' },
     ],
   },
   {
     id: 5,
     name: 'Дом и уют',
-    icon: '/icons/home.svg',
-    className: 'category-home',
+    iconKey: 'home',
     subCategories: [
-      { id: 501, name: 'Уборка и организация', className: 'category-home' },
-      { id: 502, name: 'Домашние финансы', className: 'category-home' },
-      { id: 503, name: 'Приготовление еды', className: 'category-home' },
-      { id: 504, name: 'Домашние растения', className: 'category-home' },
-      { id: 505, name: 'Ремонт', className: 'category-home' },
-      { id: 506, name: 'Хранение вещей', className: 'category-home' },
+      { id: 501, name: 'Уборка и организация' },
+      { id: 502, name: 'Домашние финансы' },
+      { id: 503, name: 'Приготовление еды' },
+      { id: 504, name: 'Домашние растения' },
+      { id: 505, name: 'Ремонт' },
+      { id: 506, name: 'Хранение вещей' },
     ],
   },
   {
     id: 6,
     name: 'Здоровье и лайфстайл',
-    icon: '/icons/lifestyle.svg',
-    className: 'category-health',
+    iconKey: 'lifestyle',
     subCategories: [
-      { id: 601, name: 'Йога и медитация', className: 'category-health' },
-      { id: 602, name: 'Питание и ЗОЖ', className: 'category-health' },
-      { id: 603, name: 'Ментальное здоровье', className: 'category-health' },
-      { id: 604, name: 'Осознанность', className: 'category-health' },
-      { id: 605, name: 'Физические тренировки', className: 'category-health' },
-      { id: 606, name: 'Сон и восстановление', className: 'category-health' },
-      { id: 607, name: 'Баланс жизни и работы', className: 'category-health' },
+      { id: 601, name: 'Йога и медитация' },
+      { id: 602, name: 'Питание и ЗОЖ' },
+      { id: 603, name: 'Ментальное здоровье' },
+      { id: 604, name: 'Осознанность' },
+      { id: 605, name: 'Физические тренировки' },
+      { id: 606, name: 'Сон и восстановление' },
+      { id: 607, name: 'Баланс жизни и работы' },
     ],
   },
 ]
