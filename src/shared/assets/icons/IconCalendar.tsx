@@ -1,5 +1,3 @@
-import React from 'react';
-
 export const IconCalendar = () => (
 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
 <path d="M8.34904 6.18605C7.96765 6.18605 7.65137 5.86977 7.65137 5.48837V2.69767C7.65137 2.31628 7.96765 2 8.34904 2C8.73044 2 9.04672 2.31628 9.04672 2.69767V5.48837C9.04672 5.86977 8.73044 6.18605 8.34904 6.18605Z" fill="#253017"/>
@@ -16,4 +14,4 @@ export const IconCalendar = () => (
 );
 
 
-      
+
