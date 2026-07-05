@@ -1,0 +1,83 @@
+.footer {
+  width: 100%;
+  max-width: 1440px;
+  height: 232px;
+  margin: 0 auto;
+  background-color: #f8faf7;
+  border-top: 1px solid #e5e9e2;
+  padding: 32px 36px;
+  box-sizing: border-box;
+  display: flex;
+  align-items: flex-start;
+}
+
+.container {
+  width: 100%;
+  max-width: 1440px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 159px 1fr;
+  grid-template-rows: auto auto;
+  gap: 12px 0;
+  align-items: start;
+  position: relative;
+}
+
+/* Логотип */
+.logoSection {
+  grid-column: 1 / 2;
+  grid-row: 1 / 2;
+  width: 159px;
+  height: 40px;
+}
+
+/* Блок со ссылками */
+.linksWrapper {
+  grid-column: 2 / 3;
+  grid-row: 1 / 2;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 24px;
+  padding-left: 189px;
+  margin-top: 52px;
+}
+
+.column {
+  align-self: start;
+}
+
+.linksList {
+  list-style: disc;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* Ссылки */
+.link {
+  font-family: Roboto, sans-serif;
+  font-size: 16px;
+  color: #1a1a1a;
+  text-decoration: none;
+  transition: color 0.2s ease;
+  line-height: 24px;
+  white-space: nowrap;
+}
+
+.link:hover {
+  color: #69735d;
+}
+
+/* Копирайт */
+.copyright {
+  grid-column: 1 / 2;
+  grid-row: 2 / 3;
+  font-family: Roboto, sans-serif;
+  font-size: 14px;
+  color: #6b7280;
+  line-height: 20px;
+  align-self: start;
+  margin-top: 12px;
+}
