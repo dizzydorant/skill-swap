@@ -2,6 +2,7 @@
 export { IconMoon } from './IconMoon';
 export { IconNotification } from './IconNotification';
 export { IconLike } from './IconLike';
+export { IconLikeFilled } from './IconLikeFilled';
 export { IconBusiness } from './IconBusiness';
 export { IconArt } from './IconArt';
 export { IconLanguage } from './IconLanguage';
