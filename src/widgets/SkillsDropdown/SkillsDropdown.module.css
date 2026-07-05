@@ -1,21 +1,17 @@
 .dropdownContainer {
-  position: absolute;
-  top: 100%; 
-  left: 0;
   width: 100%;
-  max-width: 1136px; 
+  max-width: 1136px;
   background-color: #fff;
+  border: 1px solid #69735d;
   border-radius: 12px;
   padding: 60px;
-  z-index: 1000;
   box-sizing: border-box;
-  border:1px solid #69735D;
 }
 
 .grid {
   display: grid;
-  grid-template-columns: repeat(2, 1fr); 
-  gap: 40px; 
+  grid-template-columns: repeat(2, 1fr);
+  gap: 40px 96px;
 }
 
 .categoryBlock {
@@ -34,9 +30,35 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 24px;
-  height: 24px;
-  color: #253017; 
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  color: #253017;
+  flex-shrink: 0;
+}
+
+.businessIcon {
+  background-color: #EEE7F7;
+}
+
+.artIcon {
+  background-color: #F7E7F2;
+}
+
+.languageIcon {
+  background-color: #EBE5C5;
+}
+
+.educationIcon {
+  background-color: #E7F2F6;
+}
+
+.homeIcon {
+  background-color: #F7EBE5;
+}
+
+.lifestyleIcon {
+  background-color: #E9F7E7;
 }
 
 .categoryTitle {
@@ -50,16 +72,13 @@
   list-style: none;
   padding: 0;
   margin: 0;
+  padding-left: 44px;
   display: flex;
   flex-direction: column;
-  gap: 12px; 
-  padding-left: 36px; 
+  gap: 12px;
 }
 
 .subCategoryItem {
   font-size: 16px;
-  color: #253017; 
-  cursor: pointer;
-  transition: color 0.2s ease;
+  color: #253017;
 }
-
