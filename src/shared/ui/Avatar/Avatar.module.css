@@ -112,6 +112,14 @@
 }
 
 .editIcon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+}
+
+.editIcon svg {
   display: block;
   width: 24px;
   height: 24px;

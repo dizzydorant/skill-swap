@@ -1,5 +1,5 @@
 import { FC, useState } from 'react'
-import galleryEditIcon from '@/shared/assets/icons/gallery-edit.svg'
+import { IconGalleryEdit } from '@/shared/assets/icons/IconGalleryEdit'
 import userIcon from '@/shared/assets/icons/user.svg'
 import styles from './Avatar.module.css'
 
@@ -79,7 +79,9 @@ export const Avatar: FC<AvatarProps> = ({
           aria-label="Изменить фото профиля"
           onClick={onEditClick}
         >
-          <img src={galleryEditIcon} alt="" className={styles.editIcon} />
+          <span className={styles.editIcon} aria-hidden="true">
+            <IconGalleryEdit />
+          </span>
         </button>
       )}
     </div>
