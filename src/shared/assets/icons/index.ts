@@ -1,4 +1,4 @@
-export { IconGalleryEdit } from './IconGalleryEdit';
+
 export { IconMoon } from './IconMoon';
 export { IconNotification } from './IconNotification';
 export { IconLike } from './IconLike';
@@ -13,6 +13,7 @@ export { IconEdit } from './IconEdit';
 export { IconAdd } from './IconAdd';
 export { IconCalendar } from './IconCalendar';
 export { IconArrow } from './IconArrow';
+
 
 
 
