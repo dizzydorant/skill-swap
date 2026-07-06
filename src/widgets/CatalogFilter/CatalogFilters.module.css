@@ -1,0 +1,145 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  font-family: inherit;
+  color: #1a1a1a;
+}
+
+.topPanel {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+  padding-bottom: 16px;
+  width: 100%;
+}
+
+.filterTitleCount {
+  font-size: 15px;
+  font-weight: 600;
+  color: #1a1a1a;
+  margin-right: 8px;
+}
+
+.resetBtn {
+  background: none;
+  border: none;
+  color: #94cd5c;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 8px;
+  transition: opacity 0.2s ease;
+}
+
+.resetBtn:hover {
+  opacity: 0.8;
+}
+
+.filtersSidebar {
+  width: 260px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.sectionTitle {
+  font-size: 15px;
+  font-weight: 600;
+  margin: 0;
+  color: #1a1a1a;
+}
+
+.optionsList {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.label {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  font-size: 14px;
+  color: #1a1a1a;
+  width: 100%;
+}
+
+.input {
+  position: absolute;
+  opacity: 0;
+  cursor: pointer;
+  height: 0;
+  width: 0;
+}
+
+/* Радиокнопки с чёрной рамкой */
+.radioControl {
+  position: relative;
+  height: 20px;
+  width: 20px;
+  background-color: #fff;
+  border: 1.5px solid #000;
+  border-radius: 50%;
+  box-sizing: border-box;
+  flex-shrink: 0;
+}
+
+.input:checked ~ .radioControl {
+  border-color: #94cd5c;
+}
+
+.radioControl::after {
+  content: '';
+  position: absolute;
+  display: none;
+  top: 4px;
+  left: 4px;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #94cd5c;
+}
+
+.input:checked ~ .radioControl::after {
+  display: block;
+}
+
+.showMoreBtn {
+  background: none;
+  border: none;
+  color: #94cd5c;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  padding: 0;
+  text-align: left;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  width: fit-content;
+}
+
+.showMoreBtn:hover {
+  text-decoration: underline;
+}
+
+.showMoreIcon {
+  width: 16px;
+  height: 16px;
+  transition: transform 0.2s ease;
+}
+
+.showMoreIcon.arrowExpanded {
+  transform: rotate(180deg);
+}

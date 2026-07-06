@@ -2,15 +2,15 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  border-radius: 100px;
   font-weight: 400;
   line-height: 1.2;
   white-space: nowrap;
   box-sizing: border-box;
 }
 
-/* Маленький размер для карточки скиллов */
+/* Маленький размер для карточки скиллов (овальный) */
 .sm {
+  border-radius: 100px;
   height: 32px;
   padding: 0 12px;
   font-size: 14px;
@@ -25,15 +25,44 @@
   padding-right: 6px;
 }
 
-/* Большой размер для фильтров  */
+/* Большой размер для фильтров */
 .md {
   height: 48px;
-  padding: 0 24px;
+  border-radius: 12px;
+  padding: 12px 24px;
   font-size: 16px;
+  gap: 8px;
 }
 
 .md.filter {
   padding-right: 16px;
+}
+
+/* --- ВАРИАНТЫ ОФОРМЛЕНИЯ И ЦВЕТА --- */
+
+/* Интерактивный чипс-фильтр (белый фон без бордеров и теней) */
+.filter {
+  background-color: #fff;
+  color: #1a1a1a;
+  border: none;
+  box-shadow: none;
+  transition: background-color 0.2s ease;
+}
+
+.filter:hover {
+  background-color: #f9fafb;
+}
+
+/* Обычный информационный чипс (без крестика внутри карточек) */
+.info {
+  background-color: #eef7e7;
+  color: #4a7c1b;
+}
+
+.counter {
+  background-color: #94cd5c;
+  color: #fff;
+  font-weight: 600;
 }
 
 /* Кнопка удаления (крестик) */
@@ -41,19 +70,28 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  margin-left: 12px; /* Отступ до крестика побольше для крупных фильтров */
+
+  /* Полный сброс дефолтных стилей браузера для кнопки */
+  background: none;
+  border: none;
+  padding: 0;
+  margin: 0;
+  font-family: inherit;
   font-size: 14px;
   color: inherit;
   cursor: pointer;
   opacity: 0.6;
-  transition: opacity 0.2s ease;
+  transition:
+    opacity 0.2s ease,
+    transform 0.2s ease;
 }
 
 .deleteBtn:hover {
-  color: #1a1a1a;
+  opacity: 1;
   transform: scale(1.1);
 }
 
 .disabled {
   opacity: 0.5;
+  pointer-events: none;
 }

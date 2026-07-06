@@ -8,10 +8,10 @@ export interface ChipProps extends HTMLAttributes<HTMLDivElement> {
   className?: string
   variant?: ChipVariant
   disabled?: boolean
-  size?: 'sm' | 'md' // Добавлен пропс для размеров с макета (sm для карточки, md для интерактивного фильтра)
+  size?: 'sm' | 'md' // sm для карточки, md для интерактивного фильтра
   bgColorFromDb?: string
   textColorFromDb?: string
-  onDelete?: (e: MouseEvent<HTMLSpanElement>) => void
+  onDelete?: (e: MouseEvent<HTMLButtonElement>) => void
 }
 
 export const Chip: FC<ChipProps> = (props) => {
@@ -20,7 +20,7 @@ export const Chip: FC<ChipProps> = (props) => {
     className = '',
     variant = 'default',
     disabled,
-    size = 'sm', // По умолчанию маленький для карточки
+    size = 'sm',
     bgColorFromDb,
     textColorFromDb,
     onDelete,
@@ -32,7 +32,7 @@ export const Chip: FC<ChipProps> = (props) => {
 
   const classNames = [
     cls.chip,
-    cls[size], // Применяет класс sm или md
+    cls[size],
     isCounter ? cls.counter : '',
     hasDelete ? cls.filter : cls.info,
     disabled ? cls.disabled : '',
@@ -41,7 +41,7 @@ export const Chip: FC<ChipProps> = (props) => {
     .filter(Boolean)
     .join(' ')
 
-  const handleDelete = (e: MouseEvent<HTMLSpanElement>) => {
+  const handleDelete = (e: MouseEvent<HTMLButtonElement>) => {
     e.stopPropagation()
     if (!disabled && onDelete) {
       onDelete(e)
@@ -59,15 +59,15 @@ export const Chip: FC<ChipProps> = (props) => {
       <span className={cls.label}>{label}</span>
 
       {hasDelete && (
-        <span
+        <button
+          type="button"
           className={cls.deleteBtn}
           onClick={handleDelete}
-          role="button"
-          tabIndex={0}
-          aria-label="Удалить фильтр"
+          disabled={disabled}
+          aria-label={`Удалить фильтр ${label}`}
         >
           ✕
-        </span>
+        </button>
       )}
     </div>
   )
