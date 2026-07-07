@@ -16,6 +16,7 @@ export interface SkillSectionProps {
   cards: SkillSectionCard[]
   initialLimit?: number
   className?: string
+  onShowAllClick?: () => void
 }
 
 const DEFAULT_INITIAL_LIMIT = 3
@@ -25,6 +26,7 @@ export const SkillSection = ({
   cards,
   initialLimit = DEFAULT_INITIAL_LIMIT,
   className = '',
+  onShowAllClick,
 }: SkillSectionProps) => {
   const titleId = useId()
   const [isExpanded, setIsExpanded] = useState(false)
@@ -33,7 +35,11 @@ export const SkillSection = ({
   const sectionClassName = [styles.section, className].filter(Boolean).join(' ')
 
   const handleShowAllClick = () => {
-    setIsExpanded(true)
+    if (onShowAllClick) {
+      onShowAllClick()
+    } else {
+      setIsExpanded(true)
+    }
   }
 
   return (
@@ -43,7 +49,7 @@ export const SkillSection = ({
           {title}
         </h2>
 
-        {hasHiddenCards && !isExpanded ? (
+        {(hasHiddenCards || onShowAllClick) && !isExpanded ? (
           <Button className={styles.showAllButton} variant="outline" onClick={handleShowAllClick}>
             Смотреть все
             <span className={styles.showAllIcon} aria-hidden="true">

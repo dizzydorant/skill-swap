@@ -1,0 +1,37 @@
+.page {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background-color: #F9FAF7;
+}
+
+.main {
+  flex-grow: 1;
+  padding: 24px 32px;
+}
+
+.pageLayoutContainer {
+  max-width: 1440px;
+  margin: 0 auto;
+}
+
+.bottomGridContainer {
+  display: grid;
+  grid-template-columns: 320px 1fr;
+  gap: 40px;
+  align-items: start;
+  margin-top: 32px;
+}
+
+.bottomGridContainer aside {
+  background-color: #fff;
+  border-radius: 12px;
+  padding: 24px;
+  box-sizing: border-box;
+}
+
+.content {
+  display: flex;
+  flex-direction: column;
+  gap: 48px;
+}
