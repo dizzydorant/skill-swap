@@ -1,10 +1,8 @@
 .labelContainer {
-  display: flex;
+  display: inline-flex;
   align-items: center;
   gap: 10px;
   cursor: pointer;
-  font-size: 14px;
-  color: #1a1a1a;
   width: 100%;
 }
 
@@ -21,18 +19,15 @@
   height: 20px;
   width: 20px;
   background-color: #fff;
-  border: 1.5px solid #000;
-  border-radius: 6px;
+  border: 1.5px solid #1a1a1a;
+  border-radius: 4px;
   box-sizing: border-box;
   flex-shrink: 0;
-  transition:
-    border-color 0.2s,
-    background-color 0.2s;
 }
 
 .hiddenInput:checked ~ .customCheckbox {
-  border-color: #94cd5c;
   background-color: #94cd5c;
+  border-color: #94cd5c;
 }
 
 .customCheckbox::after {
@@ -41,8 +36,8 @@
   display: none;
   left: 6px;
   top: 2px;
-  width: 4px;
-  height: 8px;
+  width: 5px;
+  height: 10px;
   border: solid white;
   border-width: 0 2px 2px 0;
   transform: rotate(45deg);
@@ -52,25 +47,26 @@
   display: block;
 }
 
-.indeterminate {
-  border-color: #94cd5c;
+.customCheckbox.indeterminate {
   background-color: #94cd5c;
+  border-color: #94cd5c;
 }
 
-.indeterminate::after {
+.customCheckbox.indeterminate::after {
   content: '';
   position: absolute;
   display: block;
+  left: 4px;
+  top: 7px;
   width: 10px;
   height: 2px;
-  background: #fff;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
+  background-color: white;
   border: none;
+  transform: none;
 }
 
 .labelText {
   font-size: 14px;
   color: #1a1a1a;
+  line-height: 1;
 }

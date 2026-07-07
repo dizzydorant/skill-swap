@@ -143,3 +143,15 @@
 .showMoreIcon.arrowExpanded {
   transform: rotate(180deg);
 }
+
+/* 
+  ПОДКАТЕГОРИИ НАВЫКОВ:
+*/
+.subCategoriesList {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding-left: 28px;
+  margin-top: 8px;
+  width: 100%;
+}
