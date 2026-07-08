@@ -14,13 +14,13 @@
   font-size: 16px;
   line-height: 20px;
   font-weight: 500;
-  color: #333333;
+  color: #333;
   margin-bottom: 12px;
   text-align: left;
 }
 
 .selectTrigger {
-  background: #ffffff;
+  background: #fff;
   border: 1px solid #c2c2c2;
   display: flex;
   justify-content: space-between;
@@ -29,7 +29,7 @@
   border-radius: 12px;
   cursor: pointer;
   font-size: 16px;
-  color: #333333;
+  color: #333;
   transition: border-color 0.2s;
   outline: none;
   text-align: left;
@@ -38,11 +38,11 @@
 }
 
 .selectTrigger:focus-visible {
-  border-color: #666666;
+  border-color: #666;
 }
 
 .selectTrigger.open {
-  border-color: #666666;
+  border-color: #666;
 }
 
 .errorContainer .selectTrigger {
@@ -66,7 +66,7 @@
   justify-content: center;
   transform: rotate(180deg);
   transition: transform 0.2s ease;
-  color: #333333;
+  color: #333;
   width: 24px;
   height: 24px;
   flex-shrink: 0;
@@ -83,10 +83,10 @@
   right: 0;
   margin: 0;
   padding: 8px 0;
-  background-color: #ffffff;
+  background-color: #fff;
   border: 1px solid #c2c2c2;
   border-radius: 12px;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12); /* Мягкая тень парения */
+  box-shadow: 0 8px 24px rgb(0 0 0 / 12%); /* Мягкая тень парения */
   z-index: 9999; /* Всплывает поверх любых соседних полей */
   max-height: 200px;
   overflow-y: auto;
@@ -97,7 +97,7 @@
 .optionItem {
   padding: 12px 18px;
   font-size: 16px;
-  color: #333333;
+  color: #333;
   cursor: pointer;
   outline: none;
   text-align: left;
@@ -108,7 +108,7 @@
 }
 
 .optionItem.selected {
-  background-color: #eeeeee;
+  background-color: #eee;
   font-weight: 500;
 }
 
