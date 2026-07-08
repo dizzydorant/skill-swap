@@ -1,0 +1,122 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  font-family:
+    system-ui,
+    -apple-system,
+    sans-serif;
+  width: 100%;
+  box-sizing: border-box;
+  position: relative;
+}
+
+.label {
+  font-size: 16px;
+  line-height: 20px;
+  font-weight: 500;
+  color: #333;
+  margin-bottom: 12px;
+  text-align: left;
+}
+
+.selectTrigger {
+  background: #fff;
+  border: 1px solid #c2c2c2;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 14px 18px;
+  border-radius: 12px;
+  cursor: pointer;
+  font-size: 16px;
+  color: #333;
+  transition: border-color 0.2s;
+  outline: none;
+  text-align: left;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.selectTrigger:focus-visible {
+  border-color: #666;
+}
+
+.selectTrigger.open {
+  border-color: #666;
+}
+
+.errorContainer .selectTrigger {
+  border-color: #ff4d4f;
+}
+
+.errorText {
+  color: #ff4d4f;
+  font-size: 12px;
+  margin-top: 6px;
+  text-align: left;
+}
+
+.placeholder {
+  color: #8a8a8a;
+}
+
+.arrow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transform: rotate(180deg);
+  transition: transform 0.2s ease;
+  color: #333;
+  width: 24px;
+  height: 24px;
+  flex-shrink: 0;
+}
+
+.arrowOpen {
+  transform: rotate(0deg);
+}
+
+.optionsList {
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0;
+  right: 0;
+  margin: 0;
+  padding: 8px 0;
+  background-color: #fff;
+  border: 1px solid #c2c2c2;
+  border-radius: 12px;
+  box-shadow: 0 8px 24px rgb(0 0 0 / 12%); /* Мягкая тень парения */
+  z-index: 9999; /* Всплывает поверх любых соседних полей */
+  max-height: 200px;
+  overflow-y: auto;
+  list-style: none;
+  box-sizing: border-box;
+}
+
+.optionItem {
+  padding: 12px 18px;
+  font-size: 16px;
+  color: #333;
+  cursor: pointer;
+  outline: none;
+  text-align: left;
+}
+
+.optionItem:hover {
+  background-color: #f5f5f5;
+}
+
+.optionItem.selected {
+  background-color: #eee;
+  font-weight: 500;
+}
+
+.disabled {
+  opacity: 0.5;
+}
+
+.disabled .selectTrigger {
+  cursor: not-allowed;
+  background-color: #f5f5f5;
+}
