@@ -1,0 +1,145 @@
+.layout {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  min-height: 100vh;
+  width: 100%;
+  background-color: #f4f4f4;
+  padding: 32px 48px;
+  box-sizing: border-box;
+  font-family: sans-serif;
+}
+
+.topBar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  position: relative;
+  z-index: 10;
+}
+
+.logoWrapper {
+  display: flex;
+  align-items: center;
+}
+
+.headerCenter {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  text-align: center;
+}
+
+.title {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 500;
+  color: #1a1a1a;
+  line-height: 1.2;
+}
+
+.headerMobile {
+  display: none;
+}
+
+.progressContainer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  margin-top: 8px;
+}
+
+.progressStep {
+  height: 4px;
+  width: 56px;
+  border-radius: 9999px;
+  background-color: #e5e7eb;
+  transition: background-color 0.3s ease;
+}
+
+.progressStepActive {
+  background-color: #a3d179;
+}
+
+.customCloseBtn {
+  background-color: #ffffff;
+  border-color: transparent;
+  font-size: 14px;
+}
+
+.customCloseBtn:hover:not(:disabled) {
+  background-color: #f9f9f9;
+}
+
+.closeIcon {
+  margin-left: 4px;
+  font-size: 11px;
+  color: #9ca3af;
+}
+
+.mainContainer {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  margin: auto;
+  padding: 32px 0;
+  box-sizing: border-box;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 32px;
+  width: 100%;
+  max-width: 1152px;
+  align-items: stretch;
+}
+
+.card {
+  background-color: #ffffff;
+  border-radius: 16px;
+  padding: 48px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  box-sizing: border-box;
+  min-height: 520px;
+}
+
+.spacer {
+  height: 16px;
+}
+
+@media (max-width: 992px) {
+  .layout {
+    padding: 24px;
+  }
+
+  .headerCenter {
+    display: none;
+  }
+
+  .headerMobile {
+    display: block;
+    text-align: center;
+    margin: 24px 0 8px 0;
+  }
+
+  .grid {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+
+  .card {
+    padding: 32px 24px;
+    min-height: auto;
+  }
+
+  .spacer {
+    display: none;
+  }
+}
