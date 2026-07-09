@@ -1,0 +1,1 @@
+export { AuthPromoCard } from './AuthPromoCard';
