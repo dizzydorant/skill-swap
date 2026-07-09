@@ -64,7 +64,7 @@
 }
 
 .customCloseBtn {
-  background-color: #ffffff;
+  background-color: #fff;
   border-color: transparent;
   font-size: 14px;
 }
@@ -100,7 +100,7 @@
 }
 
 .card {
-  background-color: #ffffff;
+  background-color: #fff;
   border-radius: 16px;
   padding: 48px;
   display: flex;
@@ -114,7 +114,7 @@
   height: 16px;
 }
 
-@media (max-width: 992px) {
+@media (width <= 992px) {
   .layout {
     padding: 24px;
   }
@@ -126,7 +126,7 @@
   .headerMobile {
     display: block;
     text-align: center;
-    margin: 24px 0 8px 0;
+    margin: 24px 0 8px;
   }
 
   .grid {
