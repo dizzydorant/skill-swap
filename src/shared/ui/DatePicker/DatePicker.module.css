@@ -15,6 +15,11 @@
   letter-spacing: 0.02em;
 }
 
+.datePickerRoot {
+  display: block;
+  width: 100%;
+}
+
 .inputButton {
   display: flex;
   justify-content: space-between;
@@ -28,6 +33,7 @@
   border: 1px solid #69735d;
   border-radius: 16px;
   cursor: pointer;
+  box-sizing: border-box;
 }
 
 .inputButtonError {
@@ -67,12 +73,16 @@
   color: #2b2b1f;
 }
 
+@keyframes blink {
+  50% { border-color: transparent; }
+}
+
 .activePlaceholder {
   display: block;
-  width: 0;
-  height: 24px;
-  border: 1px solid #508826;
-  border-radius: 16px;
+  width: 15px;
+  height: 20px;
+  border-left: 2px solid #508826;
+  animation: blink 1s step-end infinite;
 }
 
 .header {
@@ -135,8 +145,22 @@
   line-height: 1.2;
 }
 
+.footerButtons {
+  display: flex;
+  gap: 12px;
+  width: 100%;
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px solid #eef5df;
+}
+
+.footerButtons > * {
+  flex: 1;
+}
+
 @media (width <= 640px) {
   .inputButton {
     padding: 0 16px 0 20px;
   }
 }
+
