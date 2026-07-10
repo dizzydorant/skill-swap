@@ -1,5 +1,9 @@
 import { forwardRef, useId, useState } from 'react'
-import ReactDatePicker, { registerLocale, type ReactDatePickerCustomHeaderProps } from 'react-datepicker'
+import ReactDatePicker, {
+  CalendarContainer,
+  registerLocale,
+  type ReactDatePickerCustomHeaderProps,
+} from 'react-datepicker'
 import { getMonth, getYear } from 'date-fns'
 import { ru } from 'date-fns/locale'
 import 'react-datepicker/dist/react-datepicker.css'
@@ -128,85 +132,86 @@ export const DatePicker = ({
         </label>
       ) : null}
 
-      <ReactDatePicker
-        id={fieldId}
-        locale="ru"
-        selected={value}
-        onChange={(date: Date | null) => onChange(date)}
-        dateFormat="dd.MM.yyyy"
-        placeholderText={placeholder}
-        showPopperArrow={false}
-        minDate={minDate}
-        maxDate={maxDate}
-        disabled={disabled}
-        shouldCloseOnSelect
-        open={isOpen}
-        onInputClick={() => {
-          if (!disabled) {
-            setIsOpen(true)
+      <div className="datePickerRoot">
+        <ReactDatePicker
+          id={fieldId}
+          locale="ru"
+          selected={value}
+          onChange={(date: Date | null) => onChange(date)}
+          dateFormat="dd.MM.yyyy"
+          placeholderText={placeholder}
+          showPopperArrow={false}
+          minDate={minDate}
+          maxDate={maxDate}
+          disabled={disabled}
+          shouldCloseOnSelect
+          open={isOpen}
+          calendarContainer={CalendarContainer}
+          onInputClick={() => {
+            if (!disabled) {
+              setIsOpen(true)
+            }
+          }}
+          onCalendarOpen={() => setIsOpen(true)}
+          onCalendarClose={() => setIsOpen(false)}
+          onClickOutside={() => setIsOpen(false)}
+          customInput={
+            <CustomInput
+              id={fieldId}
+              hasError={error}
+              placeholder={placeholder}
+              isOpen={isOpen}
+              disabled={disabled}
+            />
           }
-        }}
-        onCalendarOpen={() => setIsOpen(true)}
-        onCalendarClose={() => setIsOpen(false)}
-        onClickOutside={() => setIsOpen(false)}
-        customInput={
-          <CustomInput
-            id={fieldId}
-            hasError={error}
-            placeholder={placeholder}
-            isOpen={isOpen}
-            disabled={disabled}
-          />
-        }
-        calendarClassName="datePickerCalendar"
-        popperClassName="datePickerPopper"
-        wrapperClassName={styles.datePicker}
-        dayClassName={(date: Date) =>
-          getMonth(date) !== getMonth(value || new Date()) ? 'datePickerOutsideDay' : ''
-        }
-        formatWeekDay={(dayName: string) => WEEK_DAYS[dayName] || dayName.slice(0, 2)}
-        renderCustomHeader={({ date, changeYear, changeMonth }: ReactDatePickerCustomHeaderProps) => (
-          <div className={styles.header}>
-            <div className={styles.selectGroup}>
-              <div className={styles.selectWrapper}>
-                <select
-                  className={styles.select}
-                  value={MONTHS[getMonth(date)]}
-                  onChange={({ target: { value: monthValue } }) =>
-                    changeMonth(MONTHS.indexOf(monthValue))
-                  }
-                  aria-label="Месяц"
-                >
-                  {MONTHS.map((month) => (
-                    <option key={month} value={month}>
-                      {month}
-                    </option>
-                  ))}
-                </select>
+          popperClassName="datePickerPopper"
+          dayClassName={(date: Date) =>
+            getMonth(date) !== getMonth(value || new Date()) ? 'datePickerOutsideDay' : ''
+          }
+          formatWeekDay={(dayName: string) => WEEK_DAYS[dayName] || dayName.slice(0, 2)}
+          renderCustomHeader={({ date, changeYear, changeMonth }: ReactDatePickerCustomHeaderProps) => (
+            <div className={styles.header}>
+              <div className={styles.selectGroup}>
+                <div className={styles.selectWrapper}>
+                  <select
+                    className={styles.select}
+                    value={MONTHS[getMonth(date)]}
+                    onChange={({ target: { value: monthValue } }) =>
+                      changeMonth(MONTHS.indexOf(monthValue))
+                    }
+                    aria-label="Месяц"
+                  >
+                    {MONTHS.map((month) => (
+                      <option key={month} value={month}>
+                        {month}
+                      </option>
+                    ))}
+                  </select>
 
-                <IconArrow className={styles.selectIcon} />
-              </div>
+                  <IconArrow className={styles.selectIcon} />
+                </div>
 
-              <div className={styles.selectWrapper}>
-                <select
-                  className={styles.select}
-                  value={getYear(date)}
-                  onChange={({ target: { value: yearValue } }) => changeYear(Number(yearValue))}
-                  aria-label="Год"
-                >
-                  {YEARS.map((year) => (
-                    <option key={year} value={year}>
-                      {year}
-                    </option>
-                  ))}
-                </select>
+                <div className={styles.selectWrapper}>
+                  <select
+                    className={styles.select}
+                    value={getYear(date)}
+                    onChange={({ target: { value: yearValue } }) => changeYear(Number(yearValue))}
+                    aria-label="Год"
+                  >
+                    {YEARS.map((year) => (
+                      <option key={year} value={year}>
+                        {year}
+                      </option>
+                    ))}
+                  </select>
 
-                <IconArrow className={styles.selectIcon} />
+                  <IconArrow className={styles.selectIcon} />
+                </div>
               </div>
             </div>
-          </div>
-        )}
-      />
+          )}
+        />
+      </div>
 
       {error && errorText ? <span className={styles.errorText}>{errorText}</span> : null}
     </div>

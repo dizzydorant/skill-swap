@@ -15,11 +15,6 @@
   letter-spacing: 0.02em;
 }
 
-.datePicker {
-  display: block;
-  width: 100%;
-}
-
 .inputButton {
   display: flex;
   justify-content: space-between;
