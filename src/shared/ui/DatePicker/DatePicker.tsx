@@ -9,7 +9,7 @@ import 'react-datepicker/dist/react-datepicker.css'
 import './DatePicker.calendar.css'
 
 import { IconArrow, IconCalendar } from '@/shared/assets/icons'
-import { Button } from '@/shared/ui/Button' 
+import { Button } from '@/shared/ui/Button'
 
 import styles from './DatePicker.module.css'
 
@@ -167,14 +167,19 @@ export const DatePicker = ({
           calendarClassName="datePickerCalendar"
           popperClassName="datePickerPopper"
           formatWeekDay={(dayName: string) => {
-            const daysOrder = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
-            const dayIndex = daysOrder.indexOf(dayName)
+            const dayMapping: Record<string, string> = {
+              по: 'Пн',
+              вт: 'Вт',
+              ср: 'Ср',
+              че: 'Чт',
+              пя: 'Пт',
+              су: 'Сб',
+              во: 'Вс',
+            }
 
-            const validDayIndex = dayIndex !== -1 ? (dayIndex as import('date-fns').Day) : undefined
+            const key = dayName.toLowerCase().slice(0, 2)
 
-            return validDayIndex !== undefined && ru.localize?.day
-              ? ru.localize.day(validDayIndex, { width: 'short' })
-              : dayName.slice(0, 2)
+            return dayMapping[key] || dayName
           }}
           renderCustomHeader={({
             date,
@@ -237,4 +242,3 @@ export const DatePicker = ({
     </div>
   )
 }
-
