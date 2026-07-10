@@ -1,6 +1,5 @@
 import { forwardRef, useId, useState } from 'react'
 import ReactDatePicker, {
-  CalendarContainer,
   registerLocale,
   type ReactDatePickerCustomHeaderProps,
 } from 'react-datepicker'
@@ -10,6 +9,7 @@ import 'react-datepicker/dist/react-datepicker.css'
 import './DatePicker.calendar.css'
 
 import { IconArrow, IconCalendar } from '@/shared/assets/icons'
+import { Button } from '@/shared/ui/Button' 
 
 import styles from './DatePicker.module.css'
 
@@ -29,16 +29,6 @@ const MONTHS = [
   'Ноябрь',
   'Декабрь',
 ]
-
-const WEEK_DAYS: Record<string, string> = {
-  понедельник: 'Пн',
-  вторник: 'Вт',
-  среда: 'Ср',
-  четверг: 'Чт',
-  пятница: 'Пт',
-  суббота: 'Сб',
-  воскресенье: 'Вс',
-}
 
 const YEARS = Array.from({ length: 201 }, (_, index) => 1900 + index)
 
@@ -121,8 +111,19 @@ export const DatePicker = ({
   const generatedId = useId()
   const fieldId = `date-picker-${generatedId}`
   const [isOpen, setIsOpen] = useState(false)
+  const [tempValue, setTempValue] = useState<Date | null>(value)
 
   const wrapperClassName = [styles.wrapper, className].filter(Boolean).join(' ')
+
+  const handleSelect = () => {
+    onChange(tempValue)
+    setIsOpen(false)
+  }
+
+  const handleCancel = () => {
+    setTempValue(value)
+    setIsOpen(false)
+  }
 
   return (
     <div className={wrapperClassName}>
@@ -136,25 +137,24 @@ export const DatePicker = ({
         <ReactDatePicker
           id={fieldId}
           locale="ru"
-          selected={value}
-          onChange={(date: Date | null) => onChange(date)}
+          selected={tempValue}
+          onChange={(date: Date | null) => setTempValue(date)}
           dateFormat="dd.MM.yyyy"
           placeholderText={placeholder}
           showPopperArrow={false}
           minDate={minDate}
           maxDate={maxDate}
           disabled={disabled}
-          shouldCloseOnSelect
           open={isOpen}
-          calendarContainer={CalendarContainer}
           onInputClick={() => {
             if (!disabled) {
+              setTempValue(value)
               setIsOpen(true)
             }
           }}
           onCalendarOpen={() => setIsOpen(true)}
           onCalendarClose={() => setIsOpen(false)}
-          onClickOutside={() => setIsOpen(false)}
+          onClickOutside={handleCancel}
           customInput={
             <CustomInput
               id={fieldId}
@@ -164,12 +164,23 @@ export const DatePicker = ({
               disabled={disabled}
             />
           }
+          calendarClassName="datePickerCalendar"
           popperClassName="datePickerPopper"
-          dayClassName={(date: Date) =>
-            getMonth(date) !== getMonth(value || new Date()) ? 'datePickerOutsideDay' : ''
-          }
-          formatWeekDay={(dayName: string) => WEEK_DAYS[dayName] || dayName.slice(0, 2)}
-          renderCustomHeader={({ date, changeYear, changeMonth }: ReactDatePickerCustomHeaderProps) => (
+          formatWeekDay={(dayName: string) => {
+            const daysOrder = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
+            const dayIndex = daysOrder.indexOf(dayName)
+
+            const validDayIndex = dayIndex !== -1 ? (dayIndex as import('date-fns').Day) : undefined
+
+            return validDayIndex !== undefined && ru.localize?.day
+              ? ru.localize.day(validDayIndex, { width: 'short' })
+              : dayName.slice(0, 2)
+          }}
+          renderCustomHeader={({
+            date,
+            changeYear,
+            changeMonth,
+          }: ReactDatePickerCustomHeaderProps) => (
             <div className={styles.header}>
               <div className={styles.selectGroup}>
                 <div className={styles.selectWrapper}>
@@ -210,10 +221,20 @@ export const DatePicker = ({
               </div>
             </div>
           )}
-        />
+        >
+          <div className={styles.footerButtons}>
+            <Button variant="outline" onClick={handleCancel}>
+              Отменить
+            </Button>
+            <Button variant="primary" onClick={handleSelect}>
+              Выбрать
+            </Button>
+          </div>
+        </ReactDatePicker>
       </div>
 
       {error && errorText ? <span className={styles.errorText}>{errorText}</span> : null}
     </div>
   )
 }
+
