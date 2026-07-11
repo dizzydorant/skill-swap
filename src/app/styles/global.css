@@ -1,4 +1,6 @@
 /* ─── CSS Custom Properties ─────────────────────────────── */
+@import url('https://fonts.googleapis.com/css2?family=Jost:wght@400;500;600;700&family=Roboto:wght@400;500;700&display=swap');
+
 :root {
   /* Colors */
   --color-primary: #6366f1;

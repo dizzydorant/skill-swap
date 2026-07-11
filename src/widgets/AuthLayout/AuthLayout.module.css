@@ -33,10 +33,11 @@
 
 .title {
   margin: 0;
-  font-size: 16px;
+  font-size: 24px;
   font-weight: 500;
   color: #1a1a1a;
   line-height: 1.2;
+  font-family: Jost, sans-serif;
 }
 
 .headerMobile {
@@ -66,7 +67,9 @@
 .customCloseBtn {
   background-color: #fff;
   border-color: transparent;
-  font-size: 14px;
+  font-size: 16px;
+  font-family: Roboto, sans-serif;
+  font-weight: 400;
 }
 
 .customCloseBtn:hover:not(:disabled) {
