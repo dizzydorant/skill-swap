@@ -1,6 +1,8 @@
 import { ChangeEvent, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 
 import { IconArrow, IconLike, IconMoon, IconNotification } from '@/shared/assets/icons'
+import { ROUTES } from '@/shared/lib/constants'
 import { Avatar } from '@/shared/ui/Avatar'
 import { Button } from '@/shared/ui/Button'
 import { IconButton } from '@/shared/ui/IconButton'
@@ -38,6 +40,7 @@ export const Header = ({
   onNotificationsClick,
   onProfileClick,
 }: HeaderProps) => {
+  const navigate = useNavigate()
   const [isSkillsOpen, setIsSkillsOpen] = useState(false)
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false)
 
@@ -60,6 +63,15 @@ export const Header = ({
   const handleProfileClick = () => {
     onProfileClick?.()
     setIsUserMenuOpen(false)
+  }
+
+  const handleLoginClick = () => {
+    if (onLoginClick) {
+      onLoginClick()
+      return
+    }
+
+    navigate(ROUTES.LOGIN)
   }
 
   const handleLogoutClick = () => {
@@ -160,7 +172,7 @@ export const Header = ({
             </>
           ) : (
             <div className={styles.authActions}>
-              <Button className={styles.loginButton} variant="outline" onClick={onLoginClick}>
+              <Button className={styles.loginButton} variant="outline" onClick={handleLoginClick}>
                 Войти
               </Button>
               <Button className={styles.registerButton} onClick={onRegisterClick}>

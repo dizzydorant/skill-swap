@@ -1,36 +1,38 @@
 .promoContainer {
   display: flex;
   flex-direction: column;
-  align-items: center; 
-  text-align: center;  
+  align-items: center;
+  text-align: center;
   width: 100%;
   box-sizing: border-box;
 }
 
 .illustration {
   width: 100%;
-  max-width: 556px;   
+  max-width: 556px;
   height: auto;
-  margin-bottom: 32px; 
+  margin-bottom: 32px;
   object-fit: contain;
 }
 
 .textBlock {
   display: flex;
   flex-direction: column;
-  gap: 12px;           
-  max-width: 440px;  
+  gap: 12px;
+  max-width: 440px;
 }
 
 .title {
   font-size: 24px;
   font-weight: 500;
-  color: #253017;      
+  color: #253017;
   margin: 0;
+  font-family: Jost, sans-serif;
 }
 
 .description {
+  font-family: Roboto, sans-serif;
   font-size: 16px;
-  color: #253017;      
+  color: #253017;
   margin: 0;
 }
