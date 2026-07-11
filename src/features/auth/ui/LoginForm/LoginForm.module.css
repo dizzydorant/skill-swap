@@ -1,0 +1,110 @@
+.form {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-width: 436px;
+  margin: 0 auto;
+  color: #253017;
+}
+
+.socialButtons {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.socialButton {
+  gap: 12px;
+  min-height: 48px;
+  border-color: #69735d;
+  font-weight: 400;
+}
+
+.socialButton:hover:not(:disabled) {
+  border-color: #4a5540;
+  background-color: rgb(105 115 93 / 6%);
+}
+
+.socialIcon {
+  width: 24px;
+  height: 24px;
+  flex: 0 0 24px;
+}
+
+.divider {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin: 28px 0 26px;
+  color: #253017;
+  font-size: 16px;
+  line-height: 1.5;
+}
+
+.divider::before,
+.divider::after {
+  content: '';
+  height: 1px;
+  flex: 1;
+  background-color: #e5e7eb;
+}
+
+.divider span {
+  min-width: 32px;
+  text-align: center;
+}
+
+.fields {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.label {
+  font-size: 16px;
+  line-height: 1.4;
+  color: #253017;
+}
+
+.actions {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  margin-top: 32px;
+}
+
+.submitButton {
+  font-weight: 400;
+}
+
+.registerLink {
+  color: #508826;
+  font-size: 16px;
+  line-height: 1.5;
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.registerLink:hover {
+  color: #3f6d1d;
+}
+
+.registerLink:focus-visible {
+  outline: 3px solid rgb(171 210 122 / 40%);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+@media (width <= 576px) {
+  .form {
+    max-width: none;
+  }
+}
+
