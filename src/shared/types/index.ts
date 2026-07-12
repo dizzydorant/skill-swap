@@ -8,7 +8,7 @@ export interface Skill {
   type: SkillType
   category: string
   tags: string[]
-  imageUrl: string | null
+  pictures: string[]
   authorId: string
   createdAt: string
 }
