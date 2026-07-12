@@ -11,14 +11,14 @@
 .avatarBlock {
   position: relative;
   align-self: center;
-  width: 56px;
-  height: 56px;
+  width: 54px;
+  height: 54px;
   margin-bottom: 26px;
 }
 
 .avatar {
-  width: 56px;
-  height: 56px;
+  width: 54px;
+  height: 54px;
   border: 1.5px solid #253017;
   background-color: #fff;
 }
