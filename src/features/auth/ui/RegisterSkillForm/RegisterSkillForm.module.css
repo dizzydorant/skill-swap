@@ -1,0 +1,49 @@
+.form {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-width: 436px;
+  margin: 0 auto;
+  color: #253017;
+  font-family: Roboto, sans-serif;
+}
+
+.fields {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+}
+
+.label {
+  margin-bottom: 8px;
+  color: #253017;
+  font-size: 16px;
+  line-height: 1.4;
+}
+
+.actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  margin-top: 32px;
+}
+
+.actionButton {
+  width: 100%;
+  font-weight: 400;
+}
+
+@media (width <= 576px) {
+  .form {
+    max-width: none;
+  }
+
+  .actions {
+    grid-template-columns: 1fr;
+  }
+}
