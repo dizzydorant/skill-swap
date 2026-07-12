@@ -74,6 +74,15 @@ export const Header = ({
     navigate(ROUTES.LOGIN)
   }
 
+  const handleRegisterClick = () => {
+    if (onRegisterClick) {
+      onRegisterClick()
+      return
+    }
+
+    navigate(ROUTES.REGISTER)
+  }
+
   const handleLogoutClick = () => {
     setIsUserMenuOpen(false)
   }
@@ -175,7 +184,7 @@ export const Header = ({
               <Button className={styles.loginButton} variant="outline" onClick={handleLoginClick}>
                 Войти
               </Button>
-              <Button className={styles.registerButton} onClick={onRegisterClick}>
+              <Button className={styles.registerButton} onClick={handleRegisterClick}>
                 Зарегистрироваться
               </Button>
             </div>
