@@ -165,7 +165,11 @@ export const CatalogPage: React.FC = () => {
                     cards={preparedData?.popularCards ?? []}
                     initialLimit={3}
                   />
-                  <SkillSection title="Новое" cards={preparedData?.newCards ?? []} initialLimit={3} />
+                  <SkillSection
+                    title="Новое"
+                    cards={preparedData?.newCards ?? []}
+                    initialLimit={3}
+                  />
                   <SkillSection
                     title="Рекомендуем"
                     cards={visibleRecommendedCards}
