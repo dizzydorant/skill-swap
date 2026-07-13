@@ -1,0 +1,90 @@
+.card {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  width: 100%;
+  max-width: 1020px;
+  min-height: 444px;
+  padding-top: 80px;
+  padding-left: 52px;
+  padding-bottom: 40px;
+  border: 2px solid #e5e7eb;
+  border-radius: 12px;
+  background-color: #fff;
+  gap: 24px;
+  box-sizing: border-box;
+}
+
+.content {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  width: 100%;
+  max-width: 399px;
+}
+
+.textGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.title {
+  margin: 0;
+  font-family: Jost, sans-serif;
+  font-size: 32px;
+  font-weight: 500;
+  line-height: 38px;
+  color: #1a1a1a;
+}
+
+.meta {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-family: Roboto, sans-serif;
+  font-size: 16px;
+  line-height: 24px;
+  color: #6b7280;
+}
+
+.category {
+  font-weight: 400;
+}
+
+.separator {
+  color: #9ca3af;
+  margin: 0 4px;
+}
+
+.subCategory {
+  font-weight: 400;
+}
+
+.description {
+  margin: 0;
+  font-family: Roboto, sans-serif;
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 24px;
+  color: #1a1a1a;
+  letter-spacing: 2%;
+ 
+  
+}
+
+.buttonWrapper {
+  width: 100%;
+  max-width: 399px;
+}
+
+.exchangeButton {
+  width: 100%;
+  height: 48px;
+  font-family: Roboto, sans-serif;
+  font-size: 16px;
+  font-weight: 500;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
