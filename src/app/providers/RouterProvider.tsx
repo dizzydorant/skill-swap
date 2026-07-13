@@ -29,7 +29,6 @@ export function AppRouter() {
           {/* Защищённые маршруты — добавь PrivateRoute обёртку */}
           <Route path={ROUTES.PROFILE} element={<ProfilePage />} />
           <Route path={ROUTES.CREATE} element={<CreateSkillPage />} />
-
           <Route path="*" element={<NotFoundPage />} />
           <Route path="/500" element={<ServerErrorPage />} />
         </Routes>
