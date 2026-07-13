@@ -35,3 +35,30 @@
   flex-direction: column;
   gap: 48px;
 }
+
+.stateContainer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 420px;
+}
+
+.loadingText {
+  margin: 0;
+  color: #253017;
+  font-size: 20px;
+  font-weight: 500;
+}
+
+.showMoreContainer {
+  display: flex;
+  width: 100%;
+  max-width: 1036px;
+  justify-content: center;
+  margin-top: -20px;
+}
+
+.showMoreButton {
+  min-width: 220px;
+  min-height: 48px;
+}
