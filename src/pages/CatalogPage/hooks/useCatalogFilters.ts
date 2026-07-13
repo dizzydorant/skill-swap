@@ -1,9 +1,6 @@
 // src/pages/CatalogPage/hooks/useCatalogFilters.ts
 import { useState } from 'react'
-import type {
-  ExchangeType,
-  GenderType,
-} from '../../../widgets/CatalogFilter/ui/CatalogSidebarFilters'
+import type { ExchangeType, GenderType } from '../../../widgets/CatalogFilter/model/types'
 
 export const useCatalogFilters = () => {
   const [exchangeType, setExchangeType] = useState<ExchangeType>('all')

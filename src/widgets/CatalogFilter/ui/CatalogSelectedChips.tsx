@@ -1,7 +1,6 @@
 import { FC, useMemo } from 'react'
 import { Chip } from '@/shared/ui/Chip'
-import type { SkillCategory } from '../../../pages/CatalogPage/mocks'
-import type { ExchangeType, GenderType } from './CatalogSidebarFilters'
+import type { ExchangeType, GenderType, SkillCategory } from '../model/types'
 import cls from '../CatalogFilters.module.css'
 
 interface CatalogSelectedChipsProps {

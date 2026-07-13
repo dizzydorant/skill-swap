@@ -2,16 +2,8 @@ import { FC, useState } from 'react'
 import { Checkbox } from '@/shared/ui/Checkbox'
 import { FilterCategory } from '@/shared/ui/FilterCategory'
 import { IconArrow } from '@/shared/assets/icons'
-import type { SkillCategory } from '../../../pages/CatalogPage/mocks'
+import type { City, ExchangeType, GenderType, SkillCategory } from '../model/types'
 import cls from '../CatalogFilters.module.css'
-
-export type ExchangeType = 'all' | 'learn' | 'teach'
-export type GenderType = 'any' | 'male' | 'female'
-
-interface City {
-  id: string
-  name: string
-}
 
 interface CatalogSidebarFiltersProps {
   exchangeType: ExchangeType
