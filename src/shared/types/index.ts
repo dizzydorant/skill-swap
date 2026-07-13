@@ -9,6 +9,7 @@ export interface Skill {
   category: string
   tags: string[]
   imageUrl: string | null
+  images: string[]
   authorId: string
   createdAt: string
 }
