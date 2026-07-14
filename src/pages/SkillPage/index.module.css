@@ -1,0 +1,52 @@
+.page {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background-color: #f9faf7;
+}
+
+.main {
+  flex: 1;
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 32px 36px 64px;
+  box-sizing: border-box;
+}
+
+.topSection {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 324px;
+  gap: 32px;
+  align-items: start;
+  margin-bottom: 32px;
+}
+
+.gallery {
+  width: 100%;
+}
+
+.detailsCard {
+  margin-top: 0;
+}
+
+.stateMessage {
+  margin: 80px auto;
+  max-width: 480px;
+  text-align: center;
+  font-family: Roboto, sans-serif;
+  font-size: 18px;
+  color: #69735d;
+}
+
+@media (width <= 1024px) {
+  .topSection {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (width <= 640px) {
+  .main {
+    padding: 24px 16px 48px;
+  }
+}
