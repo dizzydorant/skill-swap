@@ -1,52 +1,125 @@
 .page {
-  min-height: 100vh;
   display: flex;
   flex-direction: column;
-  background-color: #f9faf7;
+  min-height: 100vh;
+  background-color: #f8f9fa;
 }
 
 .main {
   flex: 1;
+  max-width: 1440px;
   width: 100%;
-  max-width: 1200px;
   margin: 0 auto;
-  padding: 32px 36px 64px;
+  padding: 40px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 48px;
   box-sizing: border-box;
 }
 
 .topSection {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) 324px;
-  gap: 32px;
-  align-items: start;
-  margin-bottom: 32px;
-}
-
-.gallery {
+  grid-template-columns: 324px 1080px;
+  gap: 36px;
+  align-items: flex-start;
+  grid-auto-rows: max-content;
   width: 100%;
 }
 
-.detailsCard {
-  margin-top: 0;
+.leftColumn {
+  width: 324px;
 }
 
-.stateMessage {
-  margin: 80px auto;
-  max-width: 480px;
-  text-align: center;
-  font-family: Roboto, sans-serif;
-  font-size: 18px;
-  color: #69735d;
+.similarSection {
+  width: 100%;
 }
 
-@media (width <= 1024px) {
+.similarSection [class*='grid'] {
+  max-width: 100%;
+  grid-template-columns: repeat(4, minmax(0, 324px));
+  gap: 32px;
+}
+
+.similarSection [class*='header'] {
+  max-width: 100%;
+}
+
+@media (width <= 1440px) {
   .topSection {
-    grid-template-columns: 1fr;
+    grid-template-columns: 324px 1fr;
+    gap: 24px;
+  }
+
+  .similarSection [class*='grid'] {
+    grid-template-columns: repeat(auto-fill, minmax(324px, 1fr));
   }
 }
 
-@media (width <= 640px) {
-  .main {
-    padding: 24px 16px 48px;
+@media (width <= 1100px) {
+  .topSection {
+    grid-template-columns: 1fr;
+    justify-items: center;
+  }
+
+  .leftColumn {
+    width: 100%;
+    max-width: 324px;
+  }
+}
+
+@media (width <= 760px) {
+  .similarSection [class*='grid'] {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 20px;
+  }
+}
+
+.galleryWithActionsContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  width: 100%;
+}
+
+.actionButtons {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  justify-content: flex-end;
+  width: 100%;
+}
+
+.circleBtn,
+.squareBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  transition: background-color 0.2s ease-in-out;
+}
+
+.circleBtn:hover,
+.squareBtn:hover {
+  background-color: rgb(37 48 23 / 6%);
+}
+
+.circleBtn:active,
+.squareBtn:active {
+  transform: scale(0.92);
+}
+
+.circleBtn.activeLike:hover {
+  background-color: rgb(171 210 122 / 15%);
+}
+
+@media (width <= 600px) {
+  .actionButtons {
+    justify-content: flex-start;
   }
 }

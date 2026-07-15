@@ -1,62 +1,32 @@
-import { useNavigate } from 'react-router-dom'
-
+import { useState } from 'react'
 import { Footer } from '@/widgets/Footer'
 import { Header } from '@/widgets/Header'
 import { SkillDetailsCard } from '@/widgets/SkillDetailsCard'
 import { SkillImageGallery } from '@/widgets/SkillImageGallery'
 import { SkillOwnerCard } from '@/widgets/SkillOwnerCard'
-import { ErrorState } from '@/widgets/ErrorState'
-import { ExchangeOfferModal } from '@/features/exchange-offer/ui/ExchangeOfferModal'
-import { useExchangeOffer } from '@/features/exchange-offer/hooks/useExchangeOffer'
+import { SkillSection } from '@/widgets/SkillSection'
 
-import error404 from '@/shared/assets/images/errors/404.svg'
+import { IconLike, IconLikeFilled, IconShare, IconMore } from '@/shared/assets/icons'
 
-import { useSkillPageData } from './hooks/useSkillPageData'
+import { MOCK_SKILL_PAGE_DATA } from './MockData'
 import styles from './index.module.css'
 
 export default function SkillPage() {
-  const navigate = useNavigate()
-  const { data, isLoading, error, authorAge } = useSkillPageData()
+  const { skill, author, similarSkills } = MOCK_SKILL_PAGE_DATA
+  const [isLiked, setIsLiked] = useState(false)
 
-  const exchangeOffer = useExchangeOffer({
-    skillId: data?.skill.id ?? '',
-    toUserId: data?.skill.authorId ?? '',
-  })
-
-  if (isLoading) {
-    return (
-      <div className={styles.page}>
-        <Header />
-        <main className={styles.main}>
-          <p className={styles.stateMessage}>Загрузка...</p>
-        </main>
-        <Footer />
-      </div>
-    )
+  const handleLikeToggle = () => {
+    setIsLiked((prev) => !prev)
   }
 
-  if (error || !data) {
-    return (
-      <div className={styles.page}>
-        <Header />
-        <main className={styles.main}>
-          <ErrorState
-            imageSrc={error404}
-            imageAlt="Навык не найден"
-            title="Навык не найден"
-            description="Возможно, ссылка устарела или навык был удалён."
-            onGoHome={() => navigate('/')}
-            onReportError={() => console.log('Сообщить об ошибке: skill not found')}
-          />
-        </main>
-        <Footer />
-      </div>
-    )
+  const handleShare = async () => {
+    try {
+      await navigator.clipboard.writeText(window.location.href)
+      alert('Ссылка скопирована в буфер обмена!')
+    } catch (err) {
+      console.error('Не удалось скопировать:', err)
+    }
   }
-
-  const { skill, author, categoryName, subCategoryName, teachSkillTitles, learnSkillTitles } = data
-  const galleryImages =
-    skill.images.length > 0 ? skill.images : skill.imageUrl ? [skill.imageUrl] : []
 
   return (
     <div className={styles.page}>
@@ -64,35 +34,58 @@ export default function SkillPage() {
 
       <main className={styles.main}>
         <section className={styles.topSection}>
-          <SkillImageGallery className={styles.gallery} images={galleryImages} />
+          <aside className={styles.leftColumn}>
+            <SkillOwnerCard
+              avatarUrl={author.avatarUrl}
+              name={author.fullName}
+              city={author.location}
+              age={author.age}
+              description={author.bio}
+              teachSkills={author.teachSkillTitles}
+              learnSkills={author.learnSkillTitles}
+            />
+          </aside>
 
-          <SkillOwnerCard
-            avatarUrl={author.avatarUrl ?? undefined}
-            name={author.fullName}
-            city={author.location ?? ''}
-            age={authorAge}
-            description={author.bio ?? ''}
-            teachSkills={teachSkillTitles}
-            learnSkills={learnSkillTitles}
-          />
+          {/* Исходная карточка SkillDetailsCard */}
+          <SkillDetailsCard
+            title={skill.title}
+            category={skill.tags?.[0] ?? 'Творчество и искусство'}
+            subCategory={skill.tags?.[1] ?? 'Музыка и звук'}
+            description={skill.description}
+            isExchangeOffered={false}
+            onExchange={() => console.log('Клик по кнопке Предложить обмен')}
+          >
+            <div className={styles.galleryWithActionsContainer}>
+              <div className={styles.actionButtons}>
+                <button
+                  className={`${styles.circleBtn} ${isLiked ? styles.activeLike : ''}`}
+                  onClick={handleLikeToggle}
+                  aria-label={isLiked ? 'Убрать из избранного' : 'Добавить в избранное'}
+                >
+                  {isLiked ? <IconLikeFilled /> : <IconLike />}
+                </button>
+
+                <button className={styles.circleBtn} onClick={handleShare} aria-label="Поделиться">
+                  <IconShare />
+                </button>
+
+                <button className={styles.squareBtn} aria-label="Дополнительно">
+                  <IconMore />
+                </button>
+              </div>
+
+              <SkillImageGallery images={skill.images} />
+            </div>
+          </SkillDetailsCard>
         </section>
 
-        <SkillDetailsCard
-          className={styles.detailsCard}
-          title={skill.title}
-          category={categoryName}
-          subCategory={subCategoryName}
-          description={skill.description}
-          isExchangeOffered={exchangeOffer.isExchangeOffered}
-          onExchange={exchangeOffer.openModal}
+        <SkillSection
+          title="Похожие предложения"
+          cards={similarSkills}
+          initialLimit={4}
+          className={styles.similarSection}
         />
       </main>
-
-      <ExchangeOfferModal
-        isOpen={exchangeOffer.isModalOpen}
-        onClose={exchangeOffer.closeModal}
-        onConfirm={exchangeOffer.confirmOffer}
-      />
 
       <Footer />
     </div>
