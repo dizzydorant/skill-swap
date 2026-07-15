@@ -1,26 +1,32 @@
 .card {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   justify-content: space-between;
+  align-items: stretch;
   width: 100%;
-  max-width: 1020px;
+  max-width: 1080px;
   min-height: 444px;
-  padding-top: 80px;
-  padding-left: 52px;
-  padding-bottom: 40px;
-  border: 2px solid #e5e7eb;
+  padding: 40px 40px 40px 52px;
   border-radius: 12px;
   background-color: #fff;
-  gap: 24px;
+  box-shadow: 0 8px 30px rgb(37 48 23 / 8%);
+  gap: 40px;
   box-sizing: border-box;
+}
+
+.leftSideLayout {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  flex-grow: 1;
+  width: 100%;
+  max-width: 480px;
 }
 
 .content {
   display: flex;
   flex-direction: column;
   gap: 20px;
-  width: 100%;
-  max-width: 399px;
 }
 
 .textGroup {
@@ -34,7 +40,7 @@
   font-family: Jost, sans-serif;
   font-size: 32px;
   font-weight: 500;
-  line-height: 38px;
+  line-height: 1.2;
   color: #1a1a1a;
 }
 
@@ -44,11 +50,12 @@
   gap: 4px;
   font-family: Roboto, sans-serif;
   font-size: 16px;
-  line-height: 24px;
+  line-height: 1.5;
   color: #6b7280;
 }
 
-.category {
+.category,
+.subCategory {
   font-weight: 400;
 }
 
@@ -57,25 +64,19 @@
   margin: 0 4px;
 }
 
-.subCategory {
-  font-weight: 400;
-}
-
 .description {
   margin: 0;
   font-family: Roboto, sans-serif;
   font-size: 16px;
   font-weight: 400;
-  line-height: 24px;
+  line-height: 1.5;
   color: #1a1a1a;
-  letter-spacing: 2%;
- 
-  
 }
 
 .buttonWrapper {
   width: 100%;
-  max-width: 399px;
+  margin-top: auto;
+  padding-top: 24px;
 }
 
 .exchangeButton {
@@ -86,5 +87,11 @@
   font-weight: 500;
   border-radius: 12px;
   cursor: pointer;
-  transition: all 0.2s ease;
+}
+
+.galleryContainer {
+  flex: 0 1 440px;
+  width: 100%;
+  display: flex;
+  align-items: flex-start;
 }
