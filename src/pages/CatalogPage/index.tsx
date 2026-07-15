@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useSearchParams } from 'react-router-dom'
 
 import { Footer } from '../../widgets/Footer'
 import { Header } from '../../widgets/Header'
@@ -9,6 +9,7 @@ import { CatalogSelectedChips, CatalogSidebarFilters } from '../../widgets/Catal
 import type { City, SkillCategory } from '../../widgets/CatalogFilter/model/types'
 
 import error500 from '../../shared/assets/images/errors/500.svg'
+import error404 from '../../shared/assets/images/errors/404.svg'
 import { Button } from '../../shared/ui/Button'
 
 import {
@@ -25,10 +26,12 @@ const RECOMMENDED_PAGE_SIZE = 9
 
 export const CatalogPage: React.FC = () => {
   const navigate = useNavigate()
+  const [searchParams, setSearchParams] = useSearchParams()
   const [catalogData, setCatalogData] = useState<CatalogDbData | null>(null)
   const [isLoading, setIsLoading] = useState(true)
   const [loadError, setLoadError] = useState<Error | null>(null)
   const [visibleRecommendedCount, setVisibleRecommendedCount] = useState(RECOMMENDED_PAGE_SIZE)
+  const searchValue = searchParams.get('search') ?? ''
 
   const {
     exchangeType,
@@ -78,18 +81,76 @@ export const CatalogPage: React.FC = () => {
     }
   }, [])
 
+  // фильтр поиска
+  const filteredData = useMemo(() => {
+    if (!catalogData) {
+      return null
+    }
+
+    const normalizedSearch = searchValue.trim().toLowerCase()
+
+    if (!normalizedSearch) {
+      return catalogData
+    }
+
+    const categoryById = new Map(
+      catalogData.categories.map((category) => [category.id, category.name]),
+    )
+    const subCategoryById = new Map<number, string>()
+
+    catalogData.categories.forEach((category) => {
+      category.subCategories.forEach((subCategory) => {
+        subCategoryById.set(subCategory.id, subCategory.name)
+      })
+    })
+
+    const filteredSkills = catalogData.skills.filter((skill) => {
+      const title = skill.title.toLowerCase()
+      const category = categoryById.get(skill.categoryId)?.toLowerCase() ?? ''
+      const subCategory = subCategoryById.get(skill.subCategoryId)?.toLowerCase() ?? ''
+
+      return (
+        title.includes(normalizedSearch) ||
+        category.includes(normalizedSearch) ||
+        subCategory.includes(normalizedSearch)
+      )
+    })
+
+    return {
+      ...catalogData,
+      skills: filteredSkills,
+    }
+  }, [catalogData, searchValue])
+
   const preparedData = useMemo(
     () =>
-      catalogData
-        ? prepareCatalogSections(catalogData, {
+      filteredData
+        ? prepareCatalogSections(filteredData, {
             exchangeType,
             gender,
             selectedSubCategoryIds,
             selectedCityNames,
           })
         : null,
-    [catalogData, exchangeType, gender, selectedCityNames, selectedSubCategoryIds],
+    [filteredData, exchangeType, gender, selectedCityNames, selectedSubCategoryIds],
   )
+
+  // проверка поиска
+  const hasSearchResults = useMemo(() => {
+    if (!searchValue.trim()) {
+      return true
+    }
+
+    if (!preparedData) {
+      return true
+    }
+
+    return (
+      preparedData.popularCards.length > 0 ||
+      preparedData.newCards.length > 0 ||
+      preparedData.recommendedCards.length > 0
+    )
+  }, [preparedData, searchValue])
 
   useEffect(() => {
     setVisibleRecommendedCount(RECOMMENDED_PAGE_SIZE)
@@ -111,9 +172,31 @@ export const CatalogPage: React.FC = () => {
     }
   }
 
+  const handleSearchChange = (value: string) => {
+    const nextSearchParams = new URLSearchParams(searchParams)
+
+    if (value.trim()) {
+      nextSearchParams.set('search', value)
+    } else {
+      nextSearchParams.delete('search')
+    }
+
+    setSearchParams(nextSearchParams, { replace: true })
+  }
+
+  const handleSearchReset = () => {
+    const nextSearchParams = new URLSearchParams(searchParams)
+    nextSearchParams.delete('search')
+    setSearchParams(nextSearchParams, { replace: true })
+  }
+
+  const handleEmptySearchReport = () => {
+    return undefined
+  }
+
   return (
     <div className={cls.page}>
-      <Header />
+      <Header searchValue={searchValue} onSearchChange={handleSearchChange} />
 
       <main className={cls.main}>
         <div className={cls.pageLayoutContainer}>
@@ -157,6 +240,15 @@ export const CatalogPage: React.FC = () => {
                   description="Попробуйте обновить страницу или вернитесь на главную"
                   onGoHome={() => navigate('/')}
                   onReportError={handleReportError}
+                />
+              ) : !hasSearchResults && searchValue.trim().length > 0 ? (
+                <ErrorState
+                  imageSrc={error404}
+                  imageAlt="Ничего не найдено"
+                  title="Ничего не найдено"
+                  description={`По запросу "${searchValue}" навыков не найдено. Попробуйте изменить запрос.`}
+                  onGoHome={handleSearchReset}
+                  onReportError={handleEmptySearchReport}
                 />
               ) : (
                 <>
