@@ -9,6 +9,7 @@ import { CatalogSelectedChips, CatalogSidebarFilters } from '../../widgets/Catal
 import type { City, SkillCategory } from '../../widgets/CatalogFilter/model/types'
 
 import error500 from '../../shared/assets/images/errors/500.svg'
+import error404 from '../../shared/assets/images/errors/404.svg'
 import { Button } from '../../shared/ui/Button'
 
 import {
@@ -29,6 +30,8 @@ export const CatalogPage: React.FC = () => {
   const [isLoading, setIsLoading] = useState(true)
   const [loadError, setLoadError] = useState<Error | null>(null)
   const [visibleRecommendedCount, setVisibleRecommendedCount] = useState(RECOMMENDED_PAGE_SIZE)
+
+  const [searchValue, setSearchValue] = useState('')
 
   const {
     exchangeType,
@@ -78,18 +81,46 @@ export const CatalogPage: React.FC = () => {
     }
   }, [])
 
+  // фильтр поиска
+  const filteredData = useMemo(() => {
+    if (!catalogData) return null
+
+    const trimmedSearch = searchValue.trim()
+    if (!trimmedSearch) return catalogData
+
+    const filteredSkills = catalogData.skills.filter((skill) =>
+      skill.title.toLowerCase().includes(trimmedSearch.toLowerCase()),
+    )
+
+    return {
+      ...catalogData,
+      skills: filteredSkills,
+    }
+  }, [catalogData, searchValue])
+
   const preparedData = useMemo(
     () =>
-      catalogData
-        ? prepareCatalogSections(catalogData, {
+      filteredData
+        ? prepareCatalogSections(filteredData, {
             exchangeType,
             gender,
             selectedSubCategoryIds,
             selectedCityNames,
           })
         : null,
-    [catalogData, exchangeType, gender, selectedCityNames, selectedSubCategoryIds],
+    [filteredData, exchangeType, gender, selectedCityNames, selectedSubCategoryIds],
   )
+
+  // проверка поиска
+  const hasSearchResults = useMemo(() => {
+    if (!searchValue.trim()) return true
+    if (!preparedData) return true
+    return (
+      preparedData.popularCards.length > 0 ||
+      preparedData.newCards.length > 0 ||
+      preparedData.recommendedCards.length > 0
+    )
+  }, [preparedData, searchValue])
 
   useEffect(() => {
     setVisibleRecommendedCount(RECOMMENDED_PAGE_SIZE)
@@ -111,9 +142,13 @@ export const CatalogPage: React.FC = () => {
     }
   }
 
+  const handleSearchChange = (value: string) => {
+    setSearchValue(value)
+  }
+
   return (
     <div className={cls.page}>
-      <Header />
+      <Header searchValue={searchValue} onSearchChange={handleSearchChange} />
 
       <main className={cls.main}>
         <div className={cls.pageLayoutContainer}>
@@ -157,6 +192,18 @@ export const CatalogPage: React.FC = () => {
                   description="Попробуйте обновить страницу или вернитесь на главную"
                   onGoHome={() => navigate('/')}
                   onReportError={handleReportError}
+                />
+              ) : !hasSearchResults && searchValue.trim().length > 0 ? (
+                <ErrorState
+                  imageSrc={error404}
+                  imageAlt="Ничего не найдено"
+                  title="Ничего не найдено"
+                  description={`По запросу "${searchValue}" навыков не найдено. Попробуйте изменить запрос.`}
+                  onGoHome={() => {
+                    setSearchValue('')
+                    navigate('/')
+                  }}
+                  onReportError={() => console.log('Сообщить об ошибке')}
                 />
               ) : (
                 <>
