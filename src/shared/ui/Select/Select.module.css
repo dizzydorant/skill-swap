@@ -21,15 +21,16 @@
 
 .selectTrigger {
   background: #fff;
-  border: 1px solid #c2c2c2;
+  border: 1px solid #69735d;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 14px 18px;
+  padding: 12px 20px;
+  height: 48px;
   border-radius: 12px;
   cursor: pointer;
   font-size: 16px;
-  color: #333;
+  color: #1a1a1a;
   transition: border-color 0.2s;
   outline: none;
   text-align: left;

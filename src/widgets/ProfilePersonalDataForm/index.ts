@@ -1,0 +1,1 @@
+export { ProfilePersonalDataForm } from './ProfilePersonalDataForm'

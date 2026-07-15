@@ -23,7 +23,7 @@
 
 /* поиск */
 .input.search {
-  padding: 12px 12px 12px 40px; /* ← убрали лишнюю ; */
+  padding: 12px 12px 12px 40px;
   max-width: 527px;
   width: 100%;
 }
@@ -36,6 +36,30 @@
 .inputWrapper {
   position: relative;
   width: 100%;
+  max-width: 436px;
+  display: flex;
+  align-items: center;
+}
+
+.pencilIconInput {
+  position: absolute;
+  right: 16px;
+  top: 50%;
+  transform: translateY(-50%);
+  pointer-events: none;
+  display: inline-flex;
+  align-items: center;
+  z-index: 10;
+}
+
+.pencilIconTextarea {
+  position: absolute;
+  right: 16px;
+  bottom: 16px;
+  pointer-events: none;
+  display: inline-flex;
+  align-items: center;
+  z-index: 10;
 }
 
 .searchIcon {
@@ -56,7 +80,6 @@
 
 /* формы */
 .input.form {
-  max-width: 436px;
   width: 100%;
   padding: 12px 20px;
 }
@@ -107,7 +130,6 @@ textarea.input {
 
 /* описание форма */
 textarea.input.form {
-  max-width: 436px;
   width: 100%;
 }
 
