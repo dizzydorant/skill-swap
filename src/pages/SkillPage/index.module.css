@@ -44,7 +44,7 @@
   max-width: 100%;
 }
 
-@media (max-width: 1440px) {
+@media (width <= 1440px) {
   .topSection {
     grid-template-columns: 324px 1fr;
     gap: 24px;
@@ -55,18 +55,19 @@
   }
 }
 
-@media (max-width: 1100px) {
+@media (width <= 1100px) {
   .topSection {
     grid-template-columns: 1fr;
     justify-items: center;
   }
+
   .leftColumn {
     width: 100%;
     max-width: 324px;
   }
 }
 
-@media (max-width: 760px) {
+@media (width <= 760px) {
   .similarSection [class*='grid'] {
     grid-template-columns: minmax(0, 1fr);
     gap: 20px;
@@ -84,7 +85,6 @@
   display: flex;
   gap: 12px;
   align-items: center;
-
   justify-content: flex-end;
   width: 100%;
 }
@@ -106,7 +106,7 @@
 
 .circleBtn:hover,
 .squareBtn:hover {
-  background-color: rgba(37, 48, 23, 0.06);
+  background-color: rgb(37 48 23 / 6%);
 }
 
 .circleBtn:active,
@@ -115,10 +115,10 @@
 }
 
 .circleBtn.activeLike:hover {
-  background-color: rgba(171, 210, 122, 0.15);
+  background-color: rgb(171 210 122 / 15%);
 }
 
-@media (max-width: 600px) {
+@media (width <= 600px) {
   .actionButtons {
     justify-content: flex-start;
   }
