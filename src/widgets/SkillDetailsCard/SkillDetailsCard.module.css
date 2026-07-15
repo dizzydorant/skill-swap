@@ -90,8 +90,8 @@
 }
 
 .galleryContainer {
-  flex: 0 1 410px;
+  flex: 0 1 440px;
   width: 100%;
   display: flex;
-  align-items: flex-start;
+  align-items: flex-end;
 }
