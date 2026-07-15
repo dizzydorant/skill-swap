@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useSearchParams } from 'react-router-dom'
 
 import { Footer } from '../../widgets/Footer'
 import { Header } from '../../widgets/Header'
@@ -26,12 +26,12 @@ const RECOMMENDED_PAGE_SIZE = 9
 
 export const CatalogPage: React.FC = () => {
   const navigate = useNavigate()
+  const [searchParams, setSearchParams] = useSearchParams()
   const [catalogData, setCatalogData] = useState<CatalogDbData | null>(null)
   const [isLoading, setIsLoading] = useState(true)
   const [loadError, setLoadError] = useState<Error | null>(null)
   const [visibleRecommendedCount, setVisibleRecommendedCount] = useState(RECOMMENDED_PAGE_SIZE)
-
-  const [searchValue, setSearchValue] = useState('')
+  const searchValue = searchParams.get('search') ?? ''
 
   const {
     exchangeType,
@@ -83,14 +83,38 @@ export const CatalogPage: React.FC = () => {
 
   // фильтр поиска
   const filteredData = useMemo(() => {
-    if (!catalogData) return null
+    if (!catalogData) {
+      return null
+    }
 
-    const trimmedSearch = searchValue.trim()
-    if (!trimmedSearch) return catalogData
+    const normalizedSearch = searchValue.trim().toLowerCase()
 
-    const filteredSkills = catalogData.skills.filter((skill) =>
-      skill.title.toLowerCase().includes(trimmedSearch.toLowerCase()),
+    if (!normalizedSearch) {
+      return catalogData
+    }
+
+    const categoryById = new Map(
+      catalogData.categories.map((category) => [category.id, category.name]),
     )
+    const subCategoryById = new Map<number, string>()
+
+    catalogData.categories.forEach((category) => {
+      category.subCategories.forEach((subCategory) => {
+        subCategoryById.set(subCategory.id, subCategory.name)
+      })
+    })
+
+    const filteredSkills = catalogData.skills.filter((skill) => {
+      const title = skill.title.toLowerCase()
+      const category = categoryById.get(skill.categoryId)?.toLowerCase() ?? ''
+      const subCategory = subCategoryById.get(skill.subCategoryId)?.toLowerCase() ?? ''
+
+      return (
+        title.includes(normalizedSearch) ||
+        category.includes(normalizedSearch) ||
+        subCategory.includes(normalizedSearch)
+      )
+    })
 
     return {
       ...catalogData,
@@ -113,8 +137,14 @@ export const CatalogPage: React.FC = () => {
 
   // проверка поиска
   const hasSearchResults = useMemo(() => {
-    if (!searchValue.trim()) return true
-    if (!preparedData) return true
+    if (!searchValue.trim()) {
+      return true
+    }
+
+    if (!preparedData) {
+      return true
+    }
+
     return (
       preparedData.popularCards.length > 0 ||
       preparedData.newCards.length > 0 ||
@@ -143,7 +173,25 @@ export const CatalogPage: React.FC = () => {
   }
 
   const handleSearchChange = (value: string) => {
-    setSearchValue(value)
+    const nextSearchParams = new URLSearchParams(searchParams)
+
+    if (value.trim()) {
+      nextSearchParams.set('search', value)
+    } else {
+      nextSearchParams.delete('search')
+    }
+
+    setSearchParams(nextSearchParams, { replace: true })
+  }
+
+  const handleSearchReset = () => {
+    const nextSearchParams = new URLSearchParams(searchParams)
+    nextSearchParams.delete('search')
+    setSearchParams(nextSearchParams, { replace: true })
+  }
+
+  const handleEmptySearchReport = () => {
+    return undefined
   }
 
   return (
@@ -199,11 +247,8 @@ export const CatalogPage: React.FC = () => {
                   imageAlt="Ничего не найдено"
                   title="Ничего не найдено"
                   description={`По запросу "${searchValue}" навыков не найдено. Попробуйте изменить запрос.`}
-                  onGoHome={() => {
-                    setSearchValue('')
-                    navigate('/')
-                  }}
-                  onReportError={() => console.log('Сообщить об ошибке')}
+                  onGoHome={handleSearchReset}
+                  onReportError={handleEmptySearchReport}
                 />
               ) : (
                 <>
