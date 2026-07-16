@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react'
-import { useNavigate, useSearchParams } from 'react-router-dom'
+import { generatePath, useNavigate, useSearchParams } from 'react-router-dom'
 
 import { Footer } from '../../widgets/Footer'
 import { Header } from '../../widgets/Header'
@@ -11,6 +11,8 @@ import type { City, SkillCategory } from '../../widgets/CatalogFilter/model/type
 import error500 from '../../shared/assets/images/errors/500.svg'
 import error404 from '../../shared/assets/images/errors/404.svg'
 import { Button } from '../../shared/ui/Button'
+import { getCurrentUserId, getSwapRequests } from '@/features/exchange-offer/model/exchangeOfferStorage'
+import { ROUTES } from '@/shared/lib/constants'
 
 import {
   fetchJson,
@@ -23,6 +25,17 @@ import { useCatalogFilters } from './hooks/useCatalogFilters'
 import cls from './index.module.css'
 
 const RECOMMENDED_PAGE_SIZE = 9
+const getSkillPath = (id: string) => generatePath(ROUTES.SKILL, { id })
+
+const getOfferedSkillIds = () => {
+  const currentUserId = getCurrentUserId()
+
+  return new Set(
+    getSwapRequests()
+      .filter((request) => request.fromUserId === currentUserId && request.status === 'pending')
+      .map((request) => request.skillId),
+  )
+}
 
 export const CatalogPage: React.FC = () => {
   const navigate = useNavigate()
@@ -31,6 +44,7 @@ export const CatalogPage: React.FC = () => {
   const [isLoading, setIsLoading] = useState(true)
   const [loadError, setLoadError] = useState<Error | null>(null)
   const [visibleRecommendedCount, setVisibleRecommendedCount] = useState(RECOMMENDED_PAGE_SIZE)
+  const [offeredSkillIds, setOfferedSkillIds] = useState(() => getOfferedSkillIds())
   const searchValue = searchParams.get('search') ?? ''
 
   const {
@@ -78,6 +92,21 @@ export const CatalogPage: React.FC = () => {
 
     return () => {
       isMounted = false
+    }
+  }, [])
+
+  useEffect(() => {
+    const refreshOfferedSkillIds = () => {
+      setOfferedSkillIds(getOfferedSkillIds())
+    }
+
+    refreshOfferedSkillIds()
+    window.addEventListener('focus', refreshOfferedSkillIds)
+    window.addEventListener('storage', refreshOfferedSkillIds)
+
+    return () => {
+      window.removeEventListener('focus', refreshOfferedSkillIds)
+      window.removeEventListener('storage', refreshOfferedSkillIds)
     }
   }, [])
 
@@ -135,31 +164,51 @@ export const CatalogPage: React.FC = () => {
     [filteredData, exchangeType, gender, selectedCityNames, selectedSubCategoryIds],
   )
 
+  const preparedDataWithNavigation = useMemo(() => {
+    if (!preparedData) {
+      return null
+    }
+
+    const addDetailsNavigation = (cards: typeof preparedData.popularCards) =>
+      cards.map((card) => ({
+        ...card,
+        isExchangeOffered: offeredSkillIds.has(card.id),
+        onActionClick: () => navigate(getSkillPath(card.id)),
+      }))
+
+    return {
+      ...preparedData,
+      popularCards: addDetailsNavigation(preparedData.popularCards),
+      newCards: addDetailsNavigation(preparedData.newCards),
+      recommendedCards: addDetailsNavigation(preparedData.recommendedCards),
+    }
+  }, [navigate, offeredSkillIds, preparedData])
+
   // проверка поиска
   const hasSearchResults = useMemo(() => {
     if (!searchValue.trim()) {
       return true
     }
 
-    if (!preparedData) {
+    if (!preparedDataWithNavigation) {
       return true
     }
 
     return (
-      preparedData.popularCards.length > 0 ||
-      preparedData.newCards.length > 0 ||
-      preparedData.recommendedCards.length > 0
+      preparedDataWithNavigation.popularCards.length > 0 ||
+      preparedDataWithNavigation.newCards.length > 0 ||
+      preparedDataWithNavigation.recommendedCards.length > 0
     )
-  }, [preparedData, searchValue])
+  }, [preparedDataWithNavigation, searchValue])
 
   useEffect(() => {
     setVisibleRecommendedCount(RECOMMENDED_PAGE_SIZE)
   }, [preparedData?.recommendedCards])
 
   const visibleRecommendedCards =
-    preparedData?.recommendedCards.slice(0, visibleRecommendedCount) ?? []
-  const hasMoreRecommendedCards = preparedData
-    ? visibleRecommendedCards.length < preparedData.recommendedCards.length
+    preparedDataWithNavigation?.recommendedCards.slice(0, visibleRecommendedCount) ?? []
+  const hasMoreRecommendedCards = preparedDataWithNavigation
+    ? visibleRecommendedCards.length < preparedDataWithNavigation.recommendedCards.length
     : false
 
   const handleShowMoreRecommended = () => {
@@ -254,12 +303,12 @@ export const CatalogPage: React.FC = () => {
                 <>
                   <SkillSection
                     title="Популярное"
-                    cards={preparedData?.popularCards ?? []}
+                    cards={preparedDataWithNavigation?.popularCards ?? []}
                     initialLimit={3}
                   />
                   <SkillSection
                     title="Новое"
-                    cards={preparedData?.newCards ?? []}
+                    cards={preparedDataWithNavigation?.newCards ?? []}
                     initialLimit={3}
                   />
                   <SkillSection

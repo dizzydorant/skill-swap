@@ -1,5 +1,5 @@
 import { Avatar } from '@/shared/ui/Avatar'
-import { Chip } from '@/shared/ui/Chip'
+import { ChipList, type ChipItem } from '@/shared/ui/ChipList'
 
 import styles from './SkillOwnerCard.module.css'
 
@@ -33,25 +33,20 @@ const getAgeLabel = (age: number) => {
   return `${age} лет`
 }
 
+const toChipItems = (skills: string[], chipBackgroundColor: string): ChipItem[] =>
+  skills.map((skill, index) => ({
+    id: `${skill}-${index}`,
+    label: skill,
+    bgColorFromDb: chipBackgroundColor,
+    textColorFromDb: '#253017',
+  }))
+
 const renderSkills = (skills: string[], chipBackgroundColor: string) => {
   if (skills.length === 0) {
     return <p className={styles.emptyText}>Пока не указано</p>
   }
 
-  return (
-    <div className={styles.chips}>
-      {skills.map((skill, index) => (
-        <Chip
-          key={`${skill}-${index}`}
-          className={styles.chip}
-          label={skill}
-          size="sm"
-          bgColorFromDb={chipBackgroundColor}
-          textColorFromDb="#253017"
-        />
-      ))}
-    </div>
-  )
+  return <ChipList className={styles.chipList} items={toChipItems(skills, chipBackgroundColor)} />
 }
 
 export const SkillOwnerCard = ({
