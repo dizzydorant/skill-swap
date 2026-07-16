@@ -232,6 +232,19 @@ export default function SkillPage() {
     }
   }, [])
 
+  const handleLikeClick = useCallback(
+    (skillId: string) => {
+      if (!isAuthenticated) {
+        const currentUrl = `${location.pathname}${location.search}${location.hash}`
+        navigate(`${ROUTES.LOGIN}?from=${encodeURIComponent(currentUrl)}`)
+        return
+      }
+
+      toggleFavorite(skillId)
+    },
+    [isAuthenticated, location.pathname, location.search, location.hash, navigate, toggleFavorite],
+  )
+
   useEffect(() => {
     setIsCreatedSkillModalOpen(Boolean(id && getCreatedSkillSuccessSkillId() === id))
   }, [id])
@@ -303,7 +316,8 @@ export default function SkillPage() {
           likesCount: isCurrentlyLiked
             ? (similarSkill.likesCount ?? 0) + 1
             : (similarSkill.likesCount ?? 0),
-          onLikeClick: () => toggleFavorite(similarSkill.id),
+
+          onLikeClick: () => handleLikeClick(similarSkill.id),
         }
       })
       .filter((card): card is SkillSectionCard => card !== null)
@@ -319,7 +333,7 @@ export default function SkillPage() {
       authorLearnSkillTitles,
       similarSkills,
     }
-  }, [data, id, navigate, favoriteIds, toggleFavorite])
+  }, [data, id, navigate, favoriteIds, handleLikeClick])
 
   const {
     isExchangeOffered,
@@ -402,18 +416,6 @@ export default function SkillPage() {
     }
   }
 
-  const handleLikeClick = useCallback(
-    (skillId: string) => {
-      if (!isAuthenticated) {
-        const currentUrl = `${location.pathname}${location.search}${location.hash}`
-        navigate(`${ROUTES.LOGIN}?from=${encodeURIComponent(currentUrl)}`)
-        return
-      }
-
-      toggleFavorite(skillId)
-    },
-    [isAuthenticated, location.pathname, location.search, location.hash, navigate, toggleFavorite],
-  )
   return (
     <div className={styles.page}>
       <Header />
