@@ -1,5 +1,8 @@
-import React, { useEffect, useMemo, useState } from 'react'
-import { generatePath, useNavigate, useSearchParams } from 'react-router-dom'
+import { useCallback, useEffect, useMemo, useState, type FC } from 'react'
+import { generatePath, useLocation, useNavigate, useSearchParams } from 'react-router-dom'
+
+import { useAuthUser } from '@/features/auth/model/useAuthUser'
+import { useFavorites } from '@/features/favorites/hooks/useFavorites'
 
 import { Footer } from '../../widgets/Footer'
 import { Header } from '../../widgets/Header'
@@ -11,7 +14,10 @@ import type { City, SkillCategory } from '../../widgets/CatalogFilter/model/type
 import error500 from '../../shared/assets/images/errors/500.svg'
 import error404 from '../../shared/assets/images/errors/404.svg'
 import { Button } from '../../shared/ui/Button'
-import { getCurrentUserId, getSwapRequests } from '@/features/exchange-offer/model/exchangeOfferStorage'
+import {
+  getCurrentUserId,
+  getSwapRequests,
+} from '@/features/exchange-offer/model/exchangeOfferStorage'
 import { ROUTES } from '@/shared/lib/constants'
 
 import {
@@ -37,9 +43,12 @@ const getOfferedSkillIds = () => {
   )
 }
 
-export const CatalogPage: React.FC = () => {
+export const CatalogPage: FC = () => {
   const navigate = useNavigate()
+  const location = useLocation()
   const [searchParams, setSearchParams] = useSearchParams()
+  const { isAuthenticated } = useAuthUser()
+  const { isFavorite, toggleFavorite } = useFavorites()
   const [catalogData, setCatalogData] = useState<CatalogDbData | null>(null)
   const [isLoading, setIsLoading] = useState(true)
   const [loadError, setLoadError] = useState<Error | null>(null)
@@ -103,10 +112,12 @@ export const CatalogPage: React.FC = () => {
     refreshOfferedSkillIds()
     window.addEventListener('focus', refreshOfferedSkillIds)
     window.addEventListener('storage', refreshOfferedSkillIds)
+    window.addEventListener('skillswap-requests-storage', refreshOfferedSkillIds)
 
     return () => {
       window.removeEventListener('focus', refreshOfferedSkillIds)
       window.removeEventListener('storage', refreshOfferedSkillIds)
+      window.removeEventListener('skillswap-requests-storage', refreshOfferedSkillIds)
     }
   }, [])
 
@@ -164,17 +175,38 @@ export const CatalogPage: React.FC = () => {
     [filteredData, exchangeType, gender, selectedCityNames, selectedSubCategoryIds],
   )
 
+  const handleLikeClick = useCallback(
+    (skillId: string) => {
+      if (!isAuthenticated) {
+        const currentUrl = `${location.pathname}${location.search}${location.hash}`
+        navigate(`${ROUTES.LOGIN}?from=${encodeURIComponent(currentUrl)}`)
+        return
+      }
+
+      toggleFavorite(skillId)
+    },
+    [isAuthenticated, location.pathname, location.search, location.hash, navigate, toggleFavorite],
+  )
+
+  // 🔄 ЗАМЕНИ ЭТОТ BLOCK В CATALOGPAGE.TSX:
   const preparedDataWithNavigation = useMemo(() => {
     if (!preparedData) {
       return null
     }
 
     const addDetailsNavigation = (cards: typeof preparedData.popularCards) =>
-      cards.map((card) => ({
-        ...card,
-        isExchangeOffered: offeredSkillIds.has(card.id),
-        onActionClick: () => navigate(getSkillPath(card.id)),
-      }))
+      cards.map((card) => {
+        const isCurrentlyLiked = isFavorite(card.id)
+
+        return {
+          ...card,
+          isLiked: isCurrentlyLiked,
+          isExchangeOffered: offeredSkillIds.has(card.id),
+          likesCount: isCurrentlyLiked ? (card.likesCount ?? 0) + 1 : (card.likesCount ?? 0),
+          onLikeClick: () => handleLikeClick(card.id),
+          onActionClick: () => navigate(getSkillPath(card.id)),
+        }
+      })
 
     return {
       ...preparedData,
@@ -182,7 +214,7 @@ export const CatalogPage: React.FC = () => {
       newCards: addDetailsNavigation(preparedData.newCards),
       recommendedCards: addDetailsNavigation(preparedData.recommendedCards),
     }
-  }, [navigate, offeredSkillIds, preparedData])
+  }, [isFavorite, navigate, offeredSkillIds, preparedData, handleLikeClick])
 
   // проверка поиска
   const hasSearchResults = useMemo(() => {
@@ -201,9 +233,11 @@ export const CatalogPage: React.FC = () => {
     )
   }, [preparedDataWithNavigation, searchValue])
 
+  const recommendedCardsLength = preparedData?.recommendedCards?.length ?? 0
+
   useEffect(() => {
     setVisibleRecommendedCount(RECOMMENDED_PAGE_SIZE)
-  }, [preparedData?.recommendedCards])
+  }, [recommendedCardsLength])
 
   const visibleRecommendedCards =
     preparedDataWithNavigation?.recommendedCards.slice(0, visibleRecommendedCount) ?? []

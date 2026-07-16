@@ -64,7 +64,15 @@ export const SkillSection = ({
           const { id, className: cardClassNameProp, ...skillCardProps } = card
           const cardClassName = [styles.card, cardClassNameProp].filter(Boolean).join(' ')
 
-          return <SkillCard key={id} {...skillCardProps} className={cardClassName} />
+          return (
+            <SkillCard
+              key={id}
+              {...skillCardProps}
+              likesCount={card.likesCount}
+              isLiked={card.isLiked}
+              className={cardClassName}
+            />
+          )
         })}
       </div>
     </section>

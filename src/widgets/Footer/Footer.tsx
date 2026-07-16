@@ -77,7 +77,7 @@ export const Footer = () => {
 
         {/* Копирайт */}
         <div className={styles.copyright}>
-          <span>SkillSwap — 2025</span>
+          <span>SkillSwap — 2026</span>
         </div>
       </div>
     </footer>

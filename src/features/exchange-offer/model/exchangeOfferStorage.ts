@@ -4,14 +4,13 @@ import { generateId } from '@/shared/lib/helpers'
 import type { SwapRequest } from '@/shared/types'
 
 const GUEST_USER_ID = 'guest'
+const REQUESTS_STORAGE_EVENT = 'skillswap-requests-storage'
+
+let requestsCache: SwapRequest[] | null = null
 
 const isSwapRequest = (value: unknown): value is SwapRequest => {
-  if (!value || typeof value !== 'object') {
-    return false
-  }
-
+  if (!value || typeof value !== 'object') return false
   const request = value as Record<string, unknown>
-
   return (
     typeof request.id === 'string' &&
     typeof request.skillId === 'string' &&
@@ -24,11 +23,37 @@ const isSwapRequest = (value: unknown): value is SwapRequest => {
 }
 
 export const parseSwapRequests = (data: unknown): SwapRequest[] => {
-  if (!Array.isArray(data)) {
-    return []
+  return Array.isArray(data) ? data.filter(isSwapRequest) : []
+}
+
+const notifyRequestsChanged = (): void => {
+  if (typeof window !== 'undefined') {
+    window.dispatchEvent(new Event(REQUESTS_STORAGE_EVENT))
+  }
+}
+
+export const subscribeToSwapRequestsStorage = (callback: () => void): (() => void) => {
+  if (typeof window === 'undefined') return () => undefined
+
+  const handleStorage = (event: StorageEvent) => {
+    if (!event.key || event.key === LOCAL_STORAGE_KEYS.REQUESTS) {
+      requestsCache = null
+      callback()
+    }
   }
 
-  return data.filter(isSwapRequest)
+  const handleCustomEvent = () => {
+    requestsCache = null
+    callback()
+  }
+
+  window.addEventListener(REQUESTS_STORAGE_EVENT, handleCustomEvent)
+  window.addEventListener('storage', handleStorage)
+
+  return () => {
+    window.removeEventListener(REQUESTS_STORAGE_EVENT, handleCustomEvent)
+    window.removeEventListener('storage', handleStorage)
+  }
 }
 
 export const getCurrentUserId = (): string => {
@@ -36,14 +61,18 @@ export const getCurrentUserId = (): string => {
 }
 
 export const getSwapRequests = (): SwapRequest[] => {
+  if (requestsCache !== null) {
+    return requestsCache
+  }
+
   try {
     const raw = localStorage.getItem(LOCAL_STORAGE_KEYS.REQUESTS)
-
     if (!raw) {
+      requestsCache = []
       return []
     }
-
-    return parseSwapRequests(JSON.parse(raw))
+    requestsCache = parseSwapRequests(JSON.parse(raw))
+    return requestsCache
   } catch {
     return []
   }
@@ -52,13 +81,20 @@ export const getSwapRequests = (): SwapRequest[] => {
 export const saveSwapRequests = (requests: SwapRequest[]): void => {
   try {
     localStorage.setItem(LOCAL_STORAGE_KEYS.REQUESTS, JSON.stringify(requests))
+    requestsCache = requests
+    notifyRequestsChanged()
   } catch {
     console.error(`Failed to save to localStorage: ${LOCAL_STORAGE_KEYS.REQUESTS}`)
   }
 }
 
-export const hasPendingRequest = (skillId: string, fromUserId: string): boolean => {
-  return getSwapRequests().some(
+export const hasPendingRequest = (
+  skillId: string,
+  fromUserId: string,
+  currentRequests?: SwapRequest[],
+): boolean => {
+  const list = currentRequests ?? getSwapRequests()
+  return list.some(
     (request) =>
       request.skillId === skillId &&
       request.fromUserId === fromUserId &&
@@ -77,7 +113,10 @@ export const createSwapRequest = ({
   fromUserId,
   toUserId,
 }: CreateSwapRequestParams): SwapRequest | null => {
-  if (hasPendingRequest(skillId, fromUserId)) {
+  const requests = getSwapRequests()
+
+  // Передаем текущий массив, избегая повторного парсинга внутри hasPendingRequest
+  if (hasPendingRequest(skillId, fromUserId, requests)) {
     return null
   }
 
@@ -92,8 +131,13 @@ export const createSwapRequest = ({
     updatedAt: now,
   }
 
-  const requests = getSwapRequests()
   saveSwapRequests([...requests, newRequest])
-
   return newRequest
+}
+
+export const getIncomingSwapRequests = (userId: string): SwapRequest[] => {
+  requestsCache = null
+  return getSwapRequests().filter(
+    (request) => request.toUserId === userId && request.status === 'pending',
+  )
 }

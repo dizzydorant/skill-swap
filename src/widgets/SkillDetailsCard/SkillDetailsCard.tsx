@@ -11,6 +11,7 @@ export interface SkillDetailsCardProps {
   isExchangeOffered?: boolean
   className?: string
   children?: ReactNode
+  actionText?: string
 }
 
 export const SkillDetailsCard = ({
@@ -22,8 +23,9 @@ export const SkillDetailsCard = ({
   isExchangeOffered = false,
   className = '',
   children,
+  actionText,
 }: SkillDetailsCardProps) => {
-  const buttonText = isExchangeOffered ? 'Обмен предложен' : 'Предложить обмен'
+  const buttonText = actionText ?? (isExchangeOffered ? 'Обмен предложен' : 'Предложить обмен')
 
   return (
     <div className={`${styles.card} ${className}`}>

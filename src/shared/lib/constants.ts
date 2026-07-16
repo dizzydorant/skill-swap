@@ -27,5 +27,6 @@ export const LOCAL_STORAGE_KEYS = {
   PROFILE_OVERRIDES: 'skillswap_profile_overrides',
   FAVORITES: 'skillswap_favorites',
   REQUESTS: 'skillswap_requests',
+  SEEN_NOTIFICATIONS: 'skillswap_seen_notifications',
   THEME: 'skillswap_theme',
 } as const
