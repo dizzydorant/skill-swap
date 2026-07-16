@@ -1,17 +1,15 @@
-import { ChangeEvent, useState } from 'react'
-import { useLocation, useNavigate } from 'react-router-dom'
-
-import { useAuthUser } from '@/features/auth/model/useAuthUser'
 import { IconArrow, IconLike, IconMoon, IconNotification } from '@/shared/assets/icons'
 import logoutIcon from '@/shared/assets/icons/logout.svg'
-import { ROUTES } from '@/shared/lib/constants'
 import { Avatar } from '@/shared/ui/Avatar'
 import { Button } from '@/shared/ui/Button'
 import { IconButton } from '@/shared/ui/IconButton'
 import { Input } from '@/shared/ui/Input'
 import { Logo } from '@/shared/ui/Logo'
+import { FavoritesDropdown } from '@/widgets/FavoritesDropdown'
+import { NotificationsDropdown } from '@/widgets/NotificationsDropdown'
 import { SkillsDropdown } from '@/widgets/SkillsDropdown'
 
+import { useHeader } from './hooks/useHeader'
 import styles from './Header.module.css'
 
 export interface HeaderUser {
@@ -32,89 +30,35 @@ export interface HeaderProps {
   onLogoutClick?: () => void
 }
 
-export const Header = ({
-  user,
-  searchValue = '',
-  onSearchChange,
-  onLoginClick,
-  onRegisterClick,
-  onThemeClick,
-  onFavoritesClick,
-  onNotificationsClick,
-  onProfileClick,
-  onLogoutClick,
-}: HeaderProps) => {
-  const navigate = useNavigate()
-  const location = useLocation()
-  const { user: authUser, logout } = useAuthUser()
-  const [isSkillsOpen, setIsSkillsOpen] = useState(false)
-  const [isUserMenuOpen, setIsUserMenuOpen] = useState(false)
+export const Header = (props: HeaderProps) => {
+  const { searchValue = '', onThemeClick } = props
 
-  const resolvedUser =
-    user === undefined
-      ? authUser
-        ? { name: authUser.name, avatar: authUser.avatarUrl ?? undefined }
-        : null
-      : user
-  const isAuthorized = Boolean(resolvedUser)
-
-  const handleSearchChange = (event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    onSearchChange?.(event.target.value)
-  }
-
-  const handleSkillsClick = () => {
-    setIsSkillsOpen((currentValue) => !currentValue)
-    setIsUserMenuOpen(false)
-  }
-
-  const handleUserMenuClick = () => {
-    setIsUserMenuOpen((currentValue) => !currentValue)
-    setIsSkillsOpen(false)
-  }
-
-  const handleProfileClick = () => {
-    onProfileClick?.()
-    navigate(ROUTES.PROFILE)
-    setIsUserMenuOpen(false)
-  }
-
-  const handleLoginClick = () => {
-    if (onLoginClick) {
-      onLoginClick()
-      return
-    }
-
-    const currentUrl = `${location.pathname}${location.search}${location.hash}`
-    const loginUrl =
-      currentUrl === ROUTES.LOGIN
-        ? ROUTES.LOGIN
-        : `${ROUTES.LOGIN}?from=${encodeURIComponent(currentUrl)}`
-
-    navigate(loginUrl)
-  }
-
-  const handleRegisterClick = () => {
-    if (onRegisterClick) {
-      onRegisterClick()
-      return
-    }
-
-    navigate(ROUTES.REGISTER)
-  }
-
-  const handleLogoutClick = () => {
-    if (onLogoutClick) {
-      onLogoutClick()
-    } else {
-      logout()
-    }
-
-    setIsUserMenuOpen(false)
-    navigate(ROUTES.HOME)
-  }
+  // Подключаем наш кастомный хук и деструктуризируем из него все данные и экшены
+  const {
+    headerRef,
+    favoriteIds,
+    exchangeRequestsCount,
+    isSkillsOpen,
+    isUserMenuOpen,
+    isFavoritesOpen,
+    isNotificationsOpen,
+    resolvedUser,
+    isAuthorized,
+    handleSearchChange,
+    handleSkillsClick,
+    handleUserMenuClick,
+    handleNotificationsClick,
+    handleFavoritesClick,
+    handleProfileClick,
+    handleLoginClick,
+    handleRegisterClick,
+    handleLogoutClick,
+    setIsFavoritesOpen,
+    setIsNotificationsOpen,
+  } = useHeader(props)
 
   return (
-    <header className={`${styles.header} ${isAuthorized ? styles.authorized : ''}`}>
+    <header ref={headerRef} className={`${styles.header} ${isAuthorized ? styles.authorized : ''}`}>
       <div className={styles.inner}>
         <Logo className={styles.logo} />
 
@@ -158,18 +102,45 @@ export const Header = ({
 
           {resolvedUser ? (
             <>
-              <IconButton
-                className={styles.iconButton}
-                icon={<IconNotification />}
-                aria-label="Открыть уведомления"
-                onClick={onNotificationsClick}
-              />
-              <IconButton
-                className={styles.iconButton}
-                icon={<IconLike />}
-                aria-label="Открыть избранное"
-                onClick={onFavoritesClick}
-              />
+              <div className={styles.panelWrapper}>
+                <IconButton
+                  className={styles.iconButton}
+                  icon={<IconNotification />}
+                  aria-label="Открыть уведомления"
+                  aria-expanded={isNotificationsOpen}
+                  onClick={handleNotificationsClick}
+                />
+                {exchangeRequestsCount > 0 ? (
+                  <span className={styles.badge} aria-hidden="true">
+                    {exchangeRequestsCount}
+                  </span>
+                ) : null}
+                {isNotificationsOpen ? (
+                  <div className={styles.panelDropdown}>
+                    <NotificationsDropdown onClose={() => setIsNotificationsOpen(false)} />
+                  </div>
+                ) : null}
+              </div>
+
+              <div className={styles.panelWrapper}>
+                <IconButton
+                  className={styles.iconButton}
+                  icon={<IconLike />}
+                  aria-label="Открыть избранное"
+                  aria-expanded={isFavoritesOpen}
+                  onClick={handleFavoritesClick}
+                />
+                {favoriteIds.length > 0 ? (
+                  <span className={styles.badge} aria-hidden="true">
+                    {favoriteIds.length}
+                  </span>
+                ) : null}
+                {isFavoritesOpen ? (
+                  <div className={styles.panelDropdown}>
+                    <FavoritesDropdown onClose={() => setIsFavoritesOpen(false)} />
+                  </div>
+                ) : null}
+              </div>
 
               <div className={styles.userMenuWrapper}>
                 <button
@@ -205,7 +176,12 @@ export const Header = ({
                       onClick={handleLogoutClick}
                     >
                       <span>Выйти из аккаунта</span>
-                      <img className={styles.logoutIcon} src={logoutIcon} alt="" aria-hidden="true" />
+                      <img
+                        className={styles.logoutIcon}
+                        src={logoutIcon}
+                        alt=""
+                        aria-hidden="true"
+                      />
                     </button>
                   </div>
                 )}

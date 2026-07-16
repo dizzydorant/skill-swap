@@ -1,0 +1,119 @@
+.dropdown {
+  display: flex;
+  flex-direction: column;
+  width: 360px;
+  max-height: 420px;
+  padding: 20px;
+  background-color: #fff;
+  border: 1px solid #dfe8d4;
+  border-radius: 12px;
+  box-shadow: 0 12px 36px rgb(37 48 23 / 12%);
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+
+.title {
+  font-size: 18px;
+  font-weight: 600;
+  line-height: 1.3;
+  color: #253017;
+}
+
+.count {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 24px;
+  height: 24px;
+  padding: 0 8px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #508826;
+  background-color: #eef6e5;
+  border-radius: 999px;
+}
+
+.stateText {
+  padding: 12px 0;
+  font-size: 14px;
+  line-height: 1.5;
+  color: #69735a;
+  text-align: center;
+}
+
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  overflow-y: auto;
+  list-style: none;
+}
+
+.item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid #eef2e8;
+  border-radius: 10px;
+  font: inherit;
+  text-align: left;
+  color: inherit;
+  background-color: #fafcf8;
+  cursor: pointer;
+}
+
+.item:hover {
+  border-color: #dfe8d4;
+  background-color: #f3f7ef;
+}
+
+.avatar {
+  flex-shrink: 0;
+}
+
+.itemContent {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.userName {
+  overflow: hidden;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.4;
+  color: #253017;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.skillLabel {
+  overflow: hidden;
+  font-size: 13px;
+  line-height: 1.4;
+  color: #69735a;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.removeButton {
+  flex-shrink: 0;
+  color: #508826;
+}
+
+@media (width <= 760px) {
+  .dropdown {
+    width: min(calc(100vw - 32px), 360px);
+  }
+}

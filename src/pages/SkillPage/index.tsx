@@ -1,13 +1,19 @@
 import { useEffect, useMemo, useState } from 'react'
-import { generatePath, useNavigate, useParams } from 'react-router-dom'
+import { generatePath, useNavigate, useParams, useSearchParams } from 'react-router-dom'
 
 import {
   clearCreatedSkillSuccess,
   getCreatedSkillSuccessSkillId,
   getRegisteredSkillPageData,
 } from '@/features/auth/model/authUtils'
+
+import { useFavorites } from '@/features/favorites/hooks/useFavorites'
 import { useExchangeOffer } from '@/features/exchange-offer/hooks/useExchangeOffer'
 import { ExchangeOfferModal } from '@/features/exchange-offer/ui/ExchangeOfferModal'
+import {
+  getSwapRequests,
+  saveSwapRequests,
+} from '@/features/exchange-offer/model/exchangeOfferStorage'
 import { Footer } from '@/widgets/Footer'
 import { Header } from '@/widgets/Header'
 import { ErrorState } from '@/widgets/ErrorState'
@@ -169,11 +175,15 @@ const createSkillsByAuthorId = (skills: SkillDbItem[]): Map<string, SkillDbItem[
 export default function SkillPage() {
   const { id } = useParams<{ id: string }>()
   const navigate = useNavigate()
+  const [searchParams] = useSearchParams()
   const [data, setData] = useState<SkillPageDbData | null>(null)
   const [isLoading, setIsLoading] = useState(true)
   const [loadError, setLoadError] = useState<Error | null>(null)
-  const [isLiked, setIsLiked] = useState(false)
+
   const [isCreatedSkillModalOpen, setIsCreatedSkillModalOpen] = useState(false)
+
+  const isFromNotification = searchParams.get('fromNotification') === 'true'
+  const requestId = searchParams.get('requestId') ?? ''
 
   useEffect(() => {
     let isMounted = true
@@ -211,10 +221,6 @@ export default function SkillPage() {
   }, [])
 
   useEffect(() => {
-    setIsLiked(false)
-  }, [id])
-
-  useEffect(() => {
     setIsCreatedSkillModalOpen(Boolean(id && getCreatedSkillSuccessSkillId() === id))
   }, [id])
 
@@ -235,7 +241,9 @@ export default function SkillPage() {
       return null
     }
 
-    const category = data.categories.find((currentCategory) => currentCategory.id === skill.categoryId)
+    const category = data.categories.find(
+      (currentCategory) => currentCategory.id === skill.categoryId,
+    )
     const subCategory = category?.subCategories.find(
       (currentSubCategory) => currentSubCategory.id === skill.subCategoryId,
     )
@@ -268,7 +276,9 @@ export default function SkillPage() {
       author,
       categoryName: category?.name ?? skill.tags?.[1] ?? 'Категория не указана',
       subCategoryName: subCategory?.name ?? skill.tags?.[0] ?? 'Подкатегория не указана',
-      authorTeachSkillTitles: authorTeachSkills.map((teachSkill) => teachSkill.tags?.[0] ?? teachSkill.title),
+      authorTeachSkillTitles: authorTeachSkills.map(
+        (teachSkill) => teachSkill.tags?.[0] ?? teachSkill.title,
+      ),
       authorLearnSkillTitles,
       similarSkills,
     }
@@ -281,15 +291,27 @@ export default function SkillPage() {
     closeModal: closeExchangeModal,
     confirmOffer: confirmExchangeOffer,
   } = useExchangeOffer({
-    skillId: preparedData?.skill.id ?? id ?? '',
+    skillId: preparedData?.skill.id ?? '',
     toUserId: preparedData?.author.id ?? '',
   })
 
+  const { isFavorite, toggleFavorite } = useFavorites()
+  const isSkillLiked = id ? isFavorite(id) : false
+
   const handleLikeToggle = () => {
-    setIsLiked((prev) => !prev)
+    if (id) {
+      toggleFavorite(id)
+    }
   }
 
   const handleShare = async () => {
+    if (typeof navigator === 'undefined' || !navigator.clipboard) {
+      alert(
+        'Ваш браузер не поддерживает автоматическое копирование. Скопируйте ссылку из адресной строки.',
+      )
+      return
+    }
+
     try {
       await navigator.clipboard.writeText(window.location.href)
       alert('Ссылка скопирована в буфер обмена!')
@@ -311,6 +333,24 @@ export default function SkillPage() {
   const handleCreatedSkillModalClose = () => {
     clearCreatedSkillSuccess()
     setIsCreatedSkillModalOpen(false)
+  }
+
+  const handleAcceptExchange = (id: string) => {
+    const requests = getSwapRequests()
+
+    const updatedRequests = requests.map((req) =>
+      req.id === id
+        ? { ...req, status: 'accepted' as const, updatedAt: new Date().toISOString() }
+        : req,
+    )
+
+    saveSwapRequests(updatedRequests)
+
+    alert('Обмен успешно принят! Теперь вы можете связаться с пользователем.')
+
+    if (preparedData?.skill.id) {
+      navigate(generatePath(ROUTES.SKILL, { id: preparedData.skill.id }))
+    }
   }
 
   return (
@@ -360,20 +400,27 @@ export default function SkillPage() {
                 category={preparedData.categoryName}
                 subCategory={preparedData.subCategoryName}
                 description={preparedData.skill.description}
-                isExchangeOffered={isExchangeOffered}
-                onExchange={openExchangeModal}
+                isExchangeOffered={isFromNotification ? false : isExchangeOffered}
+                actionText={isFromNotification ? 'Принять обмен' : undefined}
+                onExchange={
+                  isFromNotification ? () => handleAcceptExchange(requestId) : openExchangeModal
+                }
               >
                 <div className={styles.galleryWithActionsContainer}>
                   <div className={styles.actionButtons}>
                     <button
-                      className={`${styles.circleBtn} ${isLiked ? styles.activeLike : ''}`}
+                      className={`${styles.circleBtn} ${isSkillLiked ? styles.activeLike : ''}`}
                       onClick={handleLikeToggle}
-                      aria-label={isLiked ? 'Убрать из избранного' : 'Добавить в избранное'}
+                      aria-label={isSkillLiked ? 'Убрать из избранного' : 'Добавить в избранное'}
                     >
-                      {isLiked ? <IconLikeFilled /> : <IconLike />}
+                      {isSkillLiked ? <IconLikeFilled /> : <IconLike />}
                     </button>
 
-                    <button className={styles.circleBtn} onClick={handleShare} aria-label="Поделиться">
+                    <button
+                      className={styles.circleBtn}
+                      onClick={handleShare}
+                      aria-label="Поделиться"
+                    >
                       <IconShare />
                     </button>
 
