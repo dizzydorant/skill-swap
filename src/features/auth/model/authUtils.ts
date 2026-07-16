@@ -51,6 +51,17 @@ export interface RegisterUserData {
   offeredSkill: RegisteredSkill
 }
 
+export interface SavedProfileData {
+  id: string
+  email: string
+  fullName: string
+  sex: 'male' | 'female' | 'other' | ''
+  birthday: string
+  avatarUrl: string | null
+  location: string
+  bio: string
+}
+
 export class AuthError extends Error {
   constructor(message: string) {
     super(message)
@@ -162,6 +173,28 @@ const isAuthUser = (value: unknown): value is AuthUser => {
   )
 }
 
+const isSavedProfileData = (value: unknown): value is SavedProfileData => {
+  if (!value || typeof value !== 'object') {
+    return false
+  }
+
+  const profile = value as Record<string, unknown>
+
+  return (
+    typeof profile.id === 'string' &&
+    typeof profile.email === 'string' &&
+    typeof profile.fullName === 'string' &&
+    (profile.sex === 'male' ||
+      profile.sex === 'female' ||
+      profile.sex === 'other' ||
+      profile.sex === '') &&
+    typeof profile.birthday === 'string' &&
+    (typeof profile.avatarUrl === 'string' || profile.avatarUrl === null) &&
+    typeof profile.location === 'string' &&
+    typeof profile.bio === 'string'
+  )
+}
+
 const getMockUsers = async (): Promise<MockUser[]> => {
   mockUsersPromise ??= fetch('/db/users.json').then(async (response) => {
     if (!response.ok) {
@@ -240,6 +273,30 @@ export function getRegisteredUsers(): RegisteredUser[] {
   }
 
   return parseArray(localStorage.getItem(LOCAL_STORAGE_KEYS.REGISTERED_USERS), isRegisteredUser)
+}
+
+export function getProfileOverrides(): SavedProfileData[] {
+  if (!canUseLocalStorage()) {
+    return []
+  }
+
+  return parseArray(
+    localStorage.getItem(LOCAL_STORAGE_KEYS.PROFILE_OVERRIDES),
+    isSavedProfileData,
+  )
+}
+
+export function saveProfileOverride(profile: SavedProfileData): void {
+  if (!canUseLocalStorage()) {
+    return
+  }
+
+  const nextProfiles = [
+    ...getProfileOverrides().filter((currentProfile) => currentProfile.id !== profile.id),
+    profile,
+  ]
+
+  localStorage.setItem(LOCAL_STORAGE_KEYS.PROFILE_OVERRIDES, JSON.stringify(nextProfiles))
 }
 
 export async function isEmailTaken(email: string): Promise<boolean> {
