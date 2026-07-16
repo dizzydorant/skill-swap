@@ -1,5 +1,11 @@
-import { useEffect, useMemo, useState } from 'react'
-import { generatePath, useNavigate, useParams, useSearchParams } from 'react-router-dom'
+import { useEffect, useMemo, useState, useCallback } from 'react'
+import {
+  generatePath,
+  useNavigate,
+  useParams,
+  useSearchParams,
+  useLocation,
+} from 'react-router-dom'
 
 import {
   clearCreatedSkillSuccess,
@@ -8,6 +14,7 @@ import {
 } from '@/features/auth/model/authUtils'
 
 import { useFavorites } from '@/features/favorites/hooks/useFavorites'
+import { useAuthUser } from '@/features/auth/model/useAuthUser'
 import { useExchangeOffer } from '@/features/exchange-offer/hooks/useExchangeOffer'
 import { ExchangeOfferModal } from '@/features/exchange-offer/ui/ExchangeOfferModal'
 import {
@@ -176,6 +183,9 @@ export default function SkillPage() {
   const { id } = useParams<{ id: string }>()
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
+  const location = useLocation()
+  const { isAuthenticated } = useAuthUser()
+
   const [data, setData] = useState<SkillPageDbData | null>(null)
   const [isLoading, setIsLoading] = useState(true)
   const [loadError, setLoadError] = useState<Error | null>(null)
@@ -314,7 +324,6 @@ export default function SkillPage() {
   const {
     isExchangeOffered,
     isModalOpen: isExchangeModalOpen,
-    openModal: openExchangeModal,
     closeModal: closeExchangeModal,
     confirmOffer: confirmExchangeOffer,
   } = useExchangeOffer({
@@ -324,11 +333,25 @@ export default function SkillPage() {
 
   const isSkillLiked = id ? isFavorite(id) : false
 
-  const handleLikeToggle = () => {
-    if (id) {
-      toggleFavorite(id)
+  const handleLikeToggle = useCallback(() => {
+    if (!isAuthenticated) {
+      const currentUrl = `${location.pathname}${location.search}${location.hash}`
+      navigate(`${ROUTES.LOGIN}?from=${encodeURIComponent(currentUrl)}`)
+      return
     }
-  }
+
+    if (preparedData?.skill.id) {
+      toggleFavorite(preparedData.skill.id)
+    }
+  }, [
+    isAuthenticated,
+    location.pathname,
+    location.search,
+    location.hash,
+    navigate,
+    preparedData?.skill.id,
+    toggleFavorite,
+  ])
 
   const handleShare = async () => {
     if (typeof navigator === 'undefined' || !navigator.clipboard) {
@@ -379,6 +402,18 @@ export default function SkillPage() {
     }
   }
 
+  const handleLikeClick = useCallback(
+    (skillId: string) => {
+      if (!isAuthenticated) {
+        const currentUrl = `${location.pathname}${location.search}${location.hash}`
+        navigate(`${ROUTES.LOGIN}?from=${encodeURIComponent(currentUrl)}`)
+        return
+      }
+
+      toggleFavorite(skillId)
+    },
+    [isAuthenticated, location.pathname, location.search, location.hash, navigate, toggleFavorite],
+  )
   return (
     <div className={styles.page}>
       <Header />
@@ -429,7 +464,9 @@ export default function SkillPage() {
                 isExchangeOffered={isFromNotification ? false : isExchangeOffered}
                 actionText={isFromNotification ? 'Принять обмен' : undefined}
                 onExchange={
-                  isFromNotification ? () => handleAcceptExchange(requestId) : openExchangeModal
+                  isFromNotification
+                    ? () => handleAcceptExchange(requestId)
+                    : () => handleLikeClick(preparedData?.skill.id ?? '')
                 }
               >
                 <div className={styles.galleryWithActionsContainer}>
