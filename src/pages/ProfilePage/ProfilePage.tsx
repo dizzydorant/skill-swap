@@ -2,8 +2,10 @@ import { useEffect, useMemo, useState } from 'react'
 
 import {
   getProfileOverrides,
+  getRegisteredUsers,
   saveAuthUser,
   saveProfileOverride,
+  type RegisteredUser,
   type SavedProfileData,
 } from '@/features/auth/model/authUtils'
 import { useAuthUser } from '@/features/auth/model/useAuthUser'
@@ -40,8 +42,28 @@ const fetchJson = async <T,>(url: string): Promise<T> => {
   return (await response.json()) as T
 }
 
+const normalizeProfileGender = (gender: string): ProfileDbUser['sex'] => {
+  if (gender === 'male' || gender === 'female' || gender === 'other') {
+    return gender
+  }
+
+  return ''
+}
+
+const createProfileFromRegisteredUser = (user: RegisteredUser): ProfileDbUser => ({
+  id: user.id,
+  email: user.email,
+  fullName: user.name,
+  sex: normalizeProfileGender(user.gender),
+  birthday: user.birthday ?? '',
+  avatarUrl: user.avatarUrl,
+  location: user.cityName || user.city,
+  bio: '',
+})
+
 export const ProfilePage = () => {
   const { user: authUser } = useAuthUser()
+  const authUserId = authUser?.id
   const [users, setUsers] = useState<ProfileDbUser[]>([])
   const [cities, setCities] = useState<CityDbItem[]>([])
   const [profileOverrides, setProfileOverrides] = useState<SavedProfileData[]>(() =>
@@ -86,7 +108,16 @@ export const ProfilePage = () => {
   }, [])
 
   const profileUser = useMemo(() => {
-    const dbUser = users.find((user) => user.id === authUser?.id) ?? users[0] ?? null
+    if (!authUserId) {
+      return null
+    }
+
+    const dbUser =
+      users.find((user) => user.id === authUserId) ??
+      getRegisteredUsers()
+        .filter((user) => user.id === authUserId)
+        .map(createProfileFromRegisteredUser)[0] ??
+      null
 
     if (!dbUser) {
       return null
@@ -95,7 +126,7 @@ export const ProfilePage = () => {
     const savedProfile = profileOverrides.find((profile) => profile.id === dbUser.id)
 
     return savedProfile ? { ...dbUser, ...savedProfile } : dbUser
-  }, [authUser?.id, profileOverrides, users])
+  }, [authUserId, profileOverrides, users])
 
   const handleProfileSave = (profile: SavedProfileData) => {
     saveProfileOverride(profile)

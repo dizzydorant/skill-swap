@@ -1,6 +1,11 @@
 import { useEffect, useMemo, useState } from 'react'
 import { generatePath, useNavigate, useParams } from 'react-router-dom'
 
+import {
+  clearCreatedSkillSuccess,
+  getCreatedSkillSuccessSkillId,
+  getRegisteredSkillPageData,
+} from '@/features/auth/model/authUtils'
 import { useExchangeOffer } from '@/features/exchange-offer/hooks/useExchangeOffer'
 import { ExchangeOfferModal } from '@/features/exchange-offer/ui/ExchangeOfferModal'
 import { Footer } from '@/widgets/Footer'
@@ -14,8 +19,10 @@ import { SkillSection, type SkillSectionCard } from '@/widgets/SkillSection'
 import { IconLike, IconLikeFilled, IconShare, IconMore } from '@/shared/assets/icons'
 import error404 from '@/shared/assets/images/errors/404.svg'
 import error500 from '@/shared/assets/images/errors/500.svg'
+import checkCircleIcon from '@/shared/assets/icons/check-circle.svg'
 import { ROUTES } from '@/shared/lib/constants'
 import type { ChipItem } from '@/shared/ui/ChipList'
+import { SuccessModal } from '@/shared/ui/SuccessModal'
 
 import { fetchJson } from '@/pages/CatalogPage/catalogData'
 import styles from './index.module.css'
@@ -44,6 +51,7 @@ interface UserDbItem {
   avatarUrl: string | null
   location?: string
   bio?: string
+  wantedSkillTitles?: string[]
   wantedSkillIds?: string[]
 }
 
@@ -66,6 +74,20 @@ const CHIP_BACKGROUND_COLORS = ['#f7e7f2', '#e8f2ff', '#e9f7e7', '#fff5d9', '#f0
 const CHIP_TEXT_COLOR = '#253017'
 
 const getSkillPath = (id: string) => generatePath(ROUTES.SKILL, { id })
+
+const mergeSkillPageData = (
+  skills: SkillDbItem[],
+  users: UserDbItem[],
+  categories: SkillCategoryDbItem[],
+): SkillPageDbData => {
+  const registeredData = getRegisteredSkillPageData()
+
+  return {
+    skills: [...skills, ...registeredData.skills],
+    users: [...users, ...registeredData.users],
+    categories,
+  }
+}
 
 const getAgeFromBirthday = (birthday: string | undefined): number => {
   if (!birthday) {
@@ -111,6 +133,12 @@ const createSkillCard = (
   const learnSkills = (author.wantedSkillIds ?? [])
     .map((wantedSkillId) => skillById.get(wantedSkillId))
     .filter((wantedSkill): wantedSkill is SkillDbItem => Boolean(wantedSkill))
+  const localLearnSkills = (author.wantedSkillTitles ?? []).map((title) => ({
+    id: `${author.id}-${title}`,
+    label: title,
+    bgColorFromDb: CHIP_BACKGROUND_COLORS[0],
+    textColorFromDb: CHIP_TEXT_COLOR,
+  }))
 
   return {
     id: skill.id,
@@ -121,7 +149,7 @@ const createSkillCard = (
       avatar: author.avatarUrl ?? undefined,
     },
     teachSkills: teachSkills.map(createChip),
-    learnSkills: learnSkills.map(createChip),
+    learnSkills: localLearnSkills.length > 0 ? localLearnSkills : learnSkills.map(createChip),
     likesCount: skill.likesCount,
     onActionClick: () => navigate(getSkillPath(skill.id)),
   }
@@ -145,6 +173,7 @@ export default function SkillPage() {
   const [isLoading, setIsLoading] = useState(true)
   const [loadError, setLoadError] = useState<Error | null>(null)
   const [isLiked, setIsLiked] = useState(false)
+  const [isCreatedSkillModalOpen, setIsCreatedSkillModalOpen] = useState(false)
 
   useEffect(() => {
     let isMounted = true
@@ -161,7 +190,7 @@ export default function SkillPage() {
         ])
 
         if (isMounted) {
-          setData({ skills, users, categories })
+          setData(mergeSkillPageData(skills, users, categories))
         }
       } catch (error) {
         if (isMounted) {
@@ -183,6 +212,10 @@ export default function SkillPage() {
 
   useEffect(() => {
     setIsLiked(false)
+  }, [id])
+
+  useEffect(() => {
+    setIsCreatedSkillModalOpen(Boolean(id && getCreatedSkillSuccessSkillId() === id))
   }, [id])
 
   const preparedData = useMemo(() => {
@@ -213,6 +246,10 @@ export default function SkillPage() {
     const authorLearnSkills = (author.wantedSkillIds ?? [])
       .map((wantedSkillId) => skillById.get(wantedSkillId))
       .filter((wantedSkill): wantedSkill is SkillDbItem => Boolean(wantedSkill))
+    const authorLearnSkillTitles =
+      author.wantedSkillTitles && author.wantedSkillTitles.length > 0
+        ? author.wantedSkillTitles
+        : authorLearnSkills.map((learnSkill) => learnSkill.tags?.[0] ?? learnSkill.title)
     const similarSkills = data.skills
       .filter(
         (currentSkill) =>
@@ -232,7 +269,7 @@ export default function SkillPage() {
       categoryName: category?.name ?? skill.tags?.[1] ?? 'Категория не указана',
       subCategoryName: subCategory?.name ?? skill.tags?.[0] ?? 'Подкатегория не указана',
       authorTeachSkillTitles: authorTeachSkills.map((teachSkill) => teachSkill.tags?.[0] ?? teachSkill.title),
-      authorLearnSkillTitles: authorLearnSkills.map((learnSkill) => learnSkill.tags?.[0] ?? learnSkill.title),
+      authorLearnSkillTitles,
       similarSkills,
     }
   }, [data, id, navigate])
@@ -269,6 +306,11 @@ export default function SkillPage() {
 
   const handleGoHome = () => {
     navigate(ROUTES.HOME)
+  }
+
+  const handleCreatedSkillModalClose = () => {
+    clearCreatedSkillSuccess()
+    setIsCreatedSkillModalOpen(false)
   }
 
   return (
@@ -359,6 +401,17 @@ export default function SkillPage() {
         isOpen={isExchangeModalOpen}
         onClose={closeExchangeModal}
         onConfirm={confirmExchangeOffer}
+      />
+
+      <SuccessModal
+        isOpen={Boolean(preparedData) && isCreatedSkillModalOpen}
+        onClose={handleCreatedSkillModalClose}
+        onAction={handleCreatedSkillModalClose}
+        icon={checkCircleIcon}
+        title="Ваше предложение создано"
+        description="Теперь вы можете предложить обмен"
+        buttonText="Готово"
+        ariaLabel="Предложение создано"
       />
 
       <Footer />

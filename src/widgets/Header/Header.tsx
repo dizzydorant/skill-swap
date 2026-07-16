@@ -1,5 +1,5 @@
 import { ChangeEvent, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useLocation, useNavigate } from 'react-router-dom'
 
 import { useAuthUser } from '@/features/auth/model/useAuthUser'
 import { IconArrow, IconLike, IconMoon, IconNotification } from '@/shared/assets/icons'
@@ -45,6 +45,7 @@ export const Header = ({
   onLogoutClick,
 }: HeaderProps) => {
   const navigate = useNavigate()
+  const location = useLocation()
   const { user: authUser, logout } = useAuthUser()
   const [isSkillsOpen, setIsSkillsOpen] = useState(false)
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false)
@@ -83,7 +84,13 @@ export const Header = ({
       return
     }
 
-    navigate(ROUTES.LOGIN)
+    const currentUrl = `${location.pathname}${location.search}${location.hash}`
+    const loginUrl =
+      currentUrl === ROUTES.LOGIN
+        ? ROUTES.LOGIN
+        : `${ROUTES.LOGIN}?from=${encodeURIComponent(currentUrl)}`
+
+    navigate(loginUrl)
   }
 
   const handleRegisterClick = () => {

@@ -61,17 +61,24 @@ export const ProfilePersonalDataForm: React.FC<ProfilePersonalDataFormProps> = (
     return options
   }, [cities, user.location])
 
-  const isDirty = useMemo(() => {
-    return JSON.stringify(user) !== JSON.stringify(savedUser)
-  }, [savedUser, user])
-
   const isFormValid = useMemo(() => {
     const hasEmail = Boolean(user.email.trim())
     const hasFullName = Boolean(user.fullName.trim())
-    const hasBirthday = Boolean(user.birthday.trim())
 
-    return hasEmail && hasFullName && hasBirthday
-  }, [user.birthday, user.email, user.fullName])
+    return hasEmail && hasFullName
+  }, [user.email, user.fullName])
+
+  const isDirty = useMemo(() => {
+    return (
+      user.email !== savedUser.email ||
+      user.fullName !== savedUser.fullName ||
+      user.sex !== savedUser.sex ||
+      user.birthday !== savedUser.birthday ||
+      user.avatarUrl !== savedUser.avatarUrl ||
+      user.location !== savedUser.location ||
+      user.bio !== savedUser.bio
+    )
+  }, [savedUser, user])
 
   const canSubmit = isDirty && isFormValid
 

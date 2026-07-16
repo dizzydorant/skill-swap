@@ -1,6 +1,11 @@
 import { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
-import { isEmailTaken, registerUser } from '@/features/auth/model/authUtils'
+import { generatePath, useNavigate } from 'react-router-dom'
+import {
+  getRegisteredUserSkillId,
+  isEmailTaken,
+  markCreatedSkillSuccess,
+  registerUser,
+} from '@/features/auth/model/authUtils'
 import { RegisterCredentialsForm } from '@/features/auth/ui/RegisterCredentialsForm'
 import { RegisterProfileForm } from '@/features/auth/ui/RegisterProfileForm'
 import { RegisterSkillForm, type ImageFile } from '@/features/auth/ui/RegisterSkillForm'
@@ -29,8 +34,11 @@ interface ProfileFormData {
   birthday: Date | null
   gender: string
   city: string
+  cityName: string
   categoryId: string
   subCategoryId: string
+  categoryName: string
+  subCategoryName: string
   avatarUrl: string | null
 }
 
@@ -144,7 +152,7 @@ export default function RegisterPage() {
     setIsSubmitting(true)
 
     try {
-      await registerUser({
+      const authUser = await registerUser({
         ...credentialsData,
         ...profileData,
         offeredSkill: {
@@ -157,7 +165,10 @@ export default function RegisterPage() {
           images: skillData.images.map((image) => image.preview),
         },
       })
-      navigate(ROUTES.HOME)
+      const skillId = getRegisteredUserSkillId(authUser.id)
+
+      markCreatedSkillSuccess(skillId)
+      navigate(generatePath(ROUTES.SKILL, { id: skillId }), { replace: true })
     } catch (error) {
       setSubmitError(error instanceof Error ? error.message : 'Не удалось завершить регистрацию')
     } finally {

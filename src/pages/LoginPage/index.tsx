@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useSearchParams } from 'react-router-dom'
 import { login } from '@/features/auth/model/authUtils'
 import { LoginForm } from '@/features/auth/ui/LoginForm'
 import { ROUTES } from '@/shared/lib/constants'
@@ -12,8 +12,23 @@ interface LoginFormData {
   password: string
 }
 
+const getSafeRedirectPath = (from: string | null): string => {
+  if (!from || !from.startsWith('/') || from.startsWith('//')) {
+    return ROUTES.HOME
+  }
+
+  const redirectUrl = new URL(from, window.location.origin)
+
+  if (redirectUrl.pathname === ROUTES.LOGIN || redirectUrl.pathname === ROUTES.REGISTER) {
+    return ROUTES.HOME
+  }
+
+  return `${redirectUrl.pathname}${redirectUrl.search}${redirectUrl.hash}`
+}
+
 export default function LoginPage() {
   const navigate = useNavigate()
+  const [searchParams] = useSearchParams()
   const [authError, setAuthError] = useState('')
 
   const handleClose = () => {
@@ -25,7 +40,7 @@ export default function LoginPage() {
 
     try {
       await login(data.email, data.password)
-      navigate(ROUTES.HOME)
+      navigate(getSafeRedirectPath(searchParams.get('from')), { replace: true })
     } catch (error) {
       setAuthError(error instanceof Error ? error.message : 'Не удалось войти')
     }
