@@ -14,8 +14,11 @@ export interface RegisterProfileFormProps {
     birthday: Date | null
     gender: string
     city: string
+    cityName: string
     categoryId: string
     subCategoryId: string
+    categoryName: string
+    subCategoryName: string
     avatarUrl: string | null
   }) => void
   className?: string
@@ -144,14 +147,22 @@ export const RegisterProfileForm = ({
 
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault()
+    const selectedCity = cities.find((item) => item.id === city)
+    const selectedCategory = categories.find((item) => String(item.id) === categoryId)
+    const selectedSubCategory = selectedCategory?.subCategories.find(
+      (item) => String(item.id) === subCategoryId,
+    )
 
     onNext({
       name: name.trim(),
       birthday,
       gender,
       city,
+      cityName: selectedCity?.name ?? '',
       categoryId,
       subCategoryId,
+      categoryName: selectedCategory?.name ?? '',
+      subCategoryName: selectedSubCategory?.name ?? '',
       avatarUrl,
     })
   }

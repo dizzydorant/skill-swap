@@ -23,8 +23,11 @@ export interface RegisteredUser {
   birthday: string | null
   gender: string
   city: string
+  cityName?: string
   learnCategoryId: string
   learnSubCategoryId: string
+  learnCategoryName?: string
+  learnSubCategoryName?: string
   offeredSkill: RegisteredSkill
 }
 
@@ -45,10 +48,47 @@ export interface RegisterUserData {
   birthday: Date | null
   gender: string
   city: string
+  cityName: string
   categoryId: string
   subCategoryId: string
+  categoryName: string
+  subCategoryName: string
   avatarUrl: string | null
   offeredSkill: RegisteredSkill
+}
+
+export interface RegisteredSkillPageUser {
+  id: string
+  fullName: string
+  sex?: string
+  birthday?: string
+  avatarUrl: string | null
+  location?: string
+  bio?: string
+  wantedSkillTitles?: string[]
+  wantedSkillIds?: string[]
+}
+
+export interface RegisteredSkillPageSkill {
+  id: string
+  title: string
+  description: string
+  type: 'teach'
+  categoryId: number
+  subCategoryId: number
+  tags: string[]
+  imageUrl: string | null
+  images: string[]
+  authorId: string
+  likedByUserIds: string[]
+  likesCount: number
+  createdAt: string
+  updatedAt: string
+}
+
+export interface RegisteredSkillPageData {
+  users: RegisteredSkillPageUser[]
+  skills: RegisteredSkillPageSkill[]
 }
 
 export interface SavedProfileData {
@@ -150,8 +190,11 @@ const isRegisteredUser = (value: unknown): value is RegisteredUser => {
     (typeof user.birthday === 'string' || user.birthday === null) &&
     typeof user.gender === 'string' &&
     typeof user.city === 'string' &&
+    (typeof user.cityName === 'string' || user.cityName === undefined) &&
     typeof user.learnCategoryId === 'string' &&
     typeof user.learnSubCategoryId === 'string' &&
+    (typeof user.learnCategoryName === 'string' || user.learnCategoryName === undefined) &&
+    (typeof user.learnSubCategoryName === 'string' || user.learnSubCategoryName === undefined) &&
     isRegisteredSkill(user.offeredSkill)
   )
 }
@@ -241,6 +284,14 @@ const emailHash = (email: string): string => {
   return hash.toString(36)
 }
 
+const parseNumericId = (value: string): number => {
+  const numericValue = Number(value)
+
+  return Number.isFinite(numericValue) ? numericValue : 0
+}
+
+export const getRegisteredUserSkillId = (userId: string): string => `registered-skill-${userId}`
+
 export function getAuthUser(): AuthUser | null {
   if (!canUseLocalStorage()) {
     return null
@@ -273,6 +324,68 @@ export function getRegisteredUsers(): RegisteredUser[] {
   }
 
   return parseArray(localStorage.getItem(LOCAL_STORAGE_KEYS.REGISTERED_USERS), isRegisteredUser)
+}
+
+export function getRegisteredSkillPageData(): RegisteredSkillPageData {
+  const users = getRegisteredUsers()
+
+  return {
+    users: users.map((user) => {
+      const wantedSkillTitle = user.learnSubCategoryName || user.learnCategoryName
+
+      return {
+        id: user.id,
+        fullName: user.name,
+        sex: user.gender,
+        birthday: user.birthday ?? undefined,
+        avatarUrl: user.avatarUrl,
+        location: user.cityName || user.city,
+        bio: '',
+        wantedSkillTitles: wantedSkillTitle ? [wantedSkillTitle] : [],
+        wantedSkillIds: [],
+      }
+    }),
+    skills: users.map((user) => ({
+      id: getRegisteredUserSkillId(user.id),
+      title: user.offeredSkill.title,
+      description: user.offeredSkill.description,
+      type: 'teach',
+      categoryId: parseNumericId(user.offeredSkill.categoryId),
+      subCategoryId: parseNumericId(user.offeredSkill.subCategoryId),
+      tags: [user.offeredSkill.subCategoryName || user.offeredSkill.categoryName || user.offeredSkill.title],
+      imageUrl: user.offeredSkill.images[0] ?? null,
+      images: user.offeredSkill.images,
+      authorId: user.id,
+      likedByUserIds: [],
+      likesCount: 0,
+      createdAt: user.createdAt,
+      updatedAt: user.createdAt,
+    })),
+  }
+}
+
+export function markCreatedSkillSuccess(skillId: string): void {
+  if (!canUseLocalStorage()) {
+    return
+  }
+
+  localStorage.setItem(LOCAL_STORAGE_KEYS.CREATED_SKILL_SUCCESS, skillId)
+}
+
+export function getCreatedSkillSuccessSkillId(): string | null {
+  if (!canUseLocalStorage()) {
+    return null
+  }
+
+  return localStorage.getItem(LOCAL_STORAGE_KEYS.CREATED_SKILL_SUCCESS)
+}
+
+export function clearCreatedSkillSuccess(): void {
+  if (!canUseLocalStorage()) {
+    return
+  }
+
+  localStorage.removeItem(LOCAL_STORAGE_KEYS.CREATED_SKILL_SUCCESS)
 }
 
 export function getProfileOverrides(): SavedProfileData[] {
@@ -326,8 +439,11 @@ export async function registerUser(data: RegisterUserData): Promise<AuthUser> {
     birthday: data.birthday ? data.birthday.toISOString() : null,
     gender: data.gender,
     city: data.city,
+    cityName: data.cityName,
     learnCategoryId: data.categoryId,
     learnSubCategoryId: data.subCategoryId,
+    learnCategoryName: data.categoryName,
+    learnSubCategoryName: data.subCategoryName,
     offeredSkill: data.offeredSkill,
   }
 

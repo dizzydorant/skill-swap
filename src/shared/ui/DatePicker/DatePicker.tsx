@@ -1,4 +1,4 @@
-import { forwardRef, useId, useState } from 'react'
+import { forwardRef, useEffect, useId, useState } from 'react'
 import ReactDatePicker, {
   registerLocale,
   type ReactDatePickerCustomHeaderProps,
@@ -112,16 +112,31 @@ export const DatePicker = ({
   const fieldId = `date-picker-${generatedId}`
   const [isOpen, setIsOpen] = useState(false)
   const [tempValue, setTempValue] = useState<Date | null>(value)
+  const [calendarValue, setCalendarValue] = useState<Date | null>(null)
 
   const wrapperClassName = [styles.wrapper, className].filter(Boolean).join(' ')
 
+  useEffect(() => {
+    setTempValue(value)
+  }, [value])
+
+  const handlePendingDateChange = (date: Date | null) => {
+    setTempValue(date)
+    setCalendarValue(null)
+  }
+
   const handleSelect = () => {
-    onChange(tempValue)
+    const nextValue = calendarValue ?? tempValue
+
+    setTempValue(nextValue)
+    setCalendarValue(null)
+    onChange(nextValue)
     setIsOpen(false)
   }
 
   const handleCancel = () => {
     setTempValue(value)
+    setCalendarValue(null)
     setIsOpen(false)
   }
 
@@ -138,10 +153,12 @@ export const DatePicker = ({
           id={fieldId}
           locale="ru"
           selected={tempValue}
-          onChange={(date: Date | null) => setTempValue(date)}
+          onChange={handlePendingDateChange}
+          onSelect={handlePendingDateChange}
           dateFormat="dd.MM.yyyy"
           placeholderText={placeholder}
           showPopperArrow={false}
+          shouldCloseOnSelect={false}
           minDate={minDate}
           maxDate={maxDate}
           disabled={disabled}
@@ -149,6 +166,7 @@ export const DatePicker = ({
           onInputClick={() => {
             if (!disabled) {
               setTempValue(value)
+              setCalendarValue(null)
               setIsOpen(true)
             }
           }}
@@ -192,9 +210,12 @@ export const DatePicker = ({
                   <select
                     className={styles.select}
                     value={MONTHS[getMonth(date)]}
-                    onChange={({ target: { value: monthValue } }) =>
+                    onChange={({ target: { value: monthValue } }) => {
+                      const nextDate = new Date(date)
+                      nextDate.setMonth(MONTHS.indexOf(monthValue))
+                      setCalendarValue(nextDate)
                       changeMonth(MONTHS.indexOf(monthValue))
-                    }
+                    }}
                     aria-label="Месяц"
                   >
                     {MONTHS.map((month) => (
@@ -211,7 +232,12 @@ export const DatePicker = ({
                   <select
                     className={styles.select}
                     value={getYear(date)}
-                    onChange={({ target: { value: yearValue } }) => changeYear(Number(yearValue))}
+                    onChange={({ target: { value: yearValue } }) => {
+                      const nextDate = new Date(date)
+                      nextDate.setFullYear(Number(yearValue))
+                      setCalendarValue(nextDate)
+                      changeYear(Number(yearValue))
+                    }}
                     aria-label="Год"
                   >
                     {YEARS.map((year) => (
