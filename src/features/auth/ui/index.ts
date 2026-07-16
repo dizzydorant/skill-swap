@@ -1,3 +1,4 @@
+export { PrivateRoute } from './PrivateRoute'
 export { LoginForm } from './LoginForm'
 export type { LoginFormProps } from './LoginForm'
 export { RegisterCredentialsForm } from './RegisterCredentialsForm'
