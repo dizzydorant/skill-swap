@@ -48,7 +48,7 @@ export const CatalogPage: FC = () => {
   const location = useLocation()
   const [searchParams, setSearchParams] = useSearchParams()
   const { isAuthenticated } = useAuthUser()
-  const { isFavorite, toggleFavorite } = useFavorites()
+  const { toggleFavorite, favoriteIds } = useFavorites()
   const [catalogData, setCatalogData] = useState<CatalogDbData | null>(null)
   const [isLoading, setIsLoading] = useState(true)
   const [loadError, setLoadError] = useState<Error | null>(null)
@@ -188,7 +188,6 @@ export const CatalogPage: FC = () => {
     [isAuthenticated, location.pathname, location.search, location.hash, navigate, toggleFavorite],
   )
 
-  // 🔄 ЗАМЕНИ ЭТОТ BLOCK В CATALOGPAGE.TSX:
   const preparedDataWithNavigation = useMemo(() => {
     if (!preparedData) {
       return null
@@ -196,7 +195,7 @@ export const CatalogPage: FC = () => {
 
     const addDetailsNavigation = (cards: typeof preparedData.popularCards) =>
       cards.map((card) => {
-        const isCurrentlyLiked = isFavorite(card.id)
+        const isCurrentlyLiked = favoriteIds.includes(card.id)
 
         return {
           ...card,
@@ -214,7 +213,7 @@ export const CatalogPage: FC = () => {
       newCards: addDetailsNavigation(preparedData.newCards),
       recommendedCards: addDetailsNavigation(preparedData.recommendedCards),
     }
-  }, [isFavorite, navigate, offeredSkillIds, preparedData, handleLikeClick])
+  }, [navigate, offeredSkillIds, preparedData, handleLikeClick, favoriteIds])
 
   // проверка поиска
   const hasSearchResults = useMemo(() => {
