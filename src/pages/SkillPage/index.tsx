@@ -183,10 +183,9 @@ export default function SkillPage() {
   const { id } = useParams<{ id: string }>()
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
+  const [data, setData] = useState<SkillPageDbData | null>(null)
   const location = useLocation()
   const { isAuthenticated } = useAuthUser()
-
-  const [data, setData] = useState<SkillPageDbData | null>(null)
   const [isLoading, setIsLoading] = useState(true)
   const [loadError, setLoadError] = useState<Error | null>(null)
 
@@ -196,6 +195,30 @@ export default function SkillPage() {
 
   const isFromNotification = searchParams.get('fromNotification') === 'true'
   const requestId = searchParams.get('requestId') ?? ''
+
+  const handleLikeToggle = useCallback(
+    (targetSkillId?: string) => {
+      if (!isAuthenticated) {
+        const currentUrl = `${location.pathname}${location.search}${location.hash}`
+        navigate(`${ROUTES.LOGIN}?from=${encodeURIComponent(currentUrl)}`)
+        return
+      }
+
+      const idToLike = targetSkillId ?? id
+      if (idToLike) {
+        toggleFavorite(idToLike)
+      }
+    },
+    [
+      isAuthenticated,
+      location.pathname,
+      location.search,
+      location.hash,
+      navigate,
+      id,
+      toggleFavorite,
+    ],
+  )
 
   useEffect(() => {
     let isMounted = true
@@ -231,19 +254,6 @@ export default function SkillPage() {
       isMounted = false
     }
   }, [])
-
-  const handleLikeClick = useCallback(
-    (skillId: string) => {
-      if (!isAuthenticated) {
-        const currentUrl = `${location.pathname}${location.search}${location.hash}`
-        navigate(`${ROUTES.LOGIN}?from=${encodeURIComponent(currentUrl)}`)
-        return
-      }
-
-      toggleFavorite(skillId)
-    },
-    [isAuthenticated, location.pathname, location.search, location.hash, navigate, toggleFavorite],
-  )
 
   useEffect(() => {
     setIsCreatedSkillModalOpen(Boolean(id && getCreatedSkillSuccessSkillId() === id))
@@ -317,7 +327,7 @@ export default function SkillPage() {
             ? (similarSkill.likesCount ?? 0) + 1
             : (similarSkill.likesCount ?? 0),
 
-          onLikeClick: () => handleLikeClick(similarSkill.id),
+          onLikeClick: () => handleLikeToggle(similarSkill.id),
         }
       })
       .filter((card): card is SkillSectionCard => card !== null)
@@ -333,11 +343,12 @@ export default function SkillPage() {
       authorLearnSkillTitles,
       similarSkills,
     }
-  }, [data, id, navigate, favoriteIds, handleLikeClick])
+  }, [data, id, navigate, favoriteIds, handleLikeToggle])
 
   const {
     isExchangeOffered,
     isModalOpen: isExchangeModalOpen,
+    openModal: openExchangeModal,
     closeModal: closeExchangeModal,
     confirmOffer: confirmExchangeOffer,
   } = useExchangeOffer({
@@ -347,24 +358,22 @@ export default function SkillPage() {
 
   const isSkillLiked = id ? isFavorite(id) : false
 
-  const handleLikeToggle = useCallback(() => {
+  const handleExchangeClick = useCallback(() => {
     if (!isAuthenticated) {
       const currentUrl = `${location.pathname}${location.search}${location.hash}`
       navigate(`${ROUTES.LOGIN}?from=${encodeURIComponent(currentUrl)}`)
       return
     }
 
-    if (preparedData?.skill.id) {
-      toggleFavorite(preparedData.skill.id)
-    }
+    // Если авторизован — открываем модалку предложения обмена
+    openExchangeModal()
   }, [
     isAuthenticated,
     location.pathname,
     location.search,
     location.hash,
     navigate,
-    preparedData?.skill.id,
-    toggleFavorite,
+    openExchangeModal,
   ])
 
   const handleShare = async () => {
@@ -466,16 +475,14 @@ export default function SkillPage() {
                 isExchangeOffered={isFromNotification ? false : isExchangeOffered}
                 actionText={isFromNotification ? 'Принять обмен' : undefined}
                 onExchange={
-                  isFromNotification
-                    ? () => handleAcceptExchange(requestId)
-                    : () => handleLikeClick(preparedData?.skill.id ?? '')
+                  isFromNotification ? () => handleAcceptExchange(requestId) : handleExchangeClick
                 }
               >
                 <div className={styles.galleryWithActionsContainer}>
                   <div className={styles.actionButtons}>
                     <button
                       className={`${styles.circleBtn} ${isSkillLiked ? styles.activeLike : ''}`}
-                      onClick={handleLikeToggle}
+                      onClick={() => handleLikeToggle()}
                       aria-label={isSkillLiked ? 'Убрать из избранного' : 'Добавить в избранное'}
                     >
                       {isSkillLiked ? <IconLikeFilled /> : <IconLike />}
