@@ -182,6 +182,8 @@ export default function SkillPage() {
 
   const [isCreatedSkillModalOpen, setIsCreatedSkillModalOpen] = useState(false)
 
+  const { isFavorite, toggleFavorite, favoriteIds } = useFavorites()
+
   const isFromNotification = searchParams.get('fromNotification') === 'true'
   const requestId = searchParams.get('requestId') ?? ''
 
@@ -248,16 +250,22 @@ export default function SkillPage() {
       (currentSubCategory) => currentSubCategory.id === skill.subCategoryId,
     )
     const skillById = new Map(data.skills.map((currentSkill) => [currentSkill.id, currentSkill]))
+
     const userById = new Map(data.users.map((user) => [user.id, user]))
+
     const skillsByAuthorId = createSkillsByAuthorId(data.skills)
+
     const authorTeachSkills = skillsByAuthorId.get(author.id) ?? []
+
     const authorLearnSkills = (author.wantedSkillIds ?? [])
       .map((wantedSkillId) => skillById.get(wantedSkillId))
       .filter((wantedSkill): wantedSkill is SkillDbItem => Boolean(wantedSkill))
+
     const authorLearnSkillTitles =
       author.wantedSkillTitles && author.wantedSkillTitles.length > 0
         ? author.wantedSkillTitles
         : authorLearnSkills.map((learnSkill) => learnSkill.tags?.[0] ?? learnSkill.title)
+
     const similarSkills = data.skills
       .filter(
         (currentSkill) =>
@@ -266,15 +274,34 @@ export default function SkillPage() {
             currentSkill.subCategoryId === skill.subCategoryId),
       )
       .slice(0, 4)
-      .map((similarSkill) =>
-        createSkillCard(similarSkill, userById, skillById, skillsByAuthorId, navigate),
-      )
-      .filter((card): card is SkillSectionCard => Boolean(card))
+      .map((similarSkill): SkillSectionCard | null => {
+        const cardData = createSkillCard(
+          similarSkill,
+          userById,
+          skillById,
+          skillsByAuthorId,
+          navigate,
+        )
+        if (!cardData) return null
+
+        const isCurrentlyLiked = favoriteIds.includes(similarSkill.id)
+
+        return {
+          ...cardData,
+          id: similarSkill.id,
+          isLiked: isCurrentlyLiked,
+          likesCount: isCurrentlyLiked
+            ? (similarSkill.likesCount ?? 0) + 1
+            : (similarSkill.likesCount ?? 0),
+          onLikeClick: () => toggleFavorite(similarSkill.id),
+        }
+      })
+      .filter((card): card is SkillSectionCard => card !== null)
 
     return {
       skill,
       author,
-      categoryName: category?.name ?? skill.tags?.[1] ?? 'Категория не указана',
+      categoryName: category?.name ?? skill.tags?.[0] ?? 'Категория не указана',
       subCategoryName: subCategory?.name ?? skill.tags?.[0] ?? 'Подкатегория не указана',
       authorTeachSkillTitles: authorTeachSkills.map(
         (teachSkill) => teachSkill.tags?.[0] ?? teachSkill.title,
@@ -282,7 +309,7 @@ export default function SkillPage() {
       authorLearnSkillTitles,
       similarSkills,
     }
-  }, [data, id, navigate])
+  }, [data, id, navigate, favoriteIds, toggleFavorite])
 
   const {
     isExchangeOffered,
@@ -295,7 +322,6 @@ export default function SkillPage() {
     toUserId: preparedData?.author.id ?? '',
   })
 
-  const { isFavorite, toggleFavorite } = useFavorites()
   const isSkillLiked = id ? isFavorite(id) : false
 
   const handleLikeToggle = () => {
