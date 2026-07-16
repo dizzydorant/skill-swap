@@ -9,6 +9,8 @@ import cls from './LoginForm.module.css'
 
 export interface LoginFormProps {
   onSubmit: (data: { email: string; password: string }) => void
+  submitError?: string
+  onSubmitErrorReset?: () => void
   className?: string
 }
 
@@ -17,7 +19,12 @@ interface FormErrors {
   password?: string
 }
 
-export const LoginForm = ({ onSubmit, className = '' }: LoginFormProps) => {
+export const LoginForm = ({
+  onSubmit,
+  submitError,
+  onSubmitErrorReset,
+  className = '',
+}: LoginFormProps) => {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [errors, setErrors] = useState<FormErrors>({})
@@ -40,6 +47,7 @@ export const LoginForm = ({ onSubmit, className = '' }: LoginFormProps) => {
 
   const handleEmailChange = (event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setEmail(event.target.value)
+    onSubmitErrorReset?.()
 
     if (errors.email) {
       setErrors((currentErrors) => ({ ...currentErrors, email: undefined }))
@@ -48,6 +56,7 @@ export const LoginForm = ({ onSubmit, className = '' }: LoginFormProps) => {
 
   const handlePasswordChange = (event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setPassword(event.target.value)
+    onSubmitErrorReset?.()
 
     if (errors.password) {
       setErrors((currentErrors) => ({ ...currentErrors, password: undefined }))
@@ -113,6 +122,12 @@ export const LoginForm = ({ onSubmit, className = '' }: LoginFormProps) => {
           />
         </label>
       </div>
+
+      {submitError ? (
+        <p className={cls.submitError} role="alert">
+          {submitError}
+        </p>
+      ) : null}
 
       <div className={cls.actions}>
         <Button className={cls.submitButton} fullWidth type="submit">

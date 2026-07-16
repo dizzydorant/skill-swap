@@ -8,6 +8,8 @@ import cls from './RegisterCredentialsForm.module.css'
 
 export interface RegisterCredentialsFormProps {
   onNext: (data: { email: string; password: string }) => void
+  emailError?: string
+  onEmailErrorReset?: () => void
   className?: string
 }
 
@@ -21,6 +23,8 @@ const MIN_PASSWORD_LENGTH = 8
 
 export const RegisterCredentialsForm = ({
   onNext,
+  emailError,
+  onEmailErrorReset,
   className = '',
 }: RegisterCredentialsFormProps) => {
   const [email, setEmail] = useState('')
@@ -51,6 +55,7 @@ export const RegisterCredentialsForm = ({
 
   const handleEmailChange = (event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setEmail(event.target.value)
+    onEmailErrorReset?.()
 
     if (errors.email) {
       setErrors((currentErrors) => ({ ...currentErrors, email: undefined }))
@@ -107,8 +112,8 @@ export const RegisterCredentialsForm = ({
             value={email}
             onChange={handleEmailChange}
             placeholder="Введите email"
-            error={Boolean(errors.email)}
-            errorText={errors.email}
+            error={Boolean(errors.email || emailError)}
+            errorText={errors.email || emailError}
           />
         </label>
 

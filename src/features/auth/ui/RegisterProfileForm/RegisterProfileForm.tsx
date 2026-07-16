@@ -16,6 +16,7 @@ export interface RegisterProfileFormProps {
     city: string
     categoryId: string
     subCategoryId: string
+    avatarUrl: string | null
   }) => void
   className?: string
 }
@@ -97,14 +98,6 @@ export const RegisterProfileForm = ({
     }
   }, [])
 
-  useEffect(() => {
-    return () => {
-      if (avatarUrl) {
-        URL.revokeObjectURL(avatarUrl)
-      }
-    }
-  }, [avatarUrl])
-
   const cityOptions = useMemo<SelectOption[]>(
     () => cities.map((item) => ({ value: item.id, label: item.name })),
     [cities],
@@ -140,13 +133,13 @@ export const RegisterProfileForm = ({
       return
     }
 
-    setAvatarUrl((currentUrl) => {
-      if (currentUrl) {
-        URL.revokeObjectURL(currentUrl)
-      }
+    const reader = new FileReader()
 
-      return URL.createObjectURL(file)
+    reader.addEventListener('load', () => {
+      setAvatarUrl(typeof reader.result === 'string' ? reader.result : null)
     })
+
+    reader.readAsDataURL(file)
   }
 
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
@@ -159,6 +152,7 @@ export const RegisterProfileForm = ({
       city,
       categoryId,
       subCategoryId,
+      avatarUrl,
     })
   }
 

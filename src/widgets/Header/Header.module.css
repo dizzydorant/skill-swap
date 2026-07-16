@@ -170,21 +170,27 @@
   right: 0;
   display: flex;
   flex-direction: column;
-  width: 160px;
-  padding: 8px;
+  width: 232px;
+  padding: 20px;
   background-color: #fff;
-  border: 1px solid #e1ead7;
-  border-radius: 12px;
+  border: 1px solid #dfe8d4;
+  border-radius: 8px;
   box-shadow: 0 12px 36px rgb(37 48 23 / 12%);
 }
 
 .userDropdownItem {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
   width: 100%;
-  padding: 10px 12px;
+  min-height: 32px;
+  padding: 0;
   border: 0;
-  border-radius: 8px;
+  border-radius: 4px;
   font: inherit;
-  font-size: 15px;
+  font-size: 16px;
+  font-weight: 500;
   line-height: 1.4;
   color: #253017;
   text-align: left;
@@ -193,7 +199,17 @@
 }
 
 .userDropdownItem:hover {
-  background-color: #f3f8ec;
+  color: #508826;
+}
+
+.userDropdownItem + .userDropdownItem {
+  margin-top: 16px;
+}
+
+.logoutIcon {
+  flex: 0 0 20px;
+  width: 20px;
+  height: 20px;
 }
 
 .skillsDropdownWrapper {

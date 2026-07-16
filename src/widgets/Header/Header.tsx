@@ -1,7 +1,9 @@
 import { ChangeEvent, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 
+import { useAuthUser } from '@/features/auth/model/useAuthUser'
 import { IconArrow, IconLike, IconMoon, IconNotification } from '@/shared/assets/icons'
+import logoutIcon from '@/shared/assets/icons/logout.svg'
 import { ROUTES } from '@/shared/lib/constants'
 import { Avatar } from '@/shared/ui/Avatar'
 import { Button } from '@/shared/ui/Button'
@@ -27,10 +29,11 @@ export interface HeaderProps {
   onFavoritesClick?: () => void
   onNotificationsClick?: () => void
   onProfileClick?: () => void
+  onLogoutClick?: () => void
 }
 
 export const Header = ({
-  user = null,
+  user,
   searchValue = '',
   onSearchChange,
   onLoginClick,
@@ -39,12 +42,20 @@ export const Header = ({
   onFavoritesClick,
   onNotificationsClick,
   onProfileClick,
+  onLogoutClick,
 }: HeaderProps) => {
   const navigate = useNavigate()
+  const { user: authUser, logout } = useAuthUser()
   const [isSkillsOpen, setIsSkillsOpen] = useState(false)
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false)
 
-  const isAuthorized = Boolean(user)
+  const resolvedUser =
+    user === undefined
+      ? authUser
+        ? { name: authUser.name, avatar: authUser.avatarUrl ?? undefined }
+        : null
+      : user
+  const isAuthorized = Boolean(resolvedUser)
 
   const handleSearchChange = (event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     onSearchChange?.(event.target.value)
@@ -62,6 +73,7 @@ export const Header = ({
 
   const handleProfileClick = () => {
     onProfileClick?.()
+    navigate(ROUTES.PROFILE)
     setIsUserMenuOpen(false)
   }
 
@@ -84,7 +96,14 @@ export const Header = ({
   }
 
   const handleLogoutClick = () => {
+    if (onLogoutClick) {
+      onLogoutClick()
+    } else {
+      logout()
+    }
+
     setIsUserMenuOpen(false)
+    navigate(ROUTES.HOME)
   }
 
   return (
@@ -130,7 +149,7 @@ export const Header = ({
             onClick={onThemeClick}
           />
 
-          {user ? (
+          {resolvedUser ? (
             <>
               <IconButton
                 className={styles.iconButton}
@@ -153,8 +172,13 @@ export const Header = ({
                   aria-haspopup="menu"
                   onClick={handleUserMenuClick}
                 >
-                  <span className={styles.userName}>{user.name}</span>
-                  <Avatar className={styles.avatar} src={user.avatar} name={user.name} size="small" />
+                  <span className={styles.userName}>{resolvedUser.name}</span>
+                  <Avatar
+                    className={styles.avatar}
+                    src={resolvedUser.avatar}
+                    name={resolvedUser.name}
+                    size="small"
+                  />
                 </button>
 
                 {isUserMenuOpen && (
@@ -165,7 +189,7 @@ export const Header = ({
                       role="menuitem"
                       onClick={handleProfileClick}
                     >
-                      Профиль
+                      Личный кабинет
                     </button>
                     <button
                       className={styles.userDropdownItem}
@@ -173,7 +197,8 @@ export const Header = ({
                       role="menuitem"
                       onClick={handleLogoutClick}
                     >
-                      Выйти
+                      <span>Выйти из аккаунта</span>
+                      <img className={styles.logoutIcon} src={logoutIcon} alt="" aria-hidden="true" />
                     </button>
                   </div>
                 )}
