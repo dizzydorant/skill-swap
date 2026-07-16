@@ -73,6 +73,13 @@
   color: #253017;
 }
 
+.submitError {
+  margin: 16px 0 0;
+  color: #c2410c;
+  font-size: 14px;
+  line-height: 1.4;
+}
+
 .actions {
   display: flex;
   flex-direction: column;

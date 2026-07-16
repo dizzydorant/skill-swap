@@ -13,6 +13,8 @@ export interface RegisterSkillFormProps {
     title: string
     categoryId: string
     subCategoryId: string
+    categoryName: string
+    subCategoryName: string
     description: string
     images: ImageFile[]
   }) => void
@@ -98,11 +100,17 @@ export const RegisterSkillForm = ({ onBack, onNext, className = '' }: RegisterSk
 
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault()
+    const selectedCategory = categories.find((item) => String(item.id) === categoryId)
+    const selectedSubCategory = selectedCategory?.subCategories.find(
+      (item) => String(item.id) === subCategoryId,
+    )
 
     onNext({
       title: title.trim(),
       categoryId,
       subCategoryId,
+      categoryName: selectedCategory?.name ?? '',
+      subCategoryName: selectedSubCategory?.name ?? '',
       description: description.trim(),
       images,
     })
