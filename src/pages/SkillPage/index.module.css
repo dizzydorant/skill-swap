@@ -19,7 +19,7 @@
 
 .topSection {
   display: grid;
-  grid-template-columns: 324px 1080px;
+  grid-template-columns: 1fr 3fr;
   gap: 36px;
   align-items: flex-start;
   grid-auto-rows: max-content;

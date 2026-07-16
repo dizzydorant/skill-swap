@@ -26,12 +26,13 @@
   align-items: center;
   gap: 16px;
   width: 100%;
-  min-height: 46px;
-  padding: 0 24px 0 28px;
+  height: 48px;
+  min-height: 48px;
+  padding: 12px 20px;
   text-align: left;
   background: #fff;
   border: 1px solid #69735d;
-  border-radius: 16px;
+  border-radius: 12px;
   cursor: pointer;
   box-sizing: border-box;
 }
@@ -74,7 +75,9 @@
 }
 
 @keyframes blink {
-  50% { border-color: transparent; }
+  50% {
+    border-color: transparent;
+  }
 }
 
 .activePlaceholder {
@@ -163,4 +166,3 @@
     padding: 0 16px 0 20px;
   }
 }
-
