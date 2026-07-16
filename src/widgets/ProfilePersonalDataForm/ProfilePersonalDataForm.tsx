@@ -1,50 +1,97 @@
-import React, { useState, useRef, useMemo } from 'react'
-import { mockUsersList, UserMockData } from './MockData'
+import React, { useEffect, useMemo, useRef, useState } from 'react'
 
-import { Input } from '@/shared/ui/Input'
 import { Avatar } from '@/shared/ui/Avatar'
-import { DatePicker } from '@/shared/ui/DatePicker'
-import { Select } from '@/shared/ui/Select'
 import { Button } from '@/shared/ui/Button'
+import { DatePicker } from '@/shared/ui/DatePicker'
+import { Input } from '@/shared/ui/Input'
+import { Select } from '@/shared/ui/Select'
 
 import cls from './ProfilePersonalDataForm.module.css'
 
-export const ProfilePersonalDataForm: React.FC = () => {
-  const [user, setUser] = useState<UserMockData>(mockUsersList)
+export interface ProfilePersonalData {
+  id: string
+  email: string
+  fullName: string
+  sex: 'male' | 'female' | 'other' | ''
+  birthday: string
+  avatarUrl: string | null
+  location: string
+  bio: string
+}
+
+export interface ProfileCity {
+  id: string
+  name: string
+}
+
+export interface ProfilePersonalDataFormProps {
+  initialUser: ProfilePersonalData
+  cities: ProfileCity[]
+  onSubmit?: (user: ProfilePersonalData) => void | Promise<void>
+}
+
+const genderOptions = [
+  { value: 'male', label: 'Мужской' },
+  { value: 'female', label: 'Женский' },
+  { value: 'other', label: 'Другой' },
+]
+
+export const ProfilePersonalDataForm: React.FC<ProfilePersonalDataFormProps> = ({
+  initialUser,
+  cities,
+  onSubmit,
+}) => {
+  const [user, setUser] = useState<ProfilePersonalData>(initialUser)
+  const [savedUser, setSavedUser] = useState<ProfilePersonalData>(initialUser)
+  const [isSaving, setIsSaving] = useState(false)
   const fileInputRef = useRef<HTMLInputElement>(null)
 
-  // Вычисляем "грязное" состояние формы глубоким сравнением объектов
-  const isDirty = useMemo(() => {
-    return JSON.stringify(user) !== JSON.stringify(mockUsersList)
-  }, [user])
+  useEffect(() => {
+    setUser(initialUser)
+    setSavedUser(initialUser)
+  }, [initialUser])
 
-  // Валидация обязательных полей на заполненность
+  const cityOptions = useMemo(() => {
+    const options = cities.map((city) => ({ value: city.name, label: city.name }))
+
+    if (user.location && !options.some((option) => option.value === user.location)) {
+      return [{ value: user.location, label: user.location }, ...options]
+    }
+
+    return options
+  }, [cities, user.location])
+
+  const isDirty = useMemo(() => {
+    return JSON.stringify(user) !== JSON.stringify(savedUser)
+  }, [savedUser, user])
+
   const isFormValid = useMemo(() => {
-    const hasEmail = Boolean(user.email && user.email.trim())
-    const hasFullName = Boolean(user.fullName && user.fullName.trim())
-    const hasBirthday = Boolean(user.birthday && user.birthday.trim())
+    const hasEmail = Boolean(user.email.trim())
+    const hasFullName = Boolean(user.fullName.trim())
+    const hasBirthday = Boolean(user.birthday.trim())
 
     return hasEmail && hasFullName && hasBirthday
-  }, [user.email, user.fullName, user.birthday])
+  }, [user.birthday, user.email, user.fullName])
 
   const canSubmit = isDirty && isFormValid
 
-  // Конвертируем строку даты в объект Date для DatePicker
   const birthdayAsDate = useMemo(() => {
     if (!user.birthday) return null
+
     const date = new Date(user.birthday)
-    return isNaN(date.getTime()) ? null : date
+    return Number.isNaN(date.getTime()) ? null : date
   }, [user.birthday])
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    const { name, value } = e.target
+  const handleInputChange = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const { name, value } = event.target
+
     if (name) {
-      setUser((prev) => ({ ...prev, [name]: value }))
+      setUser((currentUser) => ({ ...currentUser, [name]: value }))
     }
   }
 
-  const handleDirectChange = (key: keyof UserMockData, value: string) => {
-    setUser((prev) => ({ ...prev, [key]: value }))
+  const handleDirectChange = (key: keyof ProfilePersonalData, value: string) => {
+    setUser((currentUser) => ({ ...currentUser, [key]: value }))
   }
 
   const handleDateChange = (date: Date | null) => {
@@ -52,6 +99,7 @@ export const ProfilePersonalDataForm: React.FC = () => {
       handleDirectChange('birthday', '')
       return
     }
+
     const year = date.getFullYear()
     const month = String(date.getMonth() + 1).padStart(2, '0')
     const day = String(date.getDate()).padStart(2, '0')
@@ -63,25 +111,41 @@ export const ProfilePersonalDataForm: React.FC = () => {
     fileInputRef.current?.click()
   }
 
-  const handleAvatarChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0]
-    if (file) {
-      handleDirectChange('avatarUrl', URL.createObjectURL(file))
+  const handleAvatarChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0]
+
+    if (!file) {
+      return
     }
+
+    const reader = new FileReader()
+
+    reader.onload = () => {
+      handleDirectChange('avatarUrl', typeof reader.result === 'string' ? reader.result : '')
+    }
+
+    reader.readAsDataURL(file)
+    event.target.value = ''
   }
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
-    if (!canSubmit) return
-    console.log('SkillSwap — Сохранение данных формы:', user)
+  const handleSubmit = async (event: React.FormEvent) => {
+    event.preventDefault()
+
+    if (!canSubmit || isSaving) return
+
+    try {
+      setIsSaving(true)
+      await onSubmit?.(user)
+      setSavedUser(user)
+    } finally {
+      setIsSaving(false)
+    }
   }
 
   return (
     <div className={cls.card}>
       <form onSubmit={handleSubmit} className={cls.formLayout}>
-        {/* ЛЕВАЯ ЧАСТЬ: Поля формы */}
         <div className={cls.fieldsSection}>
-          {/* Поле Почта */}
           <div className={cls.fieldGroup}>
             <label className={cls.label}>Почта</label>
             <Input
@@ -96,7 +160,6 @@ export const ProfilePersonalDataForm: React.FC = () => {
             </button>
           </div>
 
-          {/* Поле Имя */}
           <div className={cls.fieldGroup}>
             <label className={cls.label}>Имя</label>
             <Input
@@ -108,35 +171,28 @@ export const ProfilePersonalDataForm: React.FC = () => {
             />
           </div>
 
-          {/* Сетка: Дата рождения и Пол */}
           <div className={cls.gridHalf}>
-            <DatePicker label="Дата рождения" value={birthdayAsDate} onChange={handleDateChange} />
+            <DatePicker
+              label="Дата рождения"
+              value={birthdayAsDate}
+              onChange={handleDateChange}
+            />
 
             <Select
               label="Пол"
               selectedValue={user.sex}
-              options={[
-                { value: 'male', label: 'Мужской' },
-                { value: 'female', label: 'Женский' },
-                { value: 'other', label: 'Другой' },
-              ]}
-              onChange={(val: string) => handleDirectChange('sex', val)}
+              options={genderOptions}
+              onChange={(value: string) => handleDirectChange('sex', value)}
             />
           </div>
 
-          {/* Поле Город */}
           <Select
             label="Город"
             selectedValue={user.location}
-            options={[
-              { value: 'Москва', label: 'Москва' },
-              { value: 'Санкт-Петербург', label: 'Санкт-Петербург' },
-              { value: 'Казань', label: 'Казань' },
-            ]}
-            onChange={(val: string) => handleDirectChange('location', val)}
+            options={cityOptions}
+            onChange={(value: string) => handleDirectChange('location', value)}
           />
 
-          {/* Многострочное поле О себе */}
           <div className={cls.fieldGroup}>
             <label className={cls.label}>О себе</label>
             <Input
@@ -149,15 +205,13 @@ export const ProfilePersonalDataForm: React.FC = () => {
             />
           </div>
 
-          {/* Кнопка Сохранить */}
           <div className={cls.submitWrapper}>
-            <Button type="submit" variant="primary" fullWidth disabled={!canSubmit}>
+            <Button type="submit" variant="primary" fullWidth disabled={!canSubmit || isSaving}>
               Сохранить
             </Button>
           </div>
         </div>
 
-        {/* ПРАВАЯ ЧАСТЬ: Блок Аватара */}
         <div className={cls.avatarSection}>
           <Avatar
             src={user.avatarUrl}

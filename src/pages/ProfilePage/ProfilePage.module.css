@@ -1,0 +1,61 @@
+.page {
+  display: flex;
+  min-height: 100vh;
+  flex-direction: column;
+  background-color: #f9faf7;
+}
+
+.main {
+  flex: 1 0 auto;
+  padding: 24px 32px 56px;
+}
+
+.profileContainer {
+  display: flex;
+  width: 100%;
+  max-width: 1440px;
+  align-items: flex-start;
+  gap: 24px;
+  margin: 0 auto;
+}
+
+.profileContent {
+  min-width: 0;
+  flex: 1;
+}
+
+.stateText {
+  min-height: 320px;
+  padding: 48px;
+  border-radius: 14px;
+  margin: 0;
+  background-color: #fff;
+  color: #253017;
+  font-size: 18px;
+  font-weight: 500;
+}
+
+@media (width <= 960px) {
+  .profileContainer {
+    flex-direction: column;
+  }
+
+  .profileContainer > aside {
+    width: 100%;
+    min-height: auto;
+  }
+
+  .profileContent {
+    width: 100%;
+  }
+}
+
+@media (width <= 640px) {
+  .main {
+    padding: 16px 16px 40px;
+  }
+
+  .profileContainer {
+    gap: 16px;
+  }
+}
