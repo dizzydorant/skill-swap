@@ -1,10 +1,12 @@
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useState } from 'react'
+
+import { selectCurrentUserId } from '@/features/auth/model/authSlice'
+import { useAppDispatch, useAppSelector } from '@/store'
 
 import {
-  createSwapRequest,
-  getCurrentUserId,
-  hasPendingRequest,
-} from '../model/exchangeOfferStorage'
+  createRequest,
+  selectHasPendingRequest,
+} from '../model/exchangeRequestsSlice'
 
 interface UseExchangeOfferParams {
   skillId: string
@@ -12,40 +14,42 @@ interface UseExchangeOfferParams {
 }
 
 export const useExchangeOffer = ({ skillId, toUserId }: UseExchangeOfferParams) => {
+  const dispatch = useAppDispatch()
+  const currentUserId = useAppSelector(selectCurrentUserId)
+  const isExchangeOffered = useAppSelector((state) =>
+    currentUserId && skillId ? selectHasPendingRequest(state, skillId, currentUserId) : false,
+  )
   const [isModalOpen, setIsModalOpen] = useState(false)
-  const [isExchangeOffered, setIsExchangeOffered] = useState(false)
 
-  useEffect(() => {
-    if (!skillId) {
-      return
-    }
-
-    setIsExchangeOffered(hasPendingRequest(skillId, getCurrentUserId()))
-  }, [skillId])
+  const canCreateRequest = Boolean(
+    currentUserId && skillId && toUserId && currentUserId !== toUserId && !isExchangeOffered,
+  )
 
   const openModal = useCallback(() => {
-    if (!isExchangeOffered) {
+    if (canCreateRequest) {
       setIsModalOpen(true)
     }
-  }, [isExchangeOffered])
+  }, [canCreateRequest])
 
   const closeModal = useCallback(() => {
     setIsModalOpen(false)
   }, [])
 
   const confirmOffer = useCallback(() => {
-    const fromUserId = getCurrentUserId()
-    const createdRequest = createSwapRequest({
-      skillId,
-      fromUserId,
-      toUserId,
-    })
-
-    if (createdRequest) {
-      setIsExchangeOffered(true)
+    if (!currentUserId || !canCreateRequest) {
       setIsModalOpen(false)
+      return
     }
-  }, [skillId, toUserId])
+
+    dispatch(
+      createRequest({
+        skillId,
+        fromUserId: currentUserId,
+        toUserId,
+      }),
+    )
+    setIsModalOpen(false)
+  }, [canCreateRequest, currentUserId, dispatch, skillId, toUserId])
 
   return {
     isExchangeOffered,

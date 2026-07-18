@@ -1,13 +1,15 @@
 import { useEffect, useState } from 'react'
 import { generatePath, useNavigate } from 'react-router-dom'
 
-import { removeFavoriteSkill } from '@/features/favorites/model/favoritesStorage'
+import { selectRegisteredUsers } from '@/features/auth/model/authSlice'
 import { useFavorites } from '@/features/favorites/hooks/useFavorites'
 import { loadFavoriteCards, type FavoriteCardPreview } from '@/features/favorites/lib/loadFavoriteCards'
+import { selectProfileOverridesByUserId } from '@/features/profile/model/profileSlice'
 import { IconLikeFilled } from '@/shared/assets/icons'
 import { ROUTES } from '@/shared/lib/constants'
 import { Avatar } from '@/shared/ui/Avatar'
 import { IconButton } from '@/shared/ui/IconButton'
+import { useAppSelector } from '@/store'
 
 import styles from './FavoritesDropdown.module.css'
 
@@ -17,7 +19,9 @@ export interface FavoritesDropdownProps {
 
 export const FavoritesDropdown = ({ onClose }: FavoritesDropdownProps) => {
   const navigate = useNavigate()
-  const { favoriteIds } = useFavorites()
+  const { favoriteIds, removeFavorite } = useFavorites()
+  const registeredUsers = useAppSelector(selectRegisteredUsers)
+  const profileOverridesByUserId = useAppSelector(selectProfileOverridesByUserId)
   const [cards, setCards] = useState<FavoriteCardPreview[]>([])
   const [isLoading, setIsLoading] = useState(true)
 
@@ -28,7 +32,11 @@ export const FavoritesDropdown = ({ onClose }: FavoritesDropdownProps) => {
       setIsLoading(true)
 
       try {
-        const loadedCards = await loadFavoriteCards(favoriteIds)
+        const loadedCards = await loadFavoriteCards(
+          favoriteIds,
+          registeredUsers,
+          profileOverridesByUserId,
+        )
 
         if (isMounted) {
           setCards(loadedCards)
@@ -45,7 +53,7 @@ export const FavoritesDropdown = ({ onClose }: FavoritesDropdownProps) => {
     return () => {
       isMounted = false
     }
-  }, [favoriteIds])
+  }, [favoriteIds, profileOverridesByUserId, registeredUsers])
 
   const handleCardClick = (skillId: string) => {
     onClose?.()
@@ -54,7 +62,7 @@ export const FavoritesDropdown = ({ onClose }: FavoritesDropdownProps) => {
 
   const handleRemoveClick = (event: React.MouseEvent, skillId: string) => {
     event.stopPropagation()
-    removeFavoriteSkill(skillId)
+    removeFavorite(skillId)
   }
 
   return (

@@ -15,10 +15,6 @@ export const NotFoundPage = () => {
     navigate('/')
   }
 
-  const handleReportError = () => {
-    console.log('Сообщить об ошибке 404')
-  }
-
   return (
     <div className={styles.page}>
       <Header />
@@ -29,7 +25,7 @@ export const NotFoundPage = () => {
           title="Страница не найдена"
           description="К сожалению, эта страница недоступна. Вернитесь на главную страницу или попробуйте позже"
           onGoHome={handleGoHome}
-          onReportError={handleReportError}
+          onReportError={() => undefined}
         />
       </main>
       <Footer />

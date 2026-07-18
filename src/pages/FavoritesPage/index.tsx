@@ -1,10 +1,7 @@
-// TODO: реализовать страницу FavoritesPage
+import { Navigate } from 'react-router-dom'
+
+import { ROUTES } from '@/shared/lib/constants'
 
 export default function FavoritesPage() {
-  return (
-    <main>
-      <h1>FavoritesPage</h1>
-      <p>Страница в разработке</p>
-    </main>
-  )
+  return <Navigate to={ROUTES.PROFILE} replace />
 }

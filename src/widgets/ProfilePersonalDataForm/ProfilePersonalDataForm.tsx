@@ -1,5 +1,6 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react'
 
+import type { ProfileData } from '@/features/profile/model/types'
 import { Avatar } from '@/shared/ui/Avatar'
 import { Button } from '@/shared/ui/Button'
 import { DatePicker } from '@/shared/ui/DatePicker'
@@ -8,26 +9,15 @@ import { Select } from '@/shared/ui/Select'
 
 import cls from './ProfilePersonalDataForm.module.css'
 
-export interface ProfilePersonalData {
-  id: string
-  email: string
-  fullName: string
-  sex: 'male' | 'female' | 'other' | ''
-  birthday: string
-  avatarUrl: string | null
-  location: string
-  bio: string
-}
-
 export interface ProfileCity {
   id: string
   name: string
 }
 
 export interface ProfilePersonalDataFormProps {
-  initialUser: ProfilePersonalData
+  initialUser: ProfileData
   cities: ProfileCity[]
-  onSubmit?: (user: ProfilePersonalData) => void | Promise<void>
+  onSubmit?: (user: ProfileData) => void | Promise<void>
 }
 
 const genderOptions = [
@@ -41,8 +31,8 @@ export const ProfilePersonalDataForm: React.FC<ProfilePersonalDataFormProps> = (
   cities,
   onSubmit,
 }) => {
-  const [user, setUser] = useState<ProfilePersonalData>(initialUser)
-  const [savedUser, setSavedUser] = useState<ProfilePersonalData>(initialUser)
+  const [user, setUser] = useState<ProfileData>(initialUser)
+  const [savedUser, setSavedUser] = useState<ProfileData>(initialUser)
   const [isSaving, setIsSaving] = useState(false)
   const fileInputRef = useRef<HTMLInputElement>(null)
 
@@ -97,7 +87,7 @@ export const ProfilePersonalDataForm: React.FC<ProfilePersonalDataFormProps> = (
     }
   }
 
-  const handleDirectChange = (key: keyof ProfilePersonalData, value: string) => {
+  const handleDirectChange = (key: keyof ProfileData, value: string) => {
     setUser((currentUser) => ({ ...currentUser, [key]: value }))
   }
 

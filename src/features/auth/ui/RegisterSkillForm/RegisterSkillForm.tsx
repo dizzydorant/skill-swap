@@ -17,7 +17,9 @@ export interface RegisterSkillFormProps {
     subCategoryName: string
     description: string
     images: ImageFile[]
-  }) => void
+  }) => void | Promise<void>
+  isSubmitting?: boolean
+  submitError?: string
   className?: string
 }
 
@@ -34,7 +36,13 @@ interface CategoryDto {
 
 const emptyOptions: SelectOption[] = []
 
-export const RegisterSkillForm = ({ onBack, onNext, className = '' }: RegisterSkillFormProps) => {
+export const RegisterSkillForm = ({
+  onBack,
+  onNext,
+  isSubmitting = false,
+  submitError = '',
+  className = '',
+}: RegisterSkillFormProps) => {
   const [title, setTitle] = useState('')
   const [categoryId, setCategoryId] = useState('')
   const [subCategoryId, setSubCategoryId] = useState('')
@@ -178,7 +186,9 @@ export const RegisterSkillForm = ({ onBack, onNext, className = '' }: RegisterSk
         <Button className={cls.actionButton} variant="outline" type="button" onClick={onBack}>
           Назад
         </Button>
-        <Button className={cls.actionButton} type="submit">
+        {submitError ? <p className={cls.submitError}>{submitError}</p> : null}
+
+        <Button className={cls.actionButton} type="submit" disabled={isSubmitting}>
           Продолжить
         </Button>
       </div>

@@ -1,4 +1,8 @@
-import { getRegisteredSkillPageData } from '@/features/auth/model/authUtils'
+import {
+  getRegisteredSkillPageData,
+  type RegisteredUser,
+} from '@/features/auth/model/authUtils'
+import type { ProfileOverridesByUserId } from '@/features/profile/model/types'
 import { fetchJson } from '@/pages/CatalogPage/catalogData'
 
 export interface FavoriteCardPreview {
@@ -22,7 +26,11 @@ interface UserDbItem {
   avatarUrl: string | null
 }
 
-export const loadFavoriteCards = async (skillIds: string[]): Promise<FavoriteCardPreview[]> => {
+export const loadFavoriteCards = async (
+  skillIds: string[],
+  registeredUsers: RegisteredUser[],
+  profileOverridesByUserId: ProfileOverridesByUserId,
+): Promise<FavoriteCardPreview[]> => {
   if (skillIds.length === 0) {
     return []
   }
@@ -32,10 +40,20 @@ export const loadFavoriteCards = async (skillIds: string[]): Promise<FavoriteCar
     fetchJson<UserDbItem[]>('/db/users.json'),
   ])
 
-  const registeredData = getRegisteredSkillPageData()
+  const registeredData = getRegisteredSkillPageData(registeredUsers, profileOverridesByUserId)
   const allSkills = [...skills, ...registeredData.skills]
   const allUsers = [
-    ...users,
+    ...users.map((user) => {
+      const profileOverride = profileOverridesByUserId[user.id]
+
+      return profileOverride
+        ? {
+            ...user,
+            fullName: profileOverride.fullName,
+            avatarUrl: profileOverride.avatarUrl,
+          }
+        : user
+    }),
     ...registeredData.users.map((user) => ({
       id: user.id,
       fullName: user.fullName,

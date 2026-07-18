@@ -3,6 +3,10 @@ import { generatePath, useLocation, useNavigate, useSearchParams } from 'react-r
 
 import { useAuthUser } from '@/features/auth/model/useAuthUser'
 import { useFavorites } from '@/features/favorites/hooks/useFavorites'
+import { selectOfferedSkillIds } from '@/features/exchange-offer/model/exchangeRequestsSlice'
+import { selectProfileOverridesByUserId } from '@/features/profile/model/profileSlice'
+import type { ProfileOverridesByUserId } from '@/features/profile/model/types'
+import { useAppSelector } from '@/store'
 
 import { Footer } from '../../widgets/Footer'
 import { Header } from '../../widgets/Header'
@@ -14,10 +18,6 @@ import type { City, SkillCategory } from '../../widgets/CatalogFilter/model/type
 import error500 from '../../shared/assets/images/errors/500.svg'
 import error404 from '../../shared/assets/images/errors/404.svg'
 import { Button } from '../../shared/ui/Button'
-import {
-  getCurrentUserId,
-  getSwapRequests,
-} from '@/features/exchange-offer/model/exchangeOfferStorage'
 import { ROUTES } from '@/shared/lib/constants'
 
 import {
@@ -31,29 +31,42 @@ import { useCatalogFilters } from './hooks/useCatalogFilters'
 import cls from './index.module.css'
 
 const RECOMMENDED_PAGE_SIZE = 9
+const EMPTY_OFFERED_SKILL_IDS = new Set<string>()
 const getSkillPath = (id: string) => generatePath(ROUTES.SKILL, { id })
 
-const getOfferedSkillIds = () => {
-  const currentUserId = getCurrentUserId()
+const applyProfileOverridesToCatalogUsers = (
+  users: CatalogUser[],
+  overridesByUserId: ProfileOverridesByUserId,
+): CatalogUser[] =>
+  users.map((user) => {
+    const profileOverride = overridesByUserId[user.id]
 
-  return new Set(
-    getSwapRequests()
-      .filter((request) => request.fromUserId === currentUserId && request.status === 'pending')
-      .map((request) => request.skillId),
-  )
-}
+    return profileOverride
+      ? {
+          ...user,
+          fullName: profileOverride.fullName,
+          sex: profileOverride.sex || user.sex,
+          birthday: profileOverride.birthday || user.birthday,
+          avatarUrl: profileOverride.avatarUrl,
+          location: profileOverride.location,
+        }
+      : user
+  })
 
 export const CatalogPage: FC = () => {
   const navigate = useNavigate()
   const location = useLocation()
   const [searchParams, setSearchParams] = useSearchParams()
-  const { isAuthenticated } = useAuthUser()
+  const { isAuthenticated, user: authUser } = useAuthUser()
   const { toggleFavorite, favoriteIds } = useFavorites()
   const [catalogData, setCatalogData] = useState<CatalogDbData | null>(null)
   const [isLoading, setIsLoading] = useState(true)
   const [loadError, setLoadError] = useState<Error | null>(null)
   const [visibleRecommendedCount, setVisibleRecommendedCount] = useState(RECOMMENDED_PAGE_SIZE)
-  const [offeredSkillIds, setOfferedSkillIds] = useState(() => getOfferedSkillIds())
+  const profileOverridesByUserId = useAppSelector(selectProfileOverridesByUserId)
+  const offeredSkillIds = useAppSelector((state) =>
+    authUser ? selectOfferedSkillIds(state, authUser.id) : EMPTY_OFFERED_SKILL_IDS,
+  )
   const searchValue = searchParams.get('search') ?? ''
 
   const {
@@ -104,47 +117,41 @@ export const CatalogPage: FC = () => {
     }
   }, [])
 
-  useEffect(() => {
-    const refreshOfferedSkillIds = () => {
-      setOfferedSkillIds(getOfferedSkillIds())
-    }
-
-    refreshOfferedSkillIds()
-    window.addEventListener('focus', refreshOfferedSkillIds)
-    window.addEventListener('storage', refreshOfferedSkillIds)
-    window.addEventListener('skillswap-requests-storage', refreshOfferedSkillIds)
-
-    return () => {
-      window.removeEventListener('focus', refreshOfferedSkillIds)
-      window.removeEventListener('storage', refreshOfferedSkillIds)
-      window.removeEventListener('skillswap-requests-storage', refreshOfferedSkillIds)
-    }
-  }, [])
-
   // фильтр поиска
-  const filteredData = useMemo(() => {
+  const catalogDataWithProfileOverrides = useMemo(() => {
     if (!catalogData) {
+      return null
+    }
+
+    return {
+      ...catalogData,
+      users: applyProfileOverridesToCatalogUsers(catalogData.users, profileOverridesByUserId),
+    }
+  }, [catalogData, profileOverridesByUserId])
+
+  const filteredData = useMemo(() => {
+    if (!catalogDataWithProfileOverrides) {
       return null
     }
 
     const normalizedSearch = searchValue.trim().toLowerCase()
 
     if (!normalizedSearch) {
-      return catalogData
+      return catalogDataWithProfileOverrides
     }
 
     const categoryById = new Map(
-      catalogData.categories.map((category) => [category.id, category.name]),
+      catalogDataWithProfileOverrides.categories.map((category) => [category.id, category.name]),
     )
     const subCategoryById = new Map<number, string>()
 
-    catalogData.categories.forEach((category) => {
+    catalogDataWithProfileOverrides.categories.forEach((category) => {
       category.subCategories.forEach((subCategory) => {
         subCategoryById.set(subCategory.id, subCategory.name)
       })
     })
 
-    const filteredSkills = catalogData.skills.filter((skill) => {
+    const filteredSkills = catalogDataWithProfileOverrides.skills.filter((skill) => {
       const title = skill.title.toLowerCase()
       const category = categoryById.get(skill.categoryId)?.toLowerCase() ?? ''
       const subCategory = subCategoryById.get(skill.subCategoryId)?.toLowerCase() ?? ''
@@ -157,10 +164,10 @@ export const CatalogPage: FC = () => {
     })
 
     return {
-      ...catalogData,
+      ...catalogDataWithProfileOverrides,
       skills: filteredSkills,
     }
-  }, [catalogData, searchValue])
+  }, [catalogDataWithProfileOverrides, searchValue])
 
   const preparedData = useMemo(
     () =>

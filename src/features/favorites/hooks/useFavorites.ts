@@ -1,31 +1,76 @@
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect } from 'react'
 
+import { selectCurrentUserId } from '@/features/auth/model/authSlice'
+import { useAppDispatch, useAppSelector } from '@/store'
+
+import { loadMockUserFavoriteIds } from '../lib/loadMockUserFavoriteIds'
 import {
-  getFavoriteSkillIds,
-  isFavoriteSkill,
-  subscribeToFavoritesStorage,
-  toggleFavoriteSkill,
-} from '../model/favoritesStorage'
+  hydrateUserFavorites,
+  removeFavorite as removeFavoriteAction,
+  selectCurrentUserFavoriteIds,
+  selectHasFavoritesEntryForCurrentUser,
+  toggleFavorite as toggleFavoriteAction,
+} from '../model/favoritesSlice'
 
 export const useFavorites = () => {
-  const [favoriteIds, setFavoriteIds] = useState<string[]>(() => getFavoriteSkillIds())
+  const dispatch = useAppDispatch()
+  const currentUserId = useAppSelector(selectCurrentUserId)
+  const favoriteIds = useAppSelector(selectCurrentUserFavoriteIds)
+  const hasFavoritesEntry = useAppSelector(selectHasFavoritesEntryForCurrentUser)
 
   useEffect(() => {
-    return subscribeToFavoritesStorage(() => {
-      setFavoriteIds(getFavoriteSkillIds())
-    })
-  }, [])
+    if (!currentUserId || hasFavoritesEntry) {
+      return
+    }
 
-  const isFavorite = useCallback((skillId: string) => isFavoriteSkill(skillId), [])
+    let isMounted = true
 
-  const toggleFavorite = useCallback((skillId: string) => {
-    toggleFavoriteSkill(skillId)
-    setFavoriteIds(getFavoriteSkillIds())
-  }, [])
+    const hydrateMockFavorites = async () => {
+      const skillIds = await loadMockUserFavoriteIds(currentUserId)
+
+      if (isMounted) {
+        dispatch(hydrateUserFavorites({ userId: currentUserId, skillIds }))
+      }
+    }
+
+    hydrateMockFavorites()
+
+    return () => {
+      isMounted = false
+    }
+  }, [currentUserId, dispatch, hasFavoritesEntry])
+
+  const isFavorite = useCallback(
+    (skillId: string) => favoriteIds.includes(skillId),
+    [favoriteIds],
+  )
+
+  const toggleFavorite = useCallback(
+    (skillId: string) => {
+      if (!currentUserId) {
+        return
+      }
+
+      dispatch(toggleFavoriteAction({ userId: currentUserId, skillId }))
+    },
+    [currentUserId, dispatch],
+  )
+
+  const removeFavorite = useCallback(
+    (skillId: string) => {
+      if (!currentUserId) {
+        return
+      }
+
+      dispatch(removeFavoriteAction({ userId: currentUserId, skillId }))
+    },
+    [currentUserId, dispatch],
+  )
 
   return {
     favoriteIds,
     isFavorite,
+    removeFavorite,
     toggleFavorite,
   }
 }

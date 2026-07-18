@@ -2,12 +2,10 @@ import { ChangeEvent, useEffect, useRef, useState } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { useAuthUser } from '@/features/auth/model/useAuthUser'
 import { useFavorites } from '@/features/favorites/hooks/useFavorites'
+import { selectUnreadNotificationsCount } from '@/features/notifications/model/notificationsSlice'
+import { selectCurrentProfile } from '@/features/profile/model/profileSlice'
 import { ROUTES } from '@/shared/lib/constants'
-import {
-  getCurrentUserId,
-  getIncomingSwapRequests,
-  subscribeToSwapRequestsStorage,
-} from '@/features/exchange-offer/model/exchangeOfferStorage'
+import { useAppSelector } from '@/store'
 import type { HeaderProps } from '../Header'
 
 export const useHeader = (props: HeaderProps) => {
@@ -25,28 +23,10 @@ export const useHeader = (props: HeaderProps) => {
   const navigate = useNavigate()
   const location = useLocation()
   const headerRef = useRef<HTMLElement>(null)
-  const { user: authUser, logout } = useAuthUser()
+  const { logout } = useAuthUser()
+  const currentProfile = useAppSelector(selectCurrentProfile)
   const { favoriteIds } = useFavorites()
-
-  const currentUserId = getCurrentUserId()
-  const [exchangeRequestsCount, setExchangeRequestsCount] = useState(
-    () => getIncomingSwapRequests(currentUserId).length,
-  )
-
-  useEffect(() => {
-    const updateCount = () => {
-      setExchangeRequestsCount(getIncomingSwapRequests(currentUserId).length)
-    }
-
-    updateCount()
-    const unsubscribe = subscribeToSwapRequestsStorage(updateCount)
-    window.addEventListener('focus', updateCount)
-
-    return () => {
-      unsubscribe()
-      window.removeEventListener('focus', updateCount)
-    }
-  }, [currentUserId])
+  const notificationsCount = useAppSelector(selectUnreadNotificationsCount)
 
   const [isSkillsOpen, setIsSkillsOpen] = useState(false)
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false)
@@ -55,8 +35,8 @@ export const useHeader = (props: HeaderProps) => {
 
   const resolvedUser =
     user === undefined
-      ? authUser
-        ? { name: authUser.name, avatar: authUser.avatarUrl ?? undefined }
+      ? currentProfile
+        ? { name: currentProfile.fullName, avatar: currentProfile.avatarUrl ?? undefined }
         : null
       : user
   const isAuthorized = Boolean(resolvedUser)
@@ -166,7 +146,7 @@ export const useHeader = (props: HeaderProps) => {
   return {
     headerRef,
     favoriteIds,
-    exchangeRequestsCount,
+    notificationsCount,
     isSkillsOpen,
     isUserMenuOpen,
     isFavoritesOpen,

@@ -1,13 +1,16 @@
 import { useEffect, useState } from 'react'
 import { generatePath, useNavigate } from 'react-router-dom'
 
+import { selectRegisteredUsers } from '@/features/auth/model/authSlice'
 import { useNotifications } from '@/features/notifications/hooks/useNotifications'
 import {
   loadNotificationPreviews,
   type NotificationPreview,
 } from '@/features/notifications/lib/loadNotificationPreviews'
+import { selectProfileOverridesByUserId } from '@/features/profile/model/profileSlice'
 import { ROUTES } from '@/shared/lib/constants'
 import { Avatar } from '@/shared/ui/Avatar'
+import { useAppSelector } from '@/store'
 
 import styles from './NotificationsDropdown.module.css'
 
@@ -32,7 +35,9 @@ export interface NotificationsDropdownProps {
 
 export const NotificationsDropdown = ({ onClose }: NotificationsDropdownProps) => {
   const navigate = useNavigate()
-  const { notifications, markAllAsSeen } = useNotifications()
+  const { notifications, markAllAsSeen, markNotificationAsSeen } = useNotifications()
+  const registeredUsers = useAppSelector(selectRegisteredUsers)
+  const profileOverridesByUserId = useAppSelector(selectProfileOverridesByUserId)
   const [items, setItems] = useState<NotificationPreview[]>([])
   const [isLoading, setIsLoading] = useState(true)
 
@@ -47,7 +52,11 @@ export const NotificationsDropdown = ({ onClose }: NotificationsDropdownProps) =
       setIsLoading(true)
 
       try {
-        const loadedItems = await loadNotificationPreviews(notifications)
+        const loadedItems = await loadNotificationPreviews(
+          notifications,
+          registeredUsers,
+          profileOverridesByUserId,
+        )
 
         if (isMounted) {
           setItems(loadedItems)
@@ -64,11 +73,12 @@ export const NotificationsDropdown = ({ onClose }: NotificationsDropdownProps) =
     return () => {
       isMounted = false
     }
-  }, [notifications])
+  }, [notifications, profileOverridesByUserId, registeredUsers])
 
-  const handleItemClick = (skillId: string) => {
+  const handleItemClick = (item: NotificationPreview) => {
+    markNotificationAsSeen(item.id)
     onClose?.()
-    navigate(generatePath(ROUTES.SKILL, { id: skillId }))
+    navigate(generatePath(ROUTES.SKILL, { id: item.skillId }))
   }
 
   return (
@@ -89,7 +99,7 @@ export const NotificationsDropdown = ({ onClose }: NotificationsDropdownProps) =
               <button
                 className={styles.item}
                 type="button"
-                onClick={() => handleItemClick(item.skillId)}
+                onClick={() => handleItemClick(item)}
               >
                 <Avatar
                   className={styles.avatar}

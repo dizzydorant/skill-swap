@@ -1,6 +1,9 @@
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback } from 'react'
+
 import type { AuthUser } from '@/shared/types'
-import { getAuthUser, logout, subscribeToAuthStorage } from './authUtils'
+import { useAppDispatch, useAppSelector } from '@/store'
+
+import { logout, selectAuthUser, selectIsAuthenticated } from './authSlice'
 
 interface UseAuthUserResult {
   user: AuthUser | null
@@ -9,22 +12,17 @@ interface UseAuthUserResult {
 }
 
 export const useAuthUser = (): UseAuthUserResult => {
-  const [user, setUser] = useState<AuthUser | null>(() => getAuthUser())
-
-  useEffect(() => {
-    return subscribeToAuthStorage(() => {
-      setUser(getAuthUser())
-    })
-  }, [])
+  const dispatch = useAppDispatch()
+  const user = useAppSelector(selectAuthUser)
+  const isAuthenticated = useAppSelector(selectIsAuthenticated)
 
   const handleLogout = useCallback(() => {
-    logout()
-    setUser(null)
-  }, [])
+    dispatch(logout())
+  }, [dispatch])
 
   return {
     user,
-    isAuthenticated: Boolean(user),
+    isAuthenticated,
     logout: handleLogout,
   }
 }

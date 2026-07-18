@@ -9,6 +9,7 @@ export interface SkillDetailsCardProps {
   description: string
   onExchange?: () => void
   isExchangeOffered?: boolean
+  isExchangeDisabled?: boolean
   className?: string
   children?: ReactNode
   actionText?: string
@@ -21,6 +22,7 @@ export const SkillDetailsCard = ({
   description,
   onExchange,
   isExchangeOffered = false,
+  isExchangeDisabled = false,
   className = '',
   children,
   actionText,
@@ -49,7 +51,7 @@ export const SkillDetailsCard = ({
             className={styles.exchangeButton}
             variant={isExchangeOffered ? 'outline' : 'primary'}
             onClick={onExchange}
-            disabled={isExchangeOffered}
+            disabled={isExchangeOffered || isExchangeDisabled}
           >
             {buttonText}
           </Button>

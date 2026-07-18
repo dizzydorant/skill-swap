@@ -11,16 +11,18 @@ import {
   clearCreatedSkillSuccess,
   getCreatedSkillSuccessSkillId,
   getRegisteredSkillPageData,
+  type RegisteredUser,
 } from '@/features/auth/model/authUtils'
 
 import { useFavorites } from '@/features/favorites/hooks/useFavorites'
+import { selectRegisteredUsers } from '@/features/auth/model/authSlice'
 import { useAuthUser } from '@/features/auth/model/useAuthUser'
 import { useExchangeOffer } from '@/features/exchange-offer/hooks/useExchangeOffer'
 import { ExchangeOfferModal } from '@/features/exchange-offer/ui/ExchangeOfferModal'
-import {
-  getSwapRequests,
-  saveSwapRequests,
-} from '@/features/exchange-offer/model/exchangeOfferStorage'
+import { acceptRequest } from '@/features/exchange-offer/model/exchangeRequestsSlice'
+import { selectProfileOverridesByUserId } from '@/features/profile/model/profileSlice'
+import type { ProfileOverridesByUserId } from '@/features/profile/model/types'
+import { useAppDispatch, useAppSelector } from '@/store'
 import { Footer } from '@/widgets/Footer'
 import { Header } from '@/widgets/Header'
 import { ErrorState } from '@/widgets/ErrorState'
@@ -88,16 +90,37 @@ const CHIP_TEXT_COLOR = '#253017'
 
 const getSkillPath = (id: string) => generatePath(ROUTES.SKILL, { id })
 
+const applyProfileOverridesToUsers = (
+  users: UserDbItem[],
+  overridesByUserId: ProfileOverridesByUserId,
+): UserDbItem[] =>
+  users.map((user) => {
+    const profileOverride = overridesByUserId[user.id]
+
+    return profileOverride
+      ? {
+          ...user,
+          fullName: profileOverride.fullName,
+          birthday: profileOverride.birthday || user.birthday,
+          avatarUrl: profileOverride.avatarUrl,
+          location: profileOverride.location,
+          bio: profileOverride.bio,
+        }
+      : user
+  })
+
 const mergeSkillPageData = (
   skills: SkillDbItem[],
   users: UserDbItem[],
   categories: SkillCategoryDbItem[],
+  registeredUsers: RegisteredUser[],
+  profileOverridesByUserId: ProfileOverridesByUserId,
 ): SkillPageDbData => {
-  const registeredData = getRegisteredSkillPageData()
+  const registeredData = getRegisteredSkillPageData(registeredUsers, profileOverridesByUserId)
 
   return {
     skills: [...skills, ...registeredData.skills],
-    users: [...users, ...registeredData.users],
+    users: [...applyProfileOverridesToUsers(users, profileOverridesByUserId), ...registeredData.users],
     categories,
   }
 }
@@ -180,12 +203,15 @@ const createSkillsByAuthorId = (skills: SkillDbItem[]): Map<string, SkillDbItem[
 }
 
 export default function SkillPage() {
+  const dispatch = useAppDispatch()
   const { id } = useParams<{ id: string }>()
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
   const [data, setData] = useState<SkillPageDbData | null>(null)
   const location = useLocation()
-  const { isAuthenticated } = useAuthUser()
+  const { isAuthenticated, user: authUser } = useAuthUser()
+  const registeredUsers = useAppSelector(selectRegisteredUsers)
+  const profileOverridesByUserId = useAppSelector(selectProfileOverridesByUserId)
   const [isLoading, setIsLoading] = useState(true)
   const [loadError, setLoadError] = useState<Error | null>(null)
 
@@ -235,7 +261,15 @@ export default function SkillPage() {
         ])
 
         if (isMounted) {
-          setData(mergeSkillPageData(skills, users, categories))
+          setData(
+            mergeSkillPageData(
+              skills,
+              users,
+              categories,
+              registeredUsers,
+              profileOverridesByUserId,
+            ),
+          )
         }
       } catch (error) {
         if (isMounted) {
@@ -253,7 +287,7 @@ export default function SkillPage() {
     return () => {
       isMounted = false
     }
-  }, [])
+  }, [profileOverridesByUserId, registeredUsers])
 
   useEffect(() => {
     setIsCreatedSkillModalOpen(Boolean(id && getCreatedSkillSuccessSkillId() === id))
@@ -357,6 +391,7 @@ export default function SkillPage() {
   })
 
   const isSkillLiked = id ? isFavorite(id) : false
+  const isOwnSkill = Boolean(authUser && preparedData?.author.id === authUser.id)
 
   const handleExchangeClick = useCallback(() => {
     if (!isAuthenticated) {
@@ -408,15 +443,7 @@ export default function SkillPage() {
   }
 
   const handleAcceptExchange = (id: string) => {
-    const requests = getSwapRequests()
-
-    const updatedRequests = requests.map((req) =>
-      req.id === id
-        ? { ...req, status: 'accepted' as const, updatedAt: new Date().toISOString() }
-        : req,
-    )
-
-    saveSwapRequests(updatedRequests)
+    dispatch(acceptRequest({ requestId: id }))
 
     alert('Обмен успешно принят! Теперь вы можете связаться с пользователем.')
 
@@ -473,7 +500,10 @@ export default function SkillPage() {
                 subCategory={preparedData.subCategoryName}
                 description={preparedData.skill.description}
                 isExchangeOffered={isFromNotification ? false : isExchangeOffered}
-                actionText={isFromNotification ? 'Принять обмен' : undefined}
+                isExchangeDisabled={!isFromNotification && isOwnSkill}
+                actionText={
+                  isFromNotification ? 'Принять обмен' : isOwnSkill ? 'Это ваш навык' : undefined
+                }
                 onExchange={
                   isFromNotification ? () => handleAcceptExchange(requestId) : handleExchangeClick
                 }

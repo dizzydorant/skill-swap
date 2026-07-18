@@ -1,4 +1,8 @@
-import { getRegisteredSkillPageData } from '@/features/auth/model/authUtils'
+import {
+  getRegisteredSkillPageData,
+  type RegisteredUser,
+} from '@/features/auth/model/authUtils'
+import type { ProfileOverridesByUserId } from '@/features/profile/model/types'
 import { fetchJson } from '@/pages/CatalogPage/catalogData'
 import type { SwapRequest } from '@/shared/types'
 
@@ -25,6 +29,8 @@ interface UserDbItem {
 
 export const loadNotificationPreviews = async (
   requests: SwapRequest[],
+  registeredUsers: RegisteredUser[],
+  profileOverridesByUserId: ProfileOverridesByUserId,
 ): Promise<NotificationPreview[]> => {
   if (requests.length === 0) {
     return []
@@ -35,10 +41,23 @@ export const loadNotificationPreviews = async (
     fetchJson<UserDbItem[]>('/db/users.json'),
   ])
 
-  const registeredData = getRegisteredSkillPageData()
+  const registeredData = getRegisteredSkillPageData(registeredUsers, profileOverridesByUserId)
 
   const userById = new Map([
-    ...users.map((user) => [user.id, user] as const),
+    ...users.map((user) => {
+      const profileOverride = profileOverridesByUserId[user.id]
+
+      return [
+        user.id,
+        profileOverride
+          ? {
+              ...user,
+              fullName: profileOverride.fullName,
+              avatarUrl: profileOverride.avatarUrl,
+            }
+          : user,
+      ] as const
+    }),
     ...registeredData.users.map(
       (user) =>
         [user.id, { id: user.id, fullName: user.fullName, avatarUrl: user.avatarUrl }] as const,

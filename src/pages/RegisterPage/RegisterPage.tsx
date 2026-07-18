@@ -1,6 +1,10 @@
 import { useState } from 'react'
 import { generatePath, useNavigate } from 'react-router-dom'
 import {
+  registerSuccess,
+  selectRegisteredUsers,
+} from '@/features/auth/model/authSlice'
+import {
   getRegisteredUserSkillId,
   isEmailTaken,
   markCreatedSkillSuccess,
@@ -9,11 +13,8 @@ import {
 import { RegisterCredentialsForm } from '@/features/auth/ui/RegisterCredentialsForm'
 import { RegisterProfileForm } from '@/features/auth/ui/RegisterProfileForm'
 import { RegisterSkillForm, type ImageFile } from '@/features/auth/ui/RegisterSkillForm'
-import {
-  RegisterSkillPreviewModal,
-  type RegisterSkillPreviewData,
-} from '@/features/auth/ui/RegisterSkillPreviewModal'
 import { ROUTES } from '@/shared/lib/constants'
+import { useAppDispatch, useAppSelector } from '@/store'
 import lampImage from '@/shared/assets/images/auth/lampochka.svg'
 import boardImage from '@/shared/assets/images/auth/school-board.svg'
 import userInfoImage from '@/shared/assets/images/auth/user-info.svg'
@@ -82,12 +83,11 @@ const promoByStep: Record<
 }
 
 export default function RegisterPage() {
+  const dispatch = useAppDispatch()
+  const registeredUsers = useAppSelector(selectRegisteredUsers)
   const [step, setStep] = useState<RegisterStep>(1)
   const [credentialsData, setCredentialsData] = useState<CredentialsFormData | null>(null)
   const [profileData, setProfileData] = useState<ProfileFormData | null>(null)
-  const [skillData, setSkillData] = useState<SkillFormData | null>(null)
-  const [previewSkill, setPreviewSkill] = useState<RegisterSkillPreviewData | null>(null)
-  const [isPreviewOpen, setIsPreviewOpen] = useState(false)
   const [emailError, setEmailError] = useState('')
   const [submitError, setSubmitError] = useState('')
   const [isSubmitting, setIsSubmitting] = useState(false)
@@ -106,7 +106,7 @@ export default function RegisterPage() {
     setEmailError('')
 
     try {
-      if (await isEmailTaken(data.email)) {
+      if (await isEmailTaken(data.email, registeredUsers)) {
         setEmailError('Пользователь с таким email уже существует')
         return
       }
@@ -123,27 +123,8 @@ export default function RegisterPage() {
     setStep(3)
   }
 
-  const handleSkillPreview = (data: SkillFormData) => {
-    setSubmitError('')
-    setSkillData(data)
-    setPreviewSkill({
-      title: data.title,
-      categoryName: data.categoryName,
-      subCategoryName: data.subCategoryName,
-      description: data.description,
-      images: data.images.map((image) => image.preview),
-    })
-    setIsPreviewOpen(true)
-  }
-
-  const handlePreviewEdit = () => {
-    setIsPreviewOpen(false)
-    setSubmitError('')
-  }
-
-  const handleFinish = async () => {
-    if (!credentialsData || !profileData || !skillData) {
-      setIsPreviewOpen(false)
+  const handleFinish = async (skillData: SkillFormData) => {
+    if (!credentialsData || !profileData) {
       setStep(1)
       return
     }
@@ -152,21 +133,25 @@ export default function RegisterPage() {
     setIsSubmitting(true)
 
     try {
-      const authUser = await registerUser({
-        ...credentialsData,
-        ...profileData,
-        offeredSkill: {
-          title: skillData.title,
-          categoryId: skillData.categoryId,
-          subCategoryId: skillData.subCategoryId,
-          categoryName: skillData.categoryName,
-          subCategoryName: skillData.subCategoryName,
-          description: skillData.description,
-          images: skillData.images.map((image) => image.preview),
+      const { authUser, registeredUser } = await registerUser(
+        {
+          ...credentialsData,
+          ...profileData,
+          offeredSkill: {
+            title: skillData.title,
+            categoryId: skillData.categoryId,
+            subCategoryId: skillData.subCategoryId,
+            categoryName: skillData.categoryName,
+            subCategoryName: skillData.subCategoryName,
+            description: skillData.description,
+            images: skillData.images.map((image) => image.preview),
+          },
         },
-      })
+        registeredUsers,
+      )
       const skillId = getRegisteredUserSkillId(authUser.id)
 
+      dispatch(registerSuccess({ authUser, registeredUser }))
       markCreatedSkillSuccess(skillId)
       navigate(generatePath(ROUTES.SKILL, { id: skillId }), { replace: true })
     } catch (error) {
@@ -177,47 +162,41 @@ export default function RegisterPage() {
   }
 
   return (
-    <>
-      <AuthLayout
-        title={`Шаг ${step} из ${TOTAL_STEPS}`}
-        step={step}
-        totalSteps={TOTAL_STEPS}
-        onClose={handleClose}
-        leftSlot={
-          <>
-            {step === 1 ? (
-              <RegisterCredentialsForm
-                onNext={handleCredentialsNext}
-                emailError={emailError}
-                onEmailErrorReset={() => setEmailError('')}
-              />
-            ) : null}
-            {step === 2 ? (
-              <RegisterProfileForm onBack={handleBack} onNext={handleProfileNext} />
-            ) : null}
-            {step === 3 ? (
-              <RegisterSkillForm onBack={handleBack} onNext={handleSkillPreview} />
-            ) : null}
-          </>
-        }
-        rightSlot={
-          <AuthPromoCard
-            imageSrc={promo.imageSrc}
-            imageAlt={promo.imageAlt}
-            title={promo.title}
-            description={promo.description}
-          />
-        }
-      />
-
-      <RegisterSkillPreviewModal
-        isOpen={isPreviewOpen}
-        skill={previewSkill}
-        isSubmitting={isSubmitting}
-        submitError={submitError}
-        onEdit={handlePreviewEdit}
-        onDone={handleFinish}
-      />
-    </>
+    <AuthLayout
+      title={`Шаг ${step} из ${TOTAL_STEPS}`}
+      step={step}
+      totalSteps={TOTAL_STEPS}
+      onClose={handleClose}
+      leftSlot={
+        <>
+          {step === 1 ? (
+            <RegisterCredentialsForm
+              onNext={handleCredentialsNext}
+              emailError={emailError}
+              onEmailErrorReset={() => setEmailError('')}
+            />
+          ) : null}
+          {step === 2 ? (
+            <RegisterProfileForm onBack={handleBack} onNext={handleProfileNext} />
+          ) : null}
+          {step === 3 ? (
+            <RegisterSkillForm
+              onBack={handleBack}
+              onNext={handleFinish}
+              isSubmitting={isSubmitting}
+              submitError={submitError}
+            />
+          ) : null}
+        </>
+      }
+      rightSlot={
+        <AuthPromoCard
+          imageSrc={promo.imageSrc}
+          imageAlt={promo.imageAlt}
+          title={promo.title}
+          description={promo.description}
+        />
+      }
+    />
   )
 }

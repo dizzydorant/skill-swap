@@ -1,8 +1,13 @@
 import { useState } from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
+import {
+  loginSuccess,
+  selectRegisteredUsers,
+} from '@/features/auth/model/authSlice'
 import { login } from '@/features/auth/model/authUtils'
 import { LoginForm } from '@/features/auth/ui/LoginForm'
 import { ROUTES } from '@/shared/lib/constants'
+import { useAppDispatch, useAppSelector } from '@/store'
 import loginImage from '@/shared/assets/images/auth/lampochka.svg'
 import { AuthLayout } from '@/widgets/AuthLayout'
 import { AuthPromoCard } from '@/widgets/AuthPromoCard'
@@ -29,6 +34,8 @@ const getSafeRedirectPath = (from: string | null): string => {
 export default function LoginPage() {
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
+  const dispatch = useAppDispatch()
+  const registeredUsers = useAppSelector(selectRegisteredUsers)
   const [authError, setAuthError] = useState('')
 
   const handleClose = () => {
@@ -39,7 +46,8 @@ export default function LoginPage() {
     setAuthError('')
 
     try {
-      await login(data.email, data.password)
+      const user = await login(data.email, data.password, registeredUsers)
+      dispatch(loginSuccess(user))
       navigate(getSafeRedirectPath(searchParams.get('from')), { replace: true })
     } catch (error) {
       setAuthError(error instanceof Error ? error.message : 'Не удалось войти')
