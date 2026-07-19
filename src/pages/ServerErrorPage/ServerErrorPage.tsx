@@ -15,10 +15,6 @@ export const ServerErrorPage = () => {
     navigate('/')
   }
 
-  const handleReportError = () => {
-    console.log('Сообщить об ошибке 500')
-  }
-
   return (
     <div className={styles.page}>
       <Header />
@@ -29,7 +25,7 @@ export const ServerErrorPage = () => {
           title="На сервере произошла ошибка"
           description="Попробуйте позже или вернитесь на главную страницу"
           onGoHome={handleGoHome}
-          onReportError={handleReportError}
+          onReportError={() => undefined}
         />
       </main>
       <Footer />

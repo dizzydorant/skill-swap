@@ -37,7 +37,7 @@ export const Header = (props: HeaderProps) => {
   const {
     headerRef,
     favoriteIds,
-    exchangeRequestsCount,
+    notificationsCount,
     isSkillsOpen,
     isUserMenuOpen,
     isFavoritesOpen,
@@ -110,9 +110,9 @@ export const Header = (props: HeaderProps) => {
                   aria-expanded={isNotificationsOpen}
                   onClick={handleNotificationsClick}
                 />
-                {exchangeRequestsCount > 0 ? (
+                {notificationsCount > 0 ? (
                   <span className={styles.badge} aria-hidden="true">
-                    {exchangeRequestsCount}
+                    {notificationsCount}
                   </span>
                 ) : null}
                 {isNotificationsOpen ? (

@@ -7,8 +7,3 @@ export { RegisterProfileForm } from './RegisterProfileForm'
 export type { RegisterProfileFormProps } from './RegisterProfileForm'
 export { RegisterSkillForm } from './RegisterSkillForm'
 export type { RegisterSkillFormProps, ImageFile } from './RegisterSkillForm'
-export { RegisterSkillPreviewModal } from './RegisterSkillPreviewModal'
-export type {
-  RegisterSkillPreviewData,
-  RegisterSkillPreviewModalProps,
-} from './RegisterSkillPreviewModal'

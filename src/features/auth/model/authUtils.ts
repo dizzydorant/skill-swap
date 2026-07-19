@@ -1,7 +1,6 @@
 import type { AuthUser } from '@/shared/types'
 import { LOCAL_STORAGE_KEYS } from '@/shared/lib/constants'
-
-const AUTH_STORAGE_EVENT = 'skillswap-auth-storage'
+import type { ProfileOverridesByUserId } from '@/features/profile/model/types'
 
 interface MockUser {
   id: string
@@ -91,17 +90,6 @@ export interface RegisteredSkillPageData {
   skills: RegisteredSkillPageSkill[]
 }
 
-export interface SavedProfileData {
-  id: string
-  email: string
-  fullName: string
-  sex: 'male' | 'female' | 'other' | ''
-  birthday: string
-  avatarUrl: string | null
-  location: string
-  bio: string
-}
-
 export class AuthError extends Error {
   constructor(message: string) {
     super(message)
@@ -113,46 +101,8 @@ let mockUsersPromise: Promise<MockUser[]> | null = null
 
 export const normalizeEmail = (email: string): string => email.trim().toLowerCase()
 
-const canUseLocalStorage = (): boolean => typeof window !== 'undefined' && Boolean(window.localStorage)
-
-const notifyAuthStorageChanged = () => {
-  if (typeof window !== 'undefined') {
-    window.dispatchEvent(new Event(AUTH_STORAGE_EVENT))
-  }
-}
-
-export const subscribeToAuthStorage = (callback: () => void): (() => void) => {
-  if (typeof window === 'undefined') {
-    return () => undefined
-  }
-
-  const handleStorage = (event: StorageEvent) => {
-    if (!event.key || event.key === LOCAL_STORAGE_KEYS.AUTH_USER) {
-      callback()
-    }
-  }
-
-  window.addEventListener(AUTH_STORAGE_EVENT, callback)
-  window.addEventListener('storage', handleStorage)
-
-  return () => {
-    window.removeEventListener(AUTH_STORAGE_EVENT, callback)
-    window.removeEventListener('storage', handleStorage)
-  }
-}
-
-const parseArray = <T>(raw: string | null, guard: (value: unknown) => value is T): T[] => {
-  if (!raw) {
-    return []
-  }
-
-  try {
-    const parsed: unknown = JSON.parse(raw)
-    return Array.isArray(parsed) ? parsed.filter(guard) : []
-  } catch {
-    return []
-  }
-}
+const canUseLocalStorage = (): boolean =>
+  typeof window !== 'undefined' && Boolean(window.localStorage)
 
 const isRegisteredSkill = (value: unknown): value is RegisteredSkill => {
   if (!value || typeof value !== 'object') {
@@ -173,7 +123,7 @@ const isRegisteredSkill = (value: unknown): value is RegisteredSkill => {
   )
 }
 
-const isRegisteredUser = (value: unknown): value is RegisteredUser => {
+export const isRegisteredUser = (value: unknown): value is RegisteredUser => {
   if (!value || typeof value !== 'object') {
     return false
   }
@@ -199,7 +149,7 @@ const isRegisteredUser = (value: unknown): value is RegisteredUser => {
   )
 }
 
-const isAuthUser = (value: unknown): value is AuthUser => {
+export const isAuthUser = (value: unknown): value is AuthUser => {
   if (!value || typeof value !== 'object') {
     return false
   }
@@ -213,28 +163,6 @@ const isAuthUser = (value: unknown): value is AuthUser => {
     typeof user.token === 'string' &&
     (typeof user.avatarUrl === 'string' || user.avatarUrl === null || user.avatarUrl === undefined) &&
     !('password' in user)
-  )
-}
-
-const isSavedProfileData = (value: unknown): value is SavedProfileData => {
-  if (!value || typeof value !== 'object') {
-    return false
-  }
-
-  const profile = value as Record<string, unknown>
-
-  return (
-    typeof profile.id === 'string' &&
-    typeof profile.email === 'string' &&
-    typeof profile.fullName === 'string' &&
-    (profile.sex === 'male' ||
-      profile.sex === 'female' ||
-      profile.sex === 'other' ||
-      profile.sex === '') &&
-    typeof profile.birthday === 'string' &&
-    (typeof profile.avatarUrl === 'string' || profile.avatarUrl === null) &&
-    typeof profile.location === 'string' &&
-    typeof profile.bio === 'string'
   )
 }
 
@@ -266,14 +194,6 @@ const toAuthUser = (user: MockUser | RegisteredUser): AuthUser => ({
   token: `mock_token_${user.id}`,
 })
 
-const saveRegisteredUsers = (users: RegisteredUser[]): void => {
-  if (!canUseLocalStorage()) {
-    return
-  }
-
-  localStorage.setItem(LOCAL_STORAGE_KEYS.REGISTERED_USERS, JSON.stringify(users))
-}
-
 const emailHash = (email: string): string => {
   let hash = 0
 
@@ -292,55 +212,23 @@ const parseNumericId = (value: string): number => {
 
 export const getRegisteredUserSkillId = (userId: string): string => `registered-skill-${userId}`
 
-export function getAuthUser(): AuthUser | null {
-  if (!canUseLocalStorage()) {
-    return null
-  }
-
-  try {
-    const raw = localStorage.getItem(LOCAL_STORAGE_KEYS.AUTH_USER)
-    const parsed: unknown = raw ? JSON.parse(raw) : null
-
-    return isAuthUser(parsed) ? parsed : null
-  } catch {
-    return null
-  }
-}
-
-export function saveAuthUser(user: Omit<AuthUser, 'token'>): AuthUser {
-  const authUser: AuthUser = { ...user, token: `mock_token_${user.id}` }
-
-  if (canUseLocalStorage()) {
-    localStorage.setItem(LOCAL_STORAGE_KEYS.AUTH_USER, JSON.stringify(authUser))
-    notifyAuthStorageChanged()
-  }
-
-  return authUser
-}
-
-export function getRegisteredUsers(): RegisteredUser[] {
-  if (!canUseLocalStorage()) {
-    return []
-  }
-
-  return parseArray(localStorage.getItem(LOCAL_STORAGE_KEYS.REGISTERED_USERS), isRegisteredUser)
-}
-
-export function getRegisteredSkillPageData(): RegisteredSkillPageData {
-  const users = getRegisteredUsers()
-
+export function getRegisteredSkillPageData(
+  users: RegisteredUser[],
+  overridesByUserId: ProfileOverridesByUserId = {},
+): RegisteredSkillPageData {
   return {
     users: users.map((user) => {
       const wantedSkillTitle = user.learnSubCategoryName || user.learnCategoryName
+      const profileOverride = overridesByUserId[user.id]
 
       return {
         id: user.id,
-        fullName: user.name,
-        sex: user.gender,
-        birthday: user.birthday ?? undefined,
-        avatarUrl: user.avatarUrl,
-        location: user.cityName || user.city,
-        bio: '',
+        fullName: profileOverride?.fullName ?? user.name,
+        sex: profileOverride?.sex ?? user.gender,
+        birthday: profileOverride?.birthday || user.birthday || undefined,
+        avatarUrl: profileOverride?.avatarUrl ?? user.avatarUrl,
+        location: profileOverride?.location || user.cityName || user.city,
+        bio: profileOverride?.bio ?? '',
         wantedSkillTitles: wantedSkillTitle ? [wantedSkillTitle] : [],
         wantedSkillIds: [],
       }
@@ -352,7 +240,11 @@ export function getRegisteredSkillPageData(): RegisteredSkillPageData {
       type: 'teach',
       categoryId: parseNumericId(user.offeredSkill.categoryId),
       subCategoryId: parseNumericId(user.offeredSkill.subCategoryId),
-      tags: [user.offeredSkill.subCategoryName || user.offeredSkill.categoryName || user.offeredSkill.title],
+      tags: [
+        user.offeredSkill.subCategoryName ||
+          user.offeredSkill.categoryName ||
+          user.offeredSkill.title,
+      ],
       imageUrl: user.offeredSkill.images[0] ?? null,
       images: user.offeredSkill.images,
       authorId: user.id,
@@ -388,47 +280,33 @@ export function clearCreatedSkillSuccess(): void {
   localStorage.removeItem(LOCAL_STORAGE_KEYS.CREATED_SKILL_SUCCESS)
 }
 
-export function getProfileOverrides(): SavedProfileData[] {
-  if (!canUseLocalStorage()) {
-    return []
-  }
-
-  return parseArray(
-    localStorage.getItem(LOCAL_STORAGE_KEYS.PROFILE_OVERRIDES),
-    isSavedProfileData,
-  )
-}
-
-export function saveProfileOverride(profile: SavedProfileData): void {
-  if (!canUseLocalStorage()) {
-    return
-  }
-
-  const nextProfiles = [
-    ...getProfileOverrides().filter((currentProfile) => currentProfile.id !== profile.id),
-    profile,
-  ]
-
-  localStorage.setItem(LOCAL_STORAGE_KEYS.PROFILE_OVERRIDES, JSON.stringify(nextProfiles))
-}
-
-export async function isEmailTaken(email: string): Promise<boolean> {
+export async function isEmailTaken(
+  email: string,
+  registeredUsers: RegisteredUser[] = [],
+): Promise<boolean> {
   const normalizedEmail = normalizeEmail(email)
-  const [mockUsers, registeredUsers] = await Promise.all([getMockUsers(), Promise.resolve(getRegisteredUsers())])
+  const mockUsers = await getMockUsers()
 
   return [...mockUsers, ...registeredUsers].some(
     (user) => normalizeEmail(user.email) === normalizedEmail,
   )
 }
 
-export async function registerUser(data: RegisterUserData): Promise<AuthUser> {
+export interface RegisterUserResult {
+  authUser: AuthUser
+  registeredUser: RegisteredUser
+}
+
+export async function registerUser(
+  data: RegisterUserData,
+  registeredUsers: RegisteredUser[] = [],
+): Promise<RegisterUserResult> {
   const normalizedEmail = normalizeEmail(data.email)
 
-  if (await isEmailTaken(normalizedEmail)) {
+  if (await isEmailTaken(normalizedEmail, registeredUsers)) {
     throw new AuthError('Пользователь с таким email уже существует')
   }
 
-  const registeredUsers = getRegisteredUsers()
   const newUser: RegisteredUser = {
     id: `registered-${emailHash(normalizedEmail)}`,
     email: normalizedEmail,
@@ -447,14 +325,19 @@ export async function registerUser(data: RegisterUserData): Promise<AuthUser> {
     offeredSkill: data.offeredSkill,
   }
 
-  saveRegisteredUsers([...registeredUsers, newUser])
-
-  return saveAuthUser(toAuthUser(newUser))
+  return {
+    authUser: toAuthUser(newUser),
+    registeredUser: newUser,
+  }
 }
 
-export async function login(email: string, password: string): Promise<AuthUser> {
+export async function login(
+  email: string,
+  password: string,
+  registeredUsers: RegisteredUser[] = [],
+): Promise<AuthUser> {
   const normalizedEmail = normalizeEmail(email)
-  const [mockUsers, registeredUsers] = await Promise.all([getMockUsers(), Promise.resolve(getRegisteredUsers())])
+  const mockUsers = await getMockUsers()
   const user = [...mockUsers, ...registeredUsers].find(
     (item) => normalizeEmail(item.email) === normalizedEmail,
   )
@@ -463,20 +346,5 @@ export async function login(email: string, password: string): Promise<AuthUser> 
     throw new AuthError('Неверный email или пароль')
   }
 
-  return saveAuthUser(toAuthUser(user))
-}
-
-export function logout(): void {
-  if (canUseLocalStorage()) {
-    localStorage.removeItem(LOCAL_STORAGE_KEYS.AUTH_USER)
-    notifyAuthStorageChanged()
-  }
-}
-
-export function clearAuthUser(): void {
-  logout()
-}
-
-export function isAuthenticated(): boolean {
-  return Boolean(getAuthUser())
+  return toAuthUser(user)
 }

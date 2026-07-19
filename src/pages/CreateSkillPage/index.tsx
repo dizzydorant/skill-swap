@@ -1,10 +1,7 @@
-// TODO: реализовать страницу CreateSkillPage
+import { Navigate } from 'react-router-dom'
+
+import { ROUTES } from '@/shared/lib/constants'
 
 export default function CreateSkillPage() {
-  return (
-    <main>
-      <h1>CreateSkillPage</h1>
-      <p>Страница в разработке</p>
-    </main>
-  )
+  return <Navigate to={ROUTES.PROFILE} replace />
 }

@@ -1,44 +1,52 @@
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback } from 'react'
 
-import { subscribeToSwapRequestsStorage } from '@/features/exchange-offer/model/exchangeOfferStorage'
-import type { SwapRequest } from '@/shared/types'
+import { selectCurrentUserId } from '@/features/auth/model/authSlice'
+import { useAppDispatch, useAppSelector } from '@/store'
 
 import {
-  getIncomingNotifications,
-  getUnreadNotificationsCount,
-  markAllNotificationsAsSeen,
-  subscribeToNotificationsStorage,
-} from '../model/notificationsStorage'
+  markAllIncomingSeen,
+  markSeen,
+  selectIncomingNotifications,
+  selectUnreadNotifications,
+  selectUnreadNotificationsCount,
+} from '../model/notificationsSlice'
 
 export const useNotifications = () => {
-  const [notifications, setNotifications] = useState<SwapRequest[]>(() => getIncomingNotifications())
-  const [unreadCount, setUnreadCount] = useState(() => getUnreadNotificationsCount())
-
-  const refresh = useCallback(() => {
-    setNotifications(getIncomingNotifications())
-    setUnreadCount(getUnreadNotificationsCount())
-  }, [])
-
-  useEffect(() => {
-    refresh()
-
-    const unsubscribeNotifications = subscribeToNotificationsStorage(refresh)
-    const unsubscribeRequests = subscribeToSwapRequestsStorage(refresh)
-
-    return () => {
-      unsubscribeNotifications()
-      unsubscribeRequests()
-    }
-  }, [refresh])
+  const dispatch = useAppDispatch()
+  const currentUserId = useAppSelector(selectCurrentUserId)
+  const notifications = useAppSelector(selectIncomingNotifications)
+  const unreadNotifications = useAppSelector(selectUnreadNotifications)
+  const unreadCount = useAppSelector(selectUnreadNotificationsCount)
 
   const markAllAsSeen = useCallback(() => {
-    markAllNotificationsAsSeen()
-    refresh()
-  }, [refresh])
+    if (!currentUserId) {
+      return
+    }
+
+    dispatch(
+      markAllIncomingSeen({
+        userId: currentUserId,
+        notificationIds: notifications.map((notification) => notification.id),
+      }),
+    )
+  }, [currentUserId, dispatch, notifications])
+
+  const markNotificationAsSeen = useCallback(
+    (notificationId: string) => {
+      if (!currentUserId) {
+        return
+      }
+
+      dispatch(markSeen({ userId: currentUserId, notificationId }))
+    },
+    [currentUserId, dispatch],
+  )
 
   return {
     notifications,
+    unreadNotifications,
     unreadCount,
     markAllAsSeen,
+    markNotificationAsSeen,
   }
 }

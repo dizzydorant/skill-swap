@@ -1,14 +1,19 @@
 import { useEffect, useMemo, useState } from 'react'
 
+import { type RegisteredUser } from '@/features/auth/model/authUtils'
 import {
-  getProfileOverrides,
-  getRegisteredUsers,
-  saveAuthUser,
-  saveProfileOverride,
-  type RegisteredUser,
-  type SavedProfileData,
-} from '@/features/auth/model/authUtils'
+  selectRegisteredUsers,
+  updateAuthUser,
+  updateRegisteredUserProfile,
+} from '@/features/auth/model/authSlice'
 import { useAuthUser } from '@/features/auth/model/useAuthUser'
+import {
+  saveProfile,
+  selectCurrentProfile,
+  selectCurrentProfileOverride,
+} from '@/features/profile/model/profileSlice'
+import type { ProfileData } from '@/features/profile/model/types'
+import { useAppDispatch, useAppSelector } from '@/store'
 import { Footer } from '@/widgets/Footer'
 import { Header } from '@/widgets/Header'
 import { ProfilePersonalDataForm } from '@/widgets/ProfilePersonalDataForm'
@@ -16,16 +21,7 @@ import { ProfileSidebar } from '@/widgets/ProfileSidebar'
 
 import styles from './ProfilePage.module.css'
 
-interface ProfileDbUser {
-  id: string
-  email: string
-  fullName: string
-  sex: 'male' | 'female' | 'other' | ''
-  birthday: string
-  avatarUrl: string | null
-  location: string
-  bio: string
-}
+type ProfileDbUser = ProfileData
 
 interface CityDbItem {
   id: string
@@ -62,13 +58,14 @@ const createProfileFromRegisteredUser = (user: RegisteredUser): ProfileDbUser =>
 })
 
 export const ProfilePage = () => {
+  const dispatch = useAppDispatch()
   const { user: authUser } = useAuthUser()
+  const registeredUsers = useAppSelector(selectRegisteredUsers)
+  const currentProfile = useAppSelector(selectCurrentProfile)
+  const currentProfileOverride = useAppSelector(selectCurrentProfileOverride)
   const authUserId = authUser?.id
   const [users, setUsers] = useState<ProfileDbUser[]>([])
   const [cities, setCities] = useState<CityDbItem[]>([])
-  const [profileOverrides, setProfileOverrides] = useState<SavedProfileData[]>(() =>
-    getProfileOverrides(),
-  )
   const [isLoading, setIsLoading] = useState(true)
   const [loadError, setLoadError] = useState<Error | null>(null)
 
@@ -112,33 +109,33 @@ export const ProfilePage = () => {
       return null
     }
 
-    const dbUser =
+    const baseUser =
       users.find((user) => user.id === authUserId) ??
-      getRegisteredUsers()
+      registeredUsers
         .filter((user) => user.id === authUserId)
         .map(createProfileFromRegisteredUser)[0] ??
-      null
+      currentProfile
 
-    if (!dbUser) {
+    if (!baseUser) {
       return null
     }
 
-    const savedProfile = profileOverrides.find((profile) => profile.id === dbUser.id)
+    return currentProfileOverride ? { ...baseUser, ...currentProfileOverride } : baseUser
+  }, [authUserId, currentProfile, currentProfileOverride, registeredUsers, users])
 
-    return savedProfile ? { ...dbUser, ...savedProfile } : dbUser
-  }, [authUserId, profileOverrides, users])
-
-  const handleProfileSave = (profile: SavedProfileData) => {
-    saveProfileOverride(profile)
-    setProfileOverrides(getProfileOverrides())
+  const handleProfileSave = (profile: ProfileData) => {
+    dispatch(saveProfile({ userId: profile.id, data: profile }))
+    dispatch(updateRegisteredUserProfile(profile))
 
     if (authUser?.id === profile.id) {
-      saveAuthUser({
-        id: profile.id,
-        email: profile.email,
-        name: profile.fullName,
-        avatarUrl: profile.avatarUrl,
-      })
+      dispatch(
+        updateAuthUser({
+          id: profile.id,
+          email: profile.email,
+          name: profile.fullName,
+          avatarUrl: profile.avatarUrl,
+        }),
+      )
     }
   }
 
