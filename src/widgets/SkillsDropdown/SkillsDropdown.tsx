@@ -37,7 +37,7 @@ export const SkillsDropdown = ({ className = '' }: SkillsDropdownProps) => {
   return (
     <div className={`${styles.dropdownContainer} ${className}`}>
       <div className={styles.grid}>
-        {skillCategories.map((category) => (
+        {skillCategories.map((category: { id: number; name: string; iconKey: string; subCategories: Array<{ id: number; name: string }> }) => (
           <div key={category.id} className={styles.categoryBlock}>
             <div className={styles.categoryHeader}>
               <span
@@ -50,7 +50,7 @@ export const SkillsDropdown = ({ className = '' }: SkillsDropdownProps) => {
             </div>
 
             <ul className={styles.subCategoryList}>
-              {category.subCategories.map((subCategory) => (
+              {category.subCategories.map((subCategory: { id: number; name: string }) => (
                 <li key={subCategory.id} className={styles.subCategoryItem}>
                   {subCategory.name}
                 </li>

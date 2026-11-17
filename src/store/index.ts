@@ -29,28 +29,28 @@ export type AppDispatch = typeof store.dispatch
 const persistenceEntries: readonly PersistenceEntry<RootState>[] = [
   {
     key: PERSISTENCE_STORAGE_KEYS.AUTH_USER,
-    select: (state) => state.auth.user,
+    select: (state) => (state as RootState).auth.user,
     removeWhen: (user) => user === null,
   },
   {
     key: PERSISTENCE_STORAGE_KEYS.REGISTERED_USERS,
-    select: (state) => state.auth.registeredUsers,
+    select: (state) => (state as RootState).auth.registeredUsers,
   },
   {
     key: PERSISTENCE_STORAGE_KEYS.FAVORITES,
-    select: (state) => state.favorites.byUserId,
+    select: (state) => (state as RootState).favorites.byUserId,
   },
   {
     key: PERSISTENCE_STORAGE_KEYS.REQUESTS,
-    select: (state) => state.exchangeRequests.items,
+    select: (state) => (state as RootState).exchangeRequests.items,
   },
   {
     key: PERSISTENCE_STORAGE_KEYS.SEEN_NOTIFICATIONS,
-    select: (state) => state.notifications.seenIdsByUserId,
+    select: (state) => (state as RootState).notifications.seenIdsByUserId,
   },
   {
     key: PERSISTENCE_STORAGE_KEYS.PROFILE_OVERRIDES,
-    select: (state) => state.profile.overridesByUserId,
+    select: (state) => (state as RootState).profile.overridesByUserId,
   },
 ]
 

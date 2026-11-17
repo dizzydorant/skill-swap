@@ -9,6 +9,9 @@ import styles from './SkillSection.module.css'
 
 export interface SkillSectionCard extends SkillCardProps {
   id: string
+  likesCount?: number
+  isLiked?: boolean
+  className?: string
 }
 
 export interface SkillSectionProps {

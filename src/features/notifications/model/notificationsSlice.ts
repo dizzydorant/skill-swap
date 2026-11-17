@@ -104,10 +104,11 @@ const notificationsSlice = createSlice({
 
 export const { clearSeen, markAllIncomingSeen, markSeen } = notificationsSlice.actions
 
-const selectCurrentUserId = (state: RootState): string | null => state.auth.user?.id ?? null
+const selectCurrentUserId = (state: RootState): string | null =>
+  (state as RootState).auth.user?.id ?? null
 
 export const selectSeenNotificationIds = createSelector(
-  [(state: RootState) => state.notifications.seenIdsByUserId, selectCurrentUserId],
+  [(state: RootState) => (state as RootState).notifications.seenIdsByUserId, selectCurrentUserId],
   (seenIdsByUserId, userId): string[] =>
     userId ? (seenIdsByUserId[userId] ?? EMPTY_NOTIFICATION_IDS) : EMPTY_NOTIFICATION_IDS,
 )

@@ -114,17 +114,17 @@ const profileSlice = createSlice({
 export const { removeProfileOverride, saveProfile } = profileSlice.actions
 
 export const selectProfileOverridesByUserId = (state: RootState): ProfileOverridesByUserId =>
-  state.profile.overridesByUserId
+  (state as RootState).profile.overridesByUserId
 
 export const selectProfileOverrideByUserId = (
   state: RootState,
   userId: string,
-): ProfileData | null => state.profile.overridesByUserId[userId] ?? null
+): ProfileData | null => (state as RootState).profile.overridesByUserId[userId] ?? null
 
 export const selectCurrentProfileOverride = createSelector(
   [
     selectProfileOverridesByUserId,
-    (state: RootState): string | null => state.auth.user?.id ?? null,
+    (state: RootState): string | null => (state as RootState).auth.user?.id ?? null,
   ],
   (overridesByUserId, userId): ProfileData | null =>
     userId ? (overridesByUserId[userId] ?? null) : null,

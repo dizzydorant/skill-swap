@@ -83,7 +83,7 @@ export const { clearUserFavorites, hydrateUserFavorites, removeFavorite, toggleF
   favoritesSlice.actions
 
 export const selectFavoriteIdsByUserId = (state: RootState, userId: string): string[] =>
-  state.favorites.byUserId[userId] ?? EMPTY_FAVORITE_IDS
+  (state as RootState).favorites.byUserId[userId] ?? EMPTY_FAVORITE_IDS
 
 export const selectCurrentUserFavoriteIds = (state: RootState): string[] => {
   const userId = selectCurrentUserId(state)
@@ -94,7 +94,7 @@ export const selectCurrentUserFavoriteIds = (state: RootState): string[] => {
 export const selectHasFavoritesEntryForCurrentUser = (state: RootState): boolean => {
   const userId = selectCurrentUserId(state)
 
-  return Boolean(userId && userId in state.favorites.byUserId)
+  return Boolean(userId && userId in (state as RootState).favorites.byUserId)
 }
 
 export const selectIsFavorite = (state: RootState, skillId: string): boolean =>

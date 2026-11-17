@@ -137,7 +137,8 @@ const exchangeRequestsSlice = createSlice({
 export const { acceptRequest, cancelRequest, createRequest, rejectRequest, updateRequestStatus } =
   exchangeRequestsSlice.actions
 
-export const selectAllRequests = (state: RootState): SwapRequest[] => state.exchangeRequests.items
+export const selectAllRequests = (state: RootState): SwapRequest[] =>
+  (state as RootState).exchangeRequests.items
 
 const selectUserIdParam = (_state: RootState, userId: string): string => userId
 

@@ -148,7 +148,7 @@ export const CatalogPage: FC = () => {
     const subCategoryById = new Map<number, string>()
 
     catalogDataWithProfileOverrides.categories.forEach((category) => {
-      category.subCategories.forEach((subCategory: any) => {
+      category.subCategories.forEach((subCategory) => {
         subCategoryById.set(subCategory.id, subCategory.name)
       })
     })
@@ -287,7 +287,11 @@ export const CatalogPage: FC = () => {
 
   return (
     <div className={cls.page}>
-      <Header searchValue={searchValue} onSearchChange={handleSearchChange} onThemeClick={toggleTheme} />
+      <Header
+        searchValue={searchValue}
+        onSearchChange={handleSearchChange}
+        onThemeClick={toggleTheme}
+      />
 
       <main className={cls.main}>
         <div className={cls.pageLayoutContainer}>

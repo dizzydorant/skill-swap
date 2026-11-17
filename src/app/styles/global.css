@@ -33,7 +33,6 @@
   --bg-fallback: #f9fafb;
   --bg-arrow-button: rgb(255 255 255 / 80%);
   --bg-shadow-overlay: rgb(0 0 0 / 40%);
-
   --text: #111827;
   --text-primary: #253017;
   --text-secondary: #6b7280;
@@ -44,17 +43,14 @@
   --text-label: #4a4a4a;
   --text-badge: #508826;
   --text-icon: #253017;
-
   --border: #e5e7eb;
   --border-secondary: #dfe8d4;
   --border-tertiary: #e5e9e2;
   --border-dashed: #d1d5db;
   --border-focus: #abd27a;
-
   --shadow-card: 0 8px 30px rgb(37 48 23 / 8%);
   --shadow-dropdown: 0 12px 36px rgb(37 48 23 / 12%);
   --shadow-focus: 0 0 0 3px rgb(171 210 122 / 40%);
-
   --transition: 0.2s ease;
 }
 
@@ -64,21 +60,21 @@
   --bg-secondary: #242424;
   --bg-header: #1a1a1a;
   --bg-card: #2a2a2a;
-  --bg-card-hover: #333333;
+  --bg-card-hover: #333;
   --bg-dropdown: #2a2a2a;
   --bg-input: #2a2a2a;
-  --bg-input-border-hover: #555555;
+  --bg-input-border-hover: #555;
   --bg-button: #2a2a2a;
   --bg-sidebar: #2a2a2a;
-  --bg-sidebar-hover: #333333;
+  --bg-sidebar-hover: #333;
   --bg-sidebar-active: #3a3a3a;
-  --bg-item: #222222;
+  --bg-item: #222;
   --bg-item-hover: #2a2a2a;
-  --bg-badge: #333333;
+  --bg-badge: #333;
   --bg-search: #2a2a2a;
   --bg-footer: #1a1a1a;
   --bg-border: #3a3a3a;
-  --bg-border-secondary: #555555;
+  --bg-border-secondary: #555;
   --bg-border-tertiary: #3a3a3a;
   --bg-category-1: #3d2d5c;
   --bg-category-2: #5c2d4a;
@@ -87,28 +83,25 @@
   --bg-category-5: #5c3d2d;
   --bg-category-6: #2d5c35;
   --bg-category-7: #2d355c;
-  --bg-gallery: #222222;
-  --bg-fallback: #222222;
+  --bg-gallery: #222;
+  --bg-fallback: #222;
   --bg-arrow-button: rgb(42 42 42 / 80%);
   --bg-shadow-overlay: rgb(0 0 0 / 40%);
-
   --text: #e5e5e5;
   --text-primary: #f5f5f5;
   --text-secondary: #a3a3a3;
   --text-muted: #b8b8b8;
-  --text-tertiary: #888888;
+  --text-tertiary: #888;
   --text-link: #b8b8b8;
-  --text-heading: #ffffff;
+  --text-heading: #fff;
   --text-label: #d4d4d4;
   --text-badge: #7cc854;
   --text-icon: #f5f5f5;
-
   --border: #3a3a3a;
-  --border-secondary: #555555;
+  --border-secondary: #555;
   --border-tertiary: #3a3a3a;
-  --border-dashed: #555555;
+  --border-dashed: #555;
   --border-focus: #7cc854;
-
   --shadow-card: 0 8px 30px rgb(0 0 0 / 40%);
   --shadow-dropdown: 0 12px 36px rgb(0 0 0 / 50%);
   --shadow-focus: 0 0 0 3px rgb(124 200 84 / 30%);

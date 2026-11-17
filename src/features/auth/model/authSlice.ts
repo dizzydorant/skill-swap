@@ -85,10 +85,13 @@ export const {
   updateRegisteredUserProfile,
 } = authSlice.actions
 
-export const selectAuthUser = (state: RootState): AuthUser | null => state.auth.user
-export const selectIsAuthenticated = (state: RootState): boolean => Boolean(state.auth.user)
-export const selectCurrentUserId = (state: RootState): string | null => state.auth.user?.id ?? null
+export const selectAuthUser = (state: RootState): AuthUser | null =>
+  (state as RootState).auth.user
+export const selectIsAuthenticated = (state: RootState): boolean =>
+  Boolean((state as RootState).auth.user)
+export const selectCurrentUserId = (state: RootState): string | null =>
+  (state as RootState).auth.user?.id ?? null
 export const selectRegisteredUsers = (state: RootState): RegisteredUser[] =>
-  state.auth.registeredUsers
+  (state as RootState).auth.registeredUsers
 
 export const authReducer = authSlice.reducer
