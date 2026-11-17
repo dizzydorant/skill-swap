@@ -1,6 +1,6 @@
 import { FC } from 'react'
 
-import { Button } from '@/shared/ui/Button'
+import { Button } from '../../shared/ui/Button'
 
 import styles from './ErrorState.module.css'
 

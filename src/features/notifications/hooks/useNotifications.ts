@@ -1,7 +1,7 @@
 import { useCallback } from 'react'
 
-import { selectCurrentUserId } from '@/features/auth/model/authSlice'
-import { useAppDispatch, useAppSelector } from '@/store'
+import { selectCurrentUserId } from '../../../features/auth/model/authSlice'
+import { useAppDispatch, useAppSelector } from '../../../store'
 
 import {
   markAllIncomingSeen,

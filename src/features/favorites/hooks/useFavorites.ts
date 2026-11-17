@@ -1,7 +1,7 @@
 import { useCallback, useEffect } from 'react'
 
-import { selectCurrentUserId } from '@/features/auth/model/authSlice'
-import { useAppDispatch, useAppSelector } from '@/store'
+import { selectCurrentUserId } from '../../../features/auth/model/authSlice'
+import { useAppDispatch, useAppSelector } from '../../../store'
 
 import { loadMockUserFavoriteIds } from '../lib/loadMockUserFavoriteIds'
 import {
@@ -40,10 +40,7 @@ export const useFavorites = () => {
     }
   }, [currentUserId, dispatch, hasFavoritesEntry])
 
-  const isFavorite = useCallback(
-    (skillId: string) => favoriteIds.includes(skillId),
-    [favoriteIds],
-  )
+  const isFavorite = useCallback((skillId: string) => favoriteIds.includes(skillId), [favoriteIds])
 
   const toggleFavorite = useCallback(
     (skillId: string) => {

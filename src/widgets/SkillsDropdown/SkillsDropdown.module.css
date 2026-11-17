@@ -1,8 +1,8 @@
 .dropdownContainer {
   width: 100%;
   max-width: 1136px;
-  background-color: #fff;
-  border: 1px solid #69735d;
+  background-color: var(--bg-dropdown);
+  border: 1px solid var(--bg-border);
   border-radius: 12px;
   padding: 60px;
   box-sizing: border-box;
@@ -33,38 +33,38 @@
   width: 32px;
   height: 32px;
   border-radius: 50%;
-  color: #253017;
+  color: var(--text-icon);
   flex-shrink: 0;
 }
 
 .businessIcon {
-  background-color: #EEE7F7;
+  background-color: var(--bg-category-1);
 }
 
 .artIcon {
-  background-color: #F7E7F2;
+  background-color: var(--bg-category-2);
 }
 
 .languageIcon {
-  background-color: #EBE5C5;
+  background-color: var(--bg-category-3);
 }
 
 .educationIcon {
-  background-color: #E7F2F6;
+  background-color: var(--bg-category-4);
 }
 
 .homeIcon {
-  background-color: #F7EBE5;
+  background-color: var(--bg-category-5);
 }
 
 .lifestyleIcon {
-  background-color: #E9F7E7;
+  background-color: var(--bg-category-6);
 }
 
 .categoryTitle {
   font-size: 24px;
   font-weight: 500;
-  color: #253017;
+  color: var(--text-primary);
   margin: 0;
 }
 
@@ -80,5 +80,5 @@
 
 .subCategoryItem {
   font-size: 16px;
-  color: #253017;
+  color: var(--text-primary);
 }

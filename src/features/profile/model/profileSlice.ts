@@ -1,9 +1,9 @@
 import { createSelector, createSlice, type PayloadAction } from '@reduxjs/toolkit'
 
-import { selectAuthUser } from '@/features/auth/model/authSlice'
-import { LOCAL_STORAGE_KEYS } from '@/shared/lib/constants'
-import type { RootState } from '@/store'
-import { readStorage } from '@/store/storage'
+import { selectAuthUser } from '../../../features/auth/model/authSlice'
+import { LOCAL_STORAGE_KEYS } from '../../../shared/lib/constants'
+import type { RootState } from '../../../store'
+import { readStorage } from '../../../store/storage'
 
 import type { ProfileData, ProfileOverridesByUserId } from './types'
 

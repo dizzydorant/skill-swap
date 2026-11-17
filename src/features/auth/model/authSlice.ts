@@ -1,16 +1,12 @@
 import { createSlice, type PayloadAction } from '@reduxjs/toolkit'
 
-import { LOCAL_STORAGE_KEYS } from '@/shared/lib/constants'
-import type { AuthUser } from '@/shared/types'
-import type { RootState } from '@/store'
-import { readStorage } from '@/store/storage'
-import type { ProfileData } from '@/features/profile/model/types'
+import { LOCAL_STORAGE_KEYS } from '../../../shared/lib/constants'
+import type { AuthUser } from '../../../shared/types'
+import type { RootState } from '../../../store'
+import { readStorage } from '../../../store/storage'
+import type { ProfileData } from '../../../features/profile/model/types'
 
-import {
-  isAuthUser,
-  isRegisteredUser,
-  type RegisteredUser,
-} from './authUtils'
+import { isAuthUser, isRegisteredUser, type RegisteredUser } from './authUtils'
 
 interface AuthState {
   user: AuthUser | null
@@ -26,8 +22,10 @@ const isRegisteredUsers = (value: unknown): value is RegisteredUser[] =>
   Array.isArray(value) && value.every(isRegisteredUser)
 
 const initialState: AuthState = {
-  user: readStorage<AuthUser | null>(LOCAL_STORAGE_KEYS.AUTH_USER, null, (value) =>
-    value === null || isAuthUser(value),
+  user: readStorage<AuthUser | null>(
+    LOCAL_STORAGE_KEYS.AUTH_USER,
+    null,
+    (value) => value === null || isAuthUser(value),
   ),
   registeredUsers: readStorage<RegisteredUser[]>(
     LOCAL_STORAGE_KEYS.REGISTERED_USERS,

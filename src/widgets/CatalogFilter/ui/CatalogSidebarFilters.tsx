@@ -1,7 +1,7 @@
 import { FC, useState } from 'react'
-import { Checkbox } from '@/shared/ui/Checkbox'
-import { FilterCategory } from '@/shared/ui/FilterCategory'
-import { IconArrow } from '@/shared/assets/icons'
+import { Checkbox } from '../../../shared/ui/Checkbox'
+import { FilterCategory } from '../../../shared/ui/FilterCategory'
+import { IconArrow } from '../../../shared/assets/icons'
 import type { City, ExchangeType, GenderType, SkillCategory } from '../model/types'
 import cls from '../CatalogFilters.module.css'
 

@@ -1,11 +1,11 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react'
 
-import type { ProfileData } from '@/features/profile/model/types'
-import { Avatar } from '@/shared/ui/Avatar'
-import { Button } from '@/shared/ui/Button'
-import { DatePicker } from '@/shared/ui/DatePicker'
-import { Input } from '@/shared/ui/Input'
-import { Select } from '@/shared/ui/Select'
+import type { ProfileData } from '../../features/profile/model/types'
+import { Avatar } from '../../shared/ui/Avatar'
+import { Button } from '../../shared/ui/Button'
+import { DatePicker } from '../../shared/ui/DatePicker'
+import { Input } from '../../shared/ui/Input'
+import { Select } from '../../shared/ui/Select'
 
 import cls from './ProfilePersonalDataForm.module.css'
 
@@ -169,11 +169,7 @@ export const ProfilePersonalDataForm: React.FC<ProfilePersonalDataFormProps> = (
           </div>
 
           <div className={cls.gridHalf}>
-            <DatePicker
-              label="Дата рождения"
-              value={birthdayAsDate}
-              onChange={handleDateChange}
-            />
+            <DatePicker label="Дата рождения" value={birthdayAsDate} onChange={handleDateChange} />
 
             <Select
               label="Пол"

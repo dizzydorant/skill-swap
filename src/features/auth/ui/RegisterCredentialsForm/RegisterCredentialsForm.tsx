@@ -1,7 +1,7 @@
 import { ChangeEvent, FormEvent, useState } from 'react'
-import { Button } from '@/shared/ui/Button'
-import { Input } from '@/shared/ui/Input'
-import { IconEye } from '@/shared/assets/icons'
+import { Button } from '../../../../shared/ui/Button'
+import { Input } from '../../../../shared/ui/Input'
+import { IconEye } from '../../../../shared/assets/icons'
 import googleIcon from '@/shared/assets/icons/Google.svg'
 import appleIcon from '@/shared/assets/icons/Apple.svg'
 import cls from './RegisterCredentialsForm.module.css'
@@ -82,7 +82,9 @@ export const RegisterCredentialsForm = ({
 
   const formClassName = [cls.form, className].filter(Boolean).join(' ')
   const passwordHint =
-    password.length >= MIN_PASSWORD_LENGTH ? 'Надёжный' : 'Пароль должен содержать не менее 8 знаков'
+    password.length >= MIN_PASSWORD_LENGTH
+      ? 'Надёжный'
+      : 'Пароль должен содержать не менее 8 знаков'
 
   return (
     <form className={formClassName} onSubmit={handleSubmit} noValidate>

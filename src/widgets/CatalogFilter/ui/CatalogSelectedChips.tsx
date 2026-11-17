@@ -1,5 +1,5 @@
 import { FC, useMemo } from 'react'
-import { Chip } from '@/shared/ui/Chip'
+import { Chip } from '../../../shared/ui/Chip'
 import type { ExchangeType, GenderType, SkillCategory } from '../model/types'
 import cls from '../CatalogFilters.module.css'
 

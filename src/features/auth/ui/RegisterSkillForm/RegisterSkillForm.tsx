@@ -1,8 +1,8 @@
 import { ChangeEvent, FormEvent, useEffect, useMemo, useState } from 'react'
-import { Button } from '@/shared/ui/Button'
-import { ImageUpload, type ImageFile } from '@/shared/ui/ImageUpload'
-import { Input } from '@/shared/ui/Input'
-import { Select, type SelectOption } from '@/shared/ui/Select'
+import { Button } from '../../../../shared/ui/Button'
+import { ImageUpload, type ImageFile } from '../../../../shared/ui/ImageUpload'
+import { Input } from '../../../../shared/ui/Input'
+import { Select, type SelectOption } from '../../../../shared/ui/Select'
 import cls from './RegisterSkillForm.module.css'
 
 export type { ImageFile }

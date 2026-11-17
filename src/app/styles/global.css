@@ -1,54 +1,120 @@
-/* ─── CSS Custom Properties ─────────────────────────────── */
 @import url('https://fonts.googleapis.com/css2?family=Jost:wght@400;500;600;700&family=Roboto:wght@400;500;700&display=swap');
 
 :root {
-  /* Colors */
-  --color-primary: #6366f1;
-  --color-primary-hover: #4f46e5;
-  --color-bg: #fff;
-  --color-bg-secondary: #f9fafb;
-  --color-text: #111827;
-  --color-text-secondary: #6b7280;
-  --color-border: #e5e7eb;
-  --color-error: #ef4444;
-  --color-success: #22c55e;
+  /* ── Light theme (default) ── */
+  --bg: #fff;
+  --bg-secondary: #f9fafb;
+  --bg-header: #f8faf6;
+  --bg-card: #fff;
+  --bg-card-hover: #f7faf2;
+  --bg-dropdown: #fff;
+  --bg-input: #fff;
+  --bg-input-border-hover: #dfe8d4;
+  --bg-button: #fff;
+  --bg-sidebar: #fff;
+  --bg-sidebar-hover: #f4f8ec;
+  --bg-sidebar-active: #e1efc9;
+  --bg-item: #fafcf8;
+  --bg-item-hover: #f3f7ef;
+  --bg-badge: #eef6e5;
+  --bg-search: #fff;
+  --bg-footer: #fff;
+  --bg-border: #e5e7eb;
+  --bg-border-secondary: #dfe8d4;
+  --bg-border-tertiary: #e5e9e2;
+  --bg-category-1: #EEE7F7;
+  --bg-category-2: #F7E7F2;
+  --bg-category-3: #EBE5C5;
+  --bg-category-4: #E7F2F6;
+  --bg-category-5: #F7EBE5;
+  --bg-category-6: #E9F7E7;
+  --bg-category-7: #EDF1FB;
+  --bg-gallery: #f3f4f6;
+  --bg-fallback: #f9fafb;
+  --bg-arrow-button: rgb(255 255 255 / 80%);
+  --bg-shadow-overlay: rgb(0 0 0 / 40%);
 
-  /* Spacing */
-  --space-xs: 4px;
-  --space-sm: 8px;
-  --space-md: 16px;
-  --space-lg: 24px;
-  --space-xl: 32px;
-  --space-2xl: 48px;
+  --text: #111827;
+  --text-primary: #253017;
+  --text-secondary: #6b7280;
+  --text-muted: #69735d;
+  --text-tertiary: #8a9380;
+  --text-link: #69735d;
+  --text-heading: #1a1a1a;
+  --text-label: #4a4a4a;
+  --text-badge: #508826;
+  --text-icon: #253017;
 
-  /* Typography */
-  --font-sans: system-ui, -apple-system, sans-serif;
-  --font-size-sm: 0.875rem;
-  --font-size-base: 1rem;
-  --font-size-lg: 1.125rem;
-  --font-size-xl: 1.25rem;
-  --font-size-2xl: 1.5rem;
+  --border: #e5e7eb;
+  --border-secondary: #dfe8d4;
+  --border-tertiary: #e5e9e2;
+  --border-dashed: #d1d5db;
+  --border-focus: #abd27a;
 
-  /* Borders */
-  --radius-sm: 4px;
-  --radius-md: 8px;
-  --radius-lg: 12px;
+  --shadow-card: 0 8px 30px rgb(37 48 23 / 8%);
+  --shadow-dropdown: 0 12px 36px rgb(37 48 23 / 12%);
+  --shadow-focus: 0 0 0 3px rgb(171 210 122 / 40%);
 
-  /* Shadows */
-  --shadow-sm: 0 1px 2px rgb(0 0 0 / 5%);
-  --shadow-md: 0 4px 6px rgb(0 0 0 / 7%);
+  --transition: 0.2s ease;
 }
 
-/* Тёмная тема — добавить поддержку через data-theme="dark" */
+/* ── Dark theme ── */
 [data-theme='dark'] {
-  --color-bg: #0f172a;
-  --color-bg-secondary: #1e293b;
-  --color-text: #f1f5f9;
-  --color-text-secondary: #94a3b8;
-  --color-border: #334155;
+  --bg: #1a1a1a;
+  --bg-secondary: #242424;
+  --bg-header: #1a1a1a;
+  --bg-card: #2a2a2a;
+  --bg-card-hover: #333333;
+  --bg-dropdown: #2a2a2a;
+  --bg-input: #2a2a2a;
+  --bg-input-border-hover: #555555;
+  --bg-button: #2a2a2a;
+  --bg-sidebar: #2a2a2a;
+  --bg-sidebar-hover: #333333;
+  --bg-sidebar-active: #3a3a3a;
+  --bg-item: #222222;
+  --bg-item-hover: #2a2a2a;
+  --bg-badge: #333333;
+  --bg-search: #2a2a2a;
+  --bg-footer: #1a1a1a;
+  --bg-border: #3a3a3a;
+  --bg-border-secondary: #555555;
+  --bg-border-tertiary: #3a3a3a;
+  --bg-category-1: #3d2d5c;
+  --bg-category-2: #5c2d4a;
+  --bg-category-3: #5c542d;
+  --bg-category-4: #2d4a5c;
+  --bg-category-5: #5c3d2d;
+  --bg-category-6: #2d5c35;
+  --bg-category-7: #2d355c;
+  --bg-gallery: #222222;
+  --bg-fallback: #222222;
+  --bg-arrow-button: rgb(42 42 42 / 80%);
+  --bg-shadow-overlay: rgb(0 0 0 / 40%);
+
+  --text: #e5e5e5;
+  --text-primary: #f5f5f5;
+  --text-secondary: #a3a3a3;
+  --text-muted: #b8b8b8;
+  --text-tertiary: #888888;
+  --text-link: #b8b8b8;
+  --text-heading: #ffffff;
+  --text-label: #d4d4d4;
+  --text-badge: #7cc854;
+  --text-icon: #f5f5f5;
+
+  --border: #3a3a3a;
+  --border-secondary: #555555;
+  --border-tertiary: #3a3a3a;
+  --border-dashed: #555555;
+  --border-focus: #7cc854;
+
+  --shadow-card: 0 8px 30px rgb(0 0 0 / 40%);
+  --shadow-dropdown: 0 12px 36px rgb(0 0 0 / 50%);
+  --shadow-focus: 0 0 0 3px rgb(124 200 84 / 30%);
 }
 
-/* ─── Reset ──────────────────────────────────────────────── */
+/* ─── Smooth transitions ─── */
 *,
 *::before,
 *::after {
@@ -60,10 +126,11 @@
 body {
   font-family: var(--font-sans);
   font-size: var(--font-size-base);
-  color: var(--color-text);
-  background-color: var(--color-bg);
+  color: var(--text);
+  background-color: var(--bg);
   line-height: 1.5;
   -webkit-font-smoothing: antialiased;
+  transition: background-color var(--transition), color var(--transition);
 }
 
 a {

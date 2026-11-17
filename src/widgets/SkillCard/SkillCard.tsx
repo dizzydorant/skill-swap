@@ -1,14 +1,12 @@
-// src/widgets/SkillCard/SkillCard.tsx
 import type { KeyboardEvent, MouseEvent } from 'react'
 
-import { IconLike, IconLikeFilled } from '@/shared/assets/icons'
+import { IconLike, IconLikeFilled } from '../../shared/assets/icons'
 import clockIcon from '@/shared/assets/icons/clock.svg'
-import { Avatar } from '@/shared/ui/Avatar'
-import { Button } from '@/shared/ui/Button'
-import { IconButton } from '@/shared/ui/IconButton'
-import { ChipList } from '@/shared/ui/ChipList' // Импортируем готовый ChipList вместо ручного рендера
-import type { ChipItem } from '@/shared/ui/ChipList' // Импортируем тип объекта навыка
-
+import { Avatar } from '../../shared/ui/Avatar'
+import { Button } from '../../shared/ui/Button'
+import { IconButton } from '../../shared/ui/IconButton'
+import { ChipList } from '../../shared/ui/ChipList'
+import type { ChipItem } from '../../shared/ui/ChipList'
 import cls from './SkillCard.module.css'
 
 export interface SkillCardUser {
@@ -20,11 +18,6 @@ export interface SkillCardUser {
 
 export interface SkillCardProps {
   user: SkillCardUser
-  /* 
-    ОБНОВЛЯЕМ ТИПЫ ТУТ:
-    Вместо string[] указываем ChipItem[], чтобы карточка умела 
-    нативно принимать объекты с цветами из нашей новой структуры моков!
-  */
   teachSkills: ChipItem[]
   learnSkills: ChipItem[]
   likesCount?: number
@@ -72,7 +65,6 @@ export const SkillCard = ({
 }: SkillCardProps) => {
   const resolvedActionText = actionText ?? (isExchangeOffered ? 'Обмен предложен' : 'Подробнее')
 
-  // Везде используем лаконичное имя cls:
   const cardClassName = [cls.card, onCardClick ? cls.clickable : '', className]
     .filter(Boolean)
     .join(' ')

@@ -1,10 +1,10 @@
 import { ChangeEvent, FormEvent, useEffect, useMemo, useRef, useState } from 'react'
-import { Avatar } from '@/shared/ui/Avatar'
-import { Button } from '@/shared/ui/Button'
-import { DatePicker } from '@/shared/ui/DatePicker'
-import { Input } from '@/shared/ui/Input'
-import { Select, type SelectOption } from '@/shared/ui/Select'
-import { IconAdd } from '@/shared/assets/icons'
+import { Avatar } from '../../../../shared/ui/Avatar'
+import { Button } from '../../../../shared/ui/Button'
+import { DatePicker } from '../../../../shared/ui/DatePicker'
+import { Input } from '../../../../shared/ui/Input'
+import { Select, type SelectOption } from '../../../../shared/ui/Select'
+import { IconAdd } from '../../../../shared/assets/icons'
 import cls from './RegisterProfileForm.module.css'
 
 export interface RegisterProfileFormProps {

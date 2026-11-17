@@ -1,6 +1,7 @@
 .section {
   width: 100%;
-  color: #253017;
+  color: var(--text-primary);
+  transition: color var(--transition);
 }
 
 .header {
@@ -18,7 +19,8 @@
   font-size: 32px;
   font-weight: 600;
   line-height: 1.2;
-  color: #253017;
+  color: var(--text-heading);
+  transition: color var(--transition);
 }
 
 .showAllButton {
@@ -26,14 +28,15 @@
   min-height: 48px;
   padding: 12px 20px 12px 28px;
   gap: 14px;
-  color: #253017;
-  background-color: #fff;
+  color: var(--text-primary);
+  background-color: var(--bg-card);
   border-color: transparent;
   border-radius: 14px;
+  transition: background-color var(--transition), color var(--transition);
 }
 
 .showAllButton:hover:not(:disabled) {
-  background-color: #f7faf2;
+  background-color: var(--bg-card-hover);
 }
 
 .showAllIcon {

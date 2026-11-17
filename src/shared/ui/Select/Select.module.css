@@ -14,14 +14,14 @@
   font-size: 16px;
   line-height: 20px;
   font-weight: 500;
-  color: #333;
+  color: var(--text-heading);
   margin-bottom: 12px;
   text-align: left;
 }
 
 .selectTrigger {
-  background: #fff;
-  border: 1px solid #69735d;
+  background: var(--bg-input);
+  border: 1px solid var(--bg-border-secondary);
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -30,7 +30,7 @@
   border-radius: 12px;
   cursor: pointer;
   font-size: 16px;
-  color: #1a1a1a;
+  color: var(--text-heading);
   transition: border-color 0.2s;
   outline: none;
   text-align: left;
@@ -39,26 +39,26 @@
 }
 
 .selectTrigger:focus-visible {
-  border-color: #666;
+  border-color: var(--text-primary);
 }
 
 .selectTrigger.open {
-  border-color: #666;
+  border-color: var(--text-primary);
 }
 
 .errorContainer .selectTrigger {
-  border-color: #ff4d4f;
+  border-color: var(--color-error);
 }
 
 .errorText {
-  color: #ff4d4f;
+  color: var(--color-error);
   font-size: 12px;
   margin-top: 6px;
   text-align: left;
 }
 
 .placeholder {
-  color: #8a8a8a;
+  color: var(--text-secondary);
 }
 
 .arrow {
@@ -67,7 +67,7 @@
   justify-content: center;
   transform: rotate(180deg);
   transition: transform 0.2s ease;
-  color: #333;
+  color: var(--text-primary);
   width: 24px;
   height: 24px;
   flex-shrink: 0;
@@ -84,11 +84,11 @@
   right: 0;
   margin: 0;
   padding: 8px 0;
-  background-color: #fff;
-  border: 1px solid #c2c2c2;
+  background-color: var(--bg-dropdown);
+  border: 1px solid var(--bg-border);
   border-radius: 12px;
-  box-shadow: 0 8px 24px rgb(0 0 0 / 12%); /* Мягкая тень парения */
-  z-index: 9999; /* Всплывает поверх любых соседних полей */
+  box-shadow: 0 8px 24px rgb(0 0 0 / 12%);
+  z-index: 9999;
   max-height: 200px;
   overflow-y: auto;
   list-style: none;
@@ -98,18 +98,18 @@
 .optionItem {
   padding: 12px 18px;
   font-size: 16px;
-  color: #333;
+  color: var(--text-primary);
   cursor: pointer;
   outline: none;
   text-align: left;
 }
 
 .optionItem:hover {
-  background-color: #f5f5f5;
+  background-color: var(--bg-secondary);
 }
 
 .optionItem.selected {
-  background-color: #eee;
+  background-color: var(--bg-sidebar-hover);
   font-weight: 500;
 }
 
@@ -119,5 +119,5 @@
 
 .disabled .selectTrigger {
   cursor: not-allowed;
-  background-color: #f5f5f5;
+  background-color: var(--bg-secondary);
 }

@@ -1,11 +1,11 @@
-import type { ChipItem } from '@/shared/ui/ChipList'
-import type { SkillSectionCard } from '@/widgets/SkillSection'
+import type { ChipItem } from '../../shared/ui/ChipList'
+import type { SkillSectionCard } from '../../widgets/SkillSection'
 import type {
   City,
   ExchangeType,
   GenderType,
   SkillCategory,
-} from '@/widgets/CatalogFilter/model/types'
+} from '../../widgets/CatalogFilter/model/types'
 
 export interface CatalogUser {
   id: string
@@ -82,21 +82,21 @@ export const prepareCatalogSections = (
   const userById = new Map(data.users.map((user) => [user.id, user]))
   const skillById = new Map(data.skills.map((skill) => [skill.id, skill]))
   const skillsByAuthorId = createSkillsByAuthorId(data.skills)
-  const filteredCards = createCatalogCards(data.skills, userById, skillById, skillsByAuthorId).filter(
-    (card) => matchesFilters(card, filters),
-  )
+  const filteredCards = createCatalogCards(
+    data.skills,
+    userById,
+    skillById,
+    skillsByAuthorId,
+  ).filter((card) => matchesFilters(card, filters))
 
   const popularCards = takeUniqueAuthors(
-    [...filteredCards].sort(
-      (first, second) => (second.likesCount ?? 0) - (first.likesCount ?? 0),
-    ),
+    [...filteredCards].sort((first, second) => (second.likesCount ?? 0) - (first.likesCount ?? 0)),
     TOP_SECTION_CARD_COUNT,
   )
 
   const newCards = takeUniqueAuthors(
     [...filteredCards].sort(
-      (first, second) =>
-        new Date(second.createdAt).getTime() - new Date(first.createdAt).getTime(),
+      (first, second) => new Date(second.createdAt).getTime() - new Date(first.createdAt).getTime(),
     ),
     TOP_SECTION_CARD_COUNT,
   )
@@ -208,8 +208,7 @@ const getAgeFromBirthday = (birthday: string | undefined): number => {
 const matchesFilters = (card: CatalogCard, filters: CatalogFilterState): boolean => {
   const matchesGender = filters.gender === 'any' || card.authorSex === filters.gender
   const matchesCity =
-    filters.selectedCityNames.length === 0 ||
-    filters.selectedCityNames.includes(card.authorCity)
+    filters.selectedCityNames.length === 0 || filters.selectedCityNames.includes(card.authorCity)
   const matchesCategory = matchesCategoryFilter(card, filters)
 
   return matchesGender && matchesCity && matchesCategory
@@ -237,7 +236,10 @@ const matchesCategoryFilter = (card: CatalogCard, filters: CatalogFilterState): 
   )
 }
 
-const takeUniqueAuthors = (cards: CatalogCard[], limit = Number.POSITIVE_INFINITY): CatalogCard[] => {
+const takeUniqueAuthors = (
+  cards: CatalogCard[],
+  limit = Number.POSITIVE_INFINITY,
+): CatalogCard[] => {
   const usedAuthorIds = new Set<string>()
   const result: CatalogCard[] = []
 

@@ -1,23 +1,23 @@
 import { useEffect, useMemo, useState } from 'react'
 
-import { type RegisteredUser } from '@/features/auth/model/authUtils'
+import { type RegisteredUser } from '../../features/auth/model/authUtils'
 import {
   selectRegisteredUsers,
   updateAuthUser,
   updateRegisteredUserProfile,
-} from '@/features/auth/model/authSlice'
-import { useAuthUser } from '@/features/auth/model/useAuthUser'
+} from '../../features/auth/model/authSlice'
+import { useAuthUser } from '../../features/auth/model/useAuthUser'
 import {
   saveProfile,
   selectCurrentProfile,
   selectCurrentProfileOverride,
-} from '@/features/profile/model/profileSlice'
-import type { ProfileData } from '@/features/profile/model/types'
-import { useAppDispatch, useAppSelector } from '@/store'
-import { Footer } from '@/widgets/Footer'
-import { Header } from '@/widgets/Header'
-import { ProfilePersonalDataForm } from '@/widgets/ProfilePersonalDataForm'
-import { ProfileSidebar } from '@/widgets/ProfileSidebar'
+} from '../../features/profile/model/profileSlice'
+import type { ProfileData } from '../../features/profile/model/types'
+import { useAppDispatch, useAppSelector } from '../../store'
+import { Footer } from '../../widgets/Footer'
+import { Header } from '../../widgets/Header'
+import { ProfilePersonalDataForm } from '../../widgets/ProfilePersonalDataForm'
+import { ProfileSidebar } from '../../widgets/ProfileSidebar'
 
 import styles from './ProfilePage.module.css'
 

@@ -1,16 +1,16 @@
 import { useEffect, useState } from 'react'
 import { generatePath, useNavigate } from 'react-router-dom'
 
-import { selectRegisteredUsers } from '@/features/auth/model/authSlice'
-import { useNotifications } from '@/features/notifications/hooks/useNotifications'
+import { selectRegisteredUsers } from '../../features/auth/model/authSlice'
+import { useNotifications } from '../../features/notifications/hooks/useNotifications'
 import {
   loadNotificationPreviews,
   type NotificationPreview,
-} from '@/features/notifications/lib/loadNotificationPreviews'
-import { selectProfileOverridesByUserId } from '@/features/profile/model/profileSlice'
-import { ROUTES } from '@/shared/lib/constants'
-import { Avatar } from '@/shared/ui/Avatar'
-import { useAppSelector } from '@/store'
+} from '../../features/notifications/lib/loadNotificationPreviews'
+import { selectProfileOverridesByUserId } from '../../features/profile/model/profileSlice'
+import { ROUTES } from '../../shared/lib/constants'
+import { Avatar } from '../../shared/ui/Avatar'
+import { useAppSelector } from '../../store'
 
 import styles from './NotificationsDropdown.module.css'
 
@@ -96,11 +96,7 @@ export const NotificationsDropdown = ({ onClose }: NotificationsDropdownProps) =
         <ul className={styles.list}>
           {items.map((item) => (
             <li key={item.id}>
-              <button
-                className={styles.item}
-                type="button"
-                onClick={() => handleItemClick(item)}
-              >
+              <button className={styles.item} type="button" onClick={() => handleItemClick(item)}>
                 <Avatar
                   className={styles.avatar}
                   src={item.fromUserAvatar}

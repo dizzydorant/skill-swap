@@ -1,11 +1,11 @@
 import { ChangeEvent, useEffect, useRef, useState } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
-import { useAuthUser } from '@/features/auth/model/useAuthUser'
-import { useFavorites } from '@/features/favorites/hooks/useFavorites'
-import { selectUnreadNotificationsCount } from '@/features/notifications/model/notificationsSlice'
-import { selectCurrentProfile } from '@/features/profile/model/profileSlice'
-import { ROUTES } from '@/shared/lib/constants'
-import { useAppSelector } from '@/store'
+import { useAuthUser } from '../../../features/auth/model/useAuthUser'
+import { useFavorites } from '../../../features/favorites/hooks/useFavorites'
+import { selectUnreadNotificationsCount } from '../../../features/notifications/model/notificationsSlice'
+import { selectCurrentProfile } from '../../../features/profile/model/profileSlice'
+import { ROUTES } from '../../../shared/lib/constants'
+import { useAppSelector } from '../../../store'
 import type { HeaderProps } from '../Header'
 
 export const useHeader = (props: HeaderProps) => {

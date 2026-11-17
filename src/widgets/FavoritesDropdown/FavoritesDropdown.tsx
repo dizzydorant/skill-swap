@@ -1,15 +1,18 @@
 import { useEffect, useState } from 'react'
 import { generatePath, useNavigate } from 'react-router-dom'
 
-import { selectRegisteredUsers } from '@/features/auth/model/authSlice'
-import { useFavorites } from '@/features/favorites/hooks/useFavorites'
-import { loadFavoriteCards, type FavoriteCardPreview } from '@/features/favorites/lib/loadFavoriteCards'
-import { selectProfileOverridesByUserId } from '@/features/profile/model/profileSlice'
-import { IconLikeFilled } from '@/shared/assets/icons'
-import { ROUTES } from '@/shared/lib/constants'
-import { Avatar } from '@/shared/ui/Avatar'
-import { IconButton } from '@/shared/ui/IconButton'
-import { useAppSelector } from '@/store'
+import { selectRegisteredUsers } from '../../features/auth/model/authSlice'
+import { useFavorites } from '../../features/favorites/hooks/useFavorites'
+import {
+  loadFavoriteCards,
+  type FavoriteCardPreview,
+} from '../../features/favorites/lib/loadFavoriteCards'
+import { selectProfileOverridesByUserId } from '../../features/profile/model/profileSlice'
+import { IconLikeFilled } from '../../shared/assets/icons'
+import { ROUTES } from '../../shared/lib/constants'
+import { Avatar } from '../../shared/ui/Avatar'
+import { IconButton } from '../../shared/ui/IconButton'
+import { useAppSelector } from '../../store'
 
 import styles from './FavoritesDropdown.module.css'
 

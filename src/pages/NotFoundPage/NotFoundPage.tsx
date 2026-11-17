@@ -1,8 +1,8 @@
 import { useNavigate } from 'react-router-dom'
 
-import { ErrorState } from '@/widgets/ErrorState'
-import { Header } from '@/widgets/Header'
-import { Footer } from '@/widgets/Footer'
+import { ErrorState } from '../../widgets/ErrorState'
+import { Header } from '../../widgets/Header'
+import { Footer } from '../../widgets/Footer'
 
 import error404 from '@/shared/assets/images/errors/404.svg'
 

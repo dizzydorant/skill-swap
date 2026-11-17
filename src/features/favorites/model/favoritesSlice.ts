@@ -1,9 +1,9 @@
 import { createSlice, type PayloadAction } from '@reduxjs/toolkit'
 
-import { selectCurrentUserId } from '@/features/auth/model/authSlice'
-import { LOCAL_STORAGE_KEYS } from '@/shared/lib/constants'
-import type { RootState } from '@/store'
-import { readStorage } from '@/store/storage'
+import { selectCurrentUserId } from '../../../features/auth/model/authSlice'
+import { LOCAL_STORAGE_KEYS } from '../../../shared/lib/constants'
+import type { RootState } from '../../../store'
+import { readStorage } from '../../../store/storage'
 
 export interface FavoritesState {
   byUserId: Record<string, string[]>
@@ -43,11 +43,7 @@ const normalizeFavoritesByUser = (
 
 const initialState: FavoritesState = {
   byUserId: normalizeFavoritesByUser(
-    readStorage<FavoritesState['byUserId']>(
-      LOCAL_STORAGE_KEYS.FAVORITES,
-      {},
-      isFavoritesByUser,
-    ),
+    readStorage<FavoritesState['byUserId']>(LOCAL_STORAGE_KEYS.FAVORITES, {}, isFavoritesByUser),
   ),
 }
 
@@ -83,12 +79,8 @@ const favoritesSlice = createSlice({
   },
 })
 
-export const {
-  clearUserFavorites,
-  hydrateUserFavorites,
-  removeFavorite,
-  toggleFavorite,
-} = favoritesSlice.actions
+export const { clearUserFavorites, hydrateUserFavorites, removeFavorite, toggleFavorite } =
+  favoritesSlice.actions
 
 export const selectFavoriteIdsByUserId = (state: RootState, userId: string): string[] =>
   state.favorites.byUserId[userId] ?? EMPTY_FAVORITE_IDS

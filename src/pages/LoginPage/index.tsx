@@ -1,16 +1,13 @@
 import { useState } from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
-import {
-  loginSuccess,
-  selectRegisteredUsers,
-} from '@/features/auth/model/authSlice'
-import { login } from '@/features/auth/model/authUtils'
-import { LoginForm } from '@/features/auth/ui/LoginForm'
-import { ROUTES } from '@/shared/lib/constants'
-import { useAppDispatch, useAppSelector } from '@/store'
-import loginImage from '@/shared/assets/images/auth/lampochka.svg'
-import { AuthLayout } from '@/widgets/AuthLayout'
-import { AuthPromoCard } from '@/widgets/AuthPromoCard'
+import { loginSuccess, selectRegisteredUsers } from '../../features/auth/model/authSlice'
+import { login } from '../../features/auth/model/authUtils'
+import { LoginForm } from '../../features/auth/ui/LoginForm'
+import { ROUTES } from '../../shared/lib/constants'
+import { useAppDispatch, useAppSelector } from '../../store'
+import loginImage from '../../shared/assets/images/auth/lampochka.svg'
+import { AuthLayout } from '../../widgets/AuthLayout'
+import { AuthPromoCard } from '../../widgets/AuthPromoCard'
 
 interface LoginFormData {
   email: string

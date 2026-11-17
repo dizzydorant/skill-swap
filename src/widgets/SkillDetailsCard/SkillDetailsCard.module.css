@@ -8,8 +8,8 @@
   min-height: 444px;
   padding: 40px 40px 40px 52px;
   border-radius: 12px;
-  background-color: #fff;
-  box-shadow: 0 8px 30px rgb(37 48 23 / 8%);
+  background-color: var(--bg-card);
+  box-shadow: var(--shadow-card);
   gap: 40px;
   box-sizing: border-box;
 }
@@ -43,7 +43,7 @@
   font-size: 32px;
   font-weight: 500;
   line-height: 1.2;
-  color: #1a1a1a;
+  color: var(--text-heading);
   overflow-wrap: anywhere;
 }
 
@@ -55,7 +55,7 @@
   font-family: Roboto, sans-serif;
   font-size: 16px;
   line-height: 1.5;
-  color: #6b7280;
+  color: var(--text-secondary);
 }
 
 .category,
@@ -65,7 +65,7 @@
 }
 
 .separator {
-  color: #9ca3af;
+  color: var(--text-secondary);
   margin: 0 4px;
 }
 
@@ -75,7 +75,7 @@
   font-size: 16px;
   font-weight: 400;
   line-height: 1.5;
-  color: #1a1a1a;
+  color: var(--text-heading);
   overflow-wrap: anywhere;
   white-space: pre-wrap;
 }

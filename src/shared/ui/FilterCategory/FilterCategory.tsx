@@ -1,6 +1,6 @@
 import { FC, ReactNode } from 'react'
 import { Checkbox } from '../Checkbox'
-import { IconArrow } from '@/shared/assets/icons'
+import { IconArrow } from '../../../shared/assets/icons'
 import cls from './FilterCategory.module.css'
 
 export interface FilterCategoryProps {

@@ -25,7 +25,7 @@
 .title {
   font-size: 24px;
   font-weight: 500;
-  color: #253017;
+  color: var(--text-primary);
   margin: 0;
   font-family: Jost, sans-serif;
 }
@@ -33,6 +33,6 @@
 .description {
   font-family: Roboto, sans-serif;
   font-size: 16px;
-  color: #253017;
+  color: var(--text-primary);
   margin: 0;
 }

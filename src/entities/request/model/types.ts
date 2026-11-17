@@ -1,1 +1,1 @@
-export type { SwapRequest, RequestStatus } from '@/shared/types'
+export type { SwapRequest, RequestStatus } from '../../../shared/types'

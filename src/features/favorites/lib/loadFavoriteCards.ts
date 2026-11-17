@@ -1,9 +1,9 @@
 import {
   getRegisteredSkillPageData,
   type RegisteredUser,
-} from '@/features/auth/model/authUtils'
-import type { ProfileOverridesByUserId } from '@/features/profile/model/types'
-import { fetchJson } from '@/pages/CatalogPage/catalogData'
+} from '../../../features/auth/model/authUtils'
+import type { ProfileOverridesByUserId } from '../../../features/profile/model/types'
+import { fetchJson } from '../../../pages/CatalogPage/catalogData'
 
 export interface FavoriteCardPreview {
   id: string

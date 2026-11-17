@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { IconArrow } from '@/shared/assets/icons'
+import { IconArrow } from '../../shared/assets/icons'
 import styles from './SkillImageGallery.module.css'
 
 export interface SkillImageGalleryProps {
@@ -20,7 +20,6 @@ export const SkillImageGallery: React.FC<SkillImageGalleryProps> = ({
 
   const [activeIndex, setActiveIndex] = useState<number>(safeInitialIndex)
 
-  // Fallback, если массив пустой
   if (!images || images.length === 0) {
     return (
       <div className={`${styles.fallbackContainer} ${className}`.trim()}>
@@ -44,7 +43,6 @@ export const SkillImageGallery: React.FC<SkillImageGalleryProps> = ({
 
   return (
     <div className={`${styles.container} ${className}`.trim()}>
-      {/* Главное изображение (слева) */}
       <div className={styles.mainImageWrapper}>
         <img
           src={images[activeIndex]}
@@ -54,7 +52,6 @@ export const SkillImageGallery: React.FC<SkillImageGalleryProps> = ({
           fetchPriority="high"
         />
 
-        {/* Навигационные стрелки */}
         {images.length > 1 && (
           <>
             <button
@@ -78,7 +75,6 @@ export const SkillImageGallery: React.FC<SkillImageGalleryProps> = ({
         )}
       </div>
 
-      {/* Список миниатюр в колонку (справа) */}
       {images.length > 1 && (
         <div className={styles.thumbnailsColumn}>
           {visibleThumbnails.map((img, idx) => {
@@ -109,7 +105,6 @@ export const SkillImageGallery: React.FC<SkillImageGalleryProps> = ({
                   loading="lazy"
                 />
 
-                {/* Счётчик скрытых изображений вида +N */}
                 {showCounter && <div className={styles.counterOverlay}>+{hiddenCount}</div>}
               </button>
             )

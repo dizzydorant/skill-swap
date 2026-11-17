@@ -1,7 +1,7 @@
 import { useCallback } from 'react'
 
-import type { AuthUser } from '@/shared/types'
-import { useAppDispatch, useAppSelector } from '@/store'
+import type { AuthUser } from '../../../shared/types'
+import { useAppDispatch, useAppSelector } from '../../../store'
 
 import { logout, selectAuthUser, selectIsAuthenticated } from './authSlice'
 

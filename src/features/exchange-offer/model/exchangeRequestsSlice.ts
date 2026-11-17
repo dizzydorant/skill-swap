@@ -1,10 +1,10 @@
 import { createSelector, createSlice, type PayloadAction } from '@reduxjs/toolkit'
 
-import { LOCAL_STORAGE_KEYS } from '@/shared/lib/constants'
-import { generateId } from '@/shared/lib/helpers'
-import type { RequestStatus, SwapRequest } from '@/shared/types'
-import type { RootState } from '@/store'
-import { readStorage } from '@/store/storage'
+import { LOCAL_STORAGE_KEYS } from '../../../shared/lib/constants'
+import { generateId } from '../../../shared/lib/helpers'
+import type { RequestStatus, SwapRequest } from '../../../shared/types'
+import type { RootState } from '../../../store'
+import { readStorage } from '../../../store/storage'
 
 export interface ExchangeRequestsState {
   items: SwapRequest[]
@@ -53,11 +53,7 @@ const isSwapRequest = (value: unknown): value is SwapRequest => {
 const isSwapRequests = (value: unknown): value is SwapRequest[] =>
   Array.isArray(value) && value.every(isSwapRequest)
 
-const hasPendingRequest = (
-  requests: SwapRequest[],
-  skillId: string,
-  fromUserId: string,
-): boolean =>
+const hasPendingRequest = (requests: SwapRequest[], skillId: string, fromUserId: string): boolean =>
   requests.some(
     (request) =>
       request.skillId === skillId &&
@@ -138,13 +134,8 @@ const exchangeRequestsSlice = createSlice({
   },
 })
 
-export const {
-  acceptRequest,
-  cancelRequest,
-  createRequest,
-  rejectRequest,
-  updateRequestStatus,
-} = exchangeRequestsSlice.actions
+export const { acceptRequest, cancelRequest, createRequest, rejectRequest, updateRequestStatus } =
+  exchangeRequestsSlice.actions
 
 export const selectAllRequests = (state: RootState): SwapRequest[] => state.exchangeRequests.items
 
@@ -152,11 +143,8 @@ const selectUserIdParam = (_state: RootState, userId: string): string => userId
 
 const selectSkillIdParam = (_state: RootState, skillId: string): string => skillId
 
-const selectFromUserIdParam = (
-  _state: RootState,
-  _skillId: string,
-  fromUserId: string,
-): string => fromUserId
+const selectFromUserIdParam = (_state: RootState, _skillId: string, fromUserId: string): string =>
+  fromUserId
 
 export const selectIncomingRequestsByUserId = createSelector(
   [selectAllRequests, selectUserIdParam],
@@ -182,9 +170,7 @@ export const selectOfferedSkillIds = createSelector(
   [selectOutgoingRequestsByUserId],
   (requests): Set<string> =>
     new Set(
-      requests
-        .filter((request) => request.status === 'pending')
-        .map((request) => request.skillId),
+      requests.filter((request) => request.status === 'pending').map((request) => request.skillId),
     ),
 )
 

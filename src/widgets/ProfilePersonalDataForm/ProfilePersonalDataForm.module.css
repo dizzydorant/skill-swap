@@ -3,9 +3,9 @@
   margin-right: auto;
   max-width: 850px;
   border-radius: 32px;
-  background-color: #fff;
+  background-color: var(--bg-card);
   padding: 48px;
-  color: #1a1a1a;
+  color: var(--text-heading);
   box-sizing: border-box;
 }
 
@@ -35,7 +35,7 @@
 .label {
   font-size: 14px;
   font-weight: 500;
-  color: #4a4a4a;
+  color: var(--text-label);
 }
 
 .passwordLink {
@@ -43,7 +43,7 @@
   align-self: flex-start;
   font-size: 14px;
   font-weight: 600;
-  color: #508826;
+  color: var(--text-badge);
   background: transparent;
   border: none;
   padding: 0;

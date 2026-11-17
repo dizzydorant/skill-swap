@@ -18,11 +18,12 @@
   position: relative;
   height: 20px;
   width: 20px;
-  background-color: #fff;
-  border: 1.5px solid #1a1a1a;
+  background-color: var(--bg-card);
+  border: 1.5px solid var(--text-secondary);
   border-radius: 4px;
   box-sizing: border-box;
   flex-shrink: 0;
+  transition: background-color var(--transition), border-color var(--transition);
 }
 
 .hiddenInput:checked ~ .customCheckbox {
@@ -67,6 +68,7 @@
 
 .labelText {
   font-size: 14px;
-  color: #1a1a1a;
+  color: var(--text-primary);
   line-height: 1;
+  transition: color var(--transition);
 }

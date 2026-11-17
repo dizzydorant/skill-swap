@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react'
 import cls from './Select.module.css'
-import { IconArrow } from '@/shared/assets/icons'
+import { IconArrow } from '../../../shared/assets/icons'
 
 export interface SelectOption {
   value: string

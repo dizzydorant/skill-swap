@@ -1,12 +1,13 @@
 import { useCallback, useEffect, useMemo, useState, type FC } from 'react'
 import { generatePath, useLocation, useNavigate, useSearchParams } from 'react-router-dom'
 
-import { useAuthUser } from '@/features/auth/model/useAuthUser'
-import { useFavorites } from '@/features/favorites/hooks/useFavorites'
-import { selectOfferedSkillIds } from '@/features/exchange-offer/model/exchangeRequestsSlice'
-import { selectProfileOverridesByUserId } from '@/features/profile/model/profileSlice'
-import type { ProfileOverridesByUserId } from '@/features/profile/model/types'
-import { useAppSelector } from '@/store'
+import { useAuthUser } from '../../features/auth/model/useAuthUser'
+import { useFavorites } from '../../features/favorites/hooks/useFavorites'
+import { useTheme } from '../../shared/lib/theme/useTheme'
+import { selectOfferedSkillIds } from '../../features/exchange-offer/model/exchangeRequestsSlice'
+import { selectProfileOverridesByUserId } from '../../features/profile/model/profileSlice'
+import type { ProfileOverridesByUserId } from '../../features/profile/model/types'
+import { useAppSelector } from '../../store'
 
 import { Footer } from '../../widgets/Footer'
 import { Header } from '../../widgets/Header'
@@ -18,7 +19,7 @@ import type { City, SkillCategory } from '../../widgets/CatalogFilter/model/type
 import error500 from '../../shared/assets/images/errors/500.svg'
 import error404 from '../../shared/assets/images/errors/404.svg'
 import { Button } from '../../shared/ui/Button'
-import { ROUTES } from '@/shared/lib/constants'
+import { ROUTES } from '../../shared/lib/constants'
 
 import {
   fetchJson,
@@ -59,6 +60,7 @@ export const CatalogPage: FC = () => {
   const [searchParams, setSearchParams] = useSearchParams()
   const { isAuthenticated, user: authUser } = useAuthUser()
   const { toggleFavorite, favoriteIds } = useFavorites()
+  const { toggleTheme } = useTheme()
   const [catalogData, setCatalogData] = useState<CatalogDbData | null>(null)
   const [isLoading, setIsLoading] = useState(true)
   const [loadError, setLoadError] = useState<Error | null>(null)
@@ -146,7 +148,7 @@ export const CatalogPage: FC = () => {
     const subCategoryById = new Map<number, string>()
 
     catalogDataWithProfileOverrides.categories.forEach((category) => {
-      category.subCategories.forEach((subCategory) => {
+      category.subCategories.forEach((subCategory: any) => {
         subCategoryById.set(subCategory.id, subCategory.name)
       })
     })
@@ -285,7 +287,7 @@ export const CatalogPage: FC = () => {
 
   return (
     <div className={cls.page}>
-      <Header searchValue={searchValue} onSearchChange={handleSearchChange} />
+      <Header searchValue={searchValue} onSearchChange={handleSearchChange} onThemeClick={toggleTheme} />
 
       <main className={cls.main}>
         <div className={cls.pageLayoutContainer}>

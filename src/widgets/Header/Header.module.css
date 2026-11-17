@@ -4,9 +4,10 @@
   width: 100%;
   min-height: 104px;
   padding: 36px 36px 20px;
-  color: #253017;
-  background-color: #f8faf6;
+  color: var(--text-primary);
+  background-color: var(--bg-header);
   box-sizing: border-box;
+  transition: background-color var(--transition), color var(--transition);
 }
 
 .authorized {
@@ -46,15 +47,16 @@
   font-size: 16px;
   font-weight: 400;
   line-height: 1.5;
-  color: #253017;
+  color: var(--text-primary);
   text-decoration: none;
   background: transparent;
   cursor: pointer;
+  transition: color var(--transition);
 }
 
 .navLink:hover,
 .skillsButton:hover {
-  color: #4a5540;
+  color: var(--text-secondary);
 }
 
 .navLink:focus-visible,
@@ -62,7 +64,7 @@
 .userButton:focus-visible,
 .userDropdownItem:focus-visible {
   outline: none;
-  box-shadow: 0 0 0 3px rgb(171 210 122 / 40%);
+  box-shadow: var(--shadow-focus);
 }
 
 .skillsButton {
@@ -90,12 +92,14 @@
   max-width: none;
   height: 48px;
   border-color: transparent;
-  background-color: #fff;
+  background-color: var(--bg-input);
+  color: var(--text-heading);
+  transition: background-color var(--transition), color var(--transition), border-color var(--transition);
 }
 
 .search .searchInput:hover,
 .search .searchInput:focus {
-  border-color: #dfe8d4;
+  border-color: var(--bg-border-secondary);
 }
 
 .actions {
@@ -108,7 +112,8 @@
 }
 
 .iconButton {
-  color: #253017;
+  color: var(--text-icon);
+  transition: color var(--transition);
 }
 
 .authActions {
@@ -122,12 +127,14 @@
   min-height: 48px;
   border-radius: 12px;
   white-space: nowrap;
+  transition: background-color var(--transition), color var(--transition);
 }
 
 .loginButton {
   padding-right: 22px;
   padding-left: 22px;
-  background-color: #fff;
+  background-color: var(--bg-button);
+  color: var(--text-primary);
 }
 
 .registerButton {
@@ -161,10 +168,11 @@
   font-weight: 600;
   line-height: 1;
   color: #fff;
-  background-color: #508826;
-  border: 2px solid #f8faf6;
+  background-color: var(--text-badge);
+  border: 2px solid var(--bg-header);
   border-radius: 999px;
   pointer-events: none;
+  transition: background-color var(--transition), border-color var(--transition);
 }
 
 .userMenuWrapper {
@@ -178,9 +186,10 @@
   padding: 0;
   border: 0;
   font: inherit;
-  color: #253017;
+  color: var(--text-primary);
   background: transparent;
   cursor: pointer;
+  transition: color var(--transition);
 }
 
 .userName {
@@ -204,10 +213,11 @@
   flex-direction: column;
   width: 232px;
   padding: 20px;
-  background-color: #fff;
-  border: 1px solid #dfe8d4;
+  background-color: var(--bg-dropdown);
+  border: 1px solid var(--bg-border-secondary);
   border-radius: 8px;
-  box-shadow: 0 12px 36px rgb(37 48 23 / 12%);
+  box-shadow: var(--shadow-dropdown);
+  transition: background-color var(--transition), border-color var(--transition);
 }
 
 .userDropdownItem {
@@ -224,14 +234,15 @@
   font-size: 16px;
   font-weight: 500;
   line-height: 1.4;
-  color: #253017;
+  color: var(--text-primary);
   text-align: left;
   background: transparent;
   cursor: pointer;
+  transition: color var(--transition);
 }
 
 .userDropdownItem:hover {
-  color: #508826;
+  color: var(--text-badge);
 }
 
 .userDropdownItem + .userDropdownItem {

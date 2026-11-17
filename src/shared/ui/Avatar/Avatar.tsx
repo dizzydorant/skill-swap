@@ -1,5 +1,5 @@
 import { FC, useState } from 'react'
-import { IconGalleryEdit } from '@/shared/assets/icons/IconGalleryEdit'
+import { IconGalleryEdit } from '../../../shared/assets/icons/IconGalleryEdit'
 import userIcon from '@/shared/assets/icons/user.svg'
 import styles from './Avatar.module.css'
 

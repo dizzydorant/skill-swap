@@ -8,8 +8,8 @@ import { ru } from 'date-fns/locale'
 import 'react-datepicker/dist/react-datepicker.css'
 import './DatePicker.calendar.css'
 
-import { IconArrow, IconCalendar } from '@/shared/assets/icons'
-import { Button } from '@/shared/ui/Button'
+import { IconArrow, IconCalendar } from '../../../shared/assets/icons'
+import { Button } from '../../../shared/ui/Button'
 
 import styles from './DatePicker.module.css'
 

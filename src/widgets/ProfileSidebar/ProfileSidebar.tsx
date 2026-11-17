@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react'
 
-import { IconLike } from '@/shared/assets/icons'
+import { IconLike } from '../../shared/assets/icons'
 import ideaIcon from '@/shared/assets/icons/idea.svg'
 import messageTextIcon from '@/shared/assets/icons/message-text.svg'
 import requestIcon from '@/shared/assets/icons/request.svg'
@@ -61,10 +61,7 @@ export const ProfileSidebar = ({
         <ul className={styles.menuList}>
           {profileSidebarItems.map((item) => {
             const isActive = activeItemId === item.id
-            const itemClassName = [
-              styles.menuButton,
-              isActive ? styles.menuButtonActive : '',
-            ]
+            const itemClassName = [styles.menuButton, isActive ? styles.menuButtonActive : '']
               .filter(Boolean)
               .join(' ')
 

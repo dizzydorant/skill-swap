@@ -12,34 +12,34 @@ import {
   getCreatedSkillSuccessSkillId,
   getRegisteredSkillPageData,
   type RegisteredUser,
-} from '@/features/auth/model/authUtils'
+} from '../../features/auth/model/authUtils'
 
-import { useFavorites } from '@/features/favorites/hooks/useFavorites'
-import { selectRegisteredUsers } from '@/features/auth/model/authSlice'
-import { useAuthUser } from '@/features/auth/model/useAuthUser'
-import { useExchangeOffer } from '@/features/exchange-offer/hooks/useExchangeOffer'
-import { ExchangeOfferModal } from '@/features/exchange-offer/ui/ExchangeOfferModal'
-import { acceptRequest } from '@/features/exchange-offer/model/exchangeRequestsSlice'
-import { selectProfileOverridesByUserId } from '@/features/profile/model/profileSlice'
-import type { ProfileOverridesByUserId } from '@/features/profile/model/types'
-import { useAppDispatch, useAppSelector } from '@/store'
-import { Footer } from '@/widgets/Footer'
-import { Header } from '@/widgets/Header'
-import { ErrorState } from '@/widgets/ErrorState'
-import { SkillDetailsCard } from '@/widgets/SkillDetailsCard'
-import { SkillImageGallery } from '@/widgets/SkillImageGallery'
-import { SkillOwnerCard } from '@/widgets/SkillOwnerCard'
-import { SkillSection, type SkillSectionCard } from '@/widgets/SkillSection'
+import { useFavorites } from '../../features/favorites/hooks/useFavorites'
+import { selectRegisteredUsers } from '../../features/auth/model/authSlice'
+import { useAuthUser } from '../../features/auth/model/useAuthUser'
+import { useExchangeOffer } from '../../features/exchange-offer/hooks/useExchangeOffer'
+import { ExchangeOfferModal } from '../../features/exchange-offer/ui/ExchangeOfferModal'
+import { acceptRequest } from '../../features/exchange-offer/model/exchangeRequestsSlice'
+import { selectProfileOverridesByUserId } from '../../features/profile/model/profileSlice'
+import type { ProfileOverridesByUserId } from '../../features/profile/model/types'
+import { useAppDispatch, useAppSelector } from '../../store'
+import { Footer } from '../../widgets/Footer'
+import { Header } from '../../widgets/Header'
+import { ErrorState } from '../../widgets/ErrorState'
+import { SkillDetailsCard } from '../../widgets/SkillDetailsCard'
+import { SkillImageGallery } from '../../widgets/SkillImageGallery'
+import { SkillOwnerCard } from '../../widgets/SkillOwnerCard'
+import { SkillSection, type SkillSectionCard } from '../../widgets/SkillSection'
 
-import { IconLike, IconLikeFilled, IconShare, IconMore } from '@/shared/assets/icons'
+import { IconLike, IconLikeFilled, IconShare, IconMore } from '../../shared/assets/icons'
 import error404 from '@/shared/assets/images/errors/404.svg'
 import error500 from '@/shared/assets/images/errors/500.svg'
 import checkCircleIcon from '@/shared/assets/icons/check-circle.svg'
-import { ROUTES } from '@/shared/lib/constants'
-import type { ChipItem } from '@/shared/ui/ChipList'
-import { SuccessModal } from '@/shared/ui/SuccessModal'
+import { ROUTES } from '../../shared/lib/constants'
+import type { ChipItem } from '../../shared/ui/ChipList'
+import { SuccessModal } from '../../shared/ui/SuccessModal'
 
-import { fetchJson } from '@/pages/CatalogPage/catalogData'
+import { fetchJson } from '../../pages/CatalogPage/catalogData'
 import styles from './index.module.css'
 
 interface SkillDbItem {
@@ -120,7 +120,10 @@ const mergeSkillPageData = (
 
   return {
     skills: [...skills, ...registeredData.skills],
-    users: [...applyProfileOverridesToUsers(users, profileOverridesByUserId), ...registeredData.users],
+    users: [
+      ...applyProfileOverridesToUsers(users, profileOverridesByUserId),
+      ...registeredData.users,
+    ],
     categories,
   }
 }

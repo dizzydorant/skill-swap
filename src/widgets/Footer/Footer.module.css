@@ -1,10 +1,11 @@
 .footer {
   width: 100%;
   min-height: 232px;
-  background-color: #fff;
-  border-top: 1px solid #e5e9e2;
+  background-color: var(--bg-footer);
+  border-top: 1px solid var(--bg-border-tertiary);
   padding: 32px 36px;
   box-sizing: border-box;
+  transition: background-color var(--transition);
 }
 
 .container {
@@ -53,15 +54,15 @@
 .link {
   font-family: Roboto, sans-serif;
   font-size: 16px;
-  color: #1a1a1a;
+  color: var(--text-link);
   text-decoration: none;
-  transition: color 0.2s ease;
+  transition: color var(--transition);
   line-height: 24px;
   white-space: nowrap;
 }
 
 .link:hover {
-  color: #69735d;
+  color: var(--text-primary);
 }
 
 .copyright {
@@ -69,10 +70,11 @@
   grid-row: 2 / 3;
   font-family: Roboto, sans-serif;
   font-size: 14px;
-  color: #6b7280;
+  color: var(--text-secondary);
   line-height: 20px;
   align-self: start;
   margin-top: 90px;
+  transition: color var(--transition);
 }
 
 @media (width <= 860px) {

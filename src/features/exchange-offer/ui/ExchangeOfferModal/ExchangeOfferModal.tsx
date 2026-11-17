@@ -1,5 +1,5 @@
 import bellIcon from '@/shared/assets/icons/bell.svg'
-import { SuccessModal } from '@/shared/ui/SuccessModal'
+import { SuccessModal } from '../../../../shared/ui/SuccessModal'
 
 export interface ExchangeOfferModalProps {
   isOpen: boolean
@@ -7,11 +7,7 @@ export interface ExchangeOfferModalProps {
   onConfirm: () => void
 }
 
-export const ExchangeOfferModal = ({
-  isOpen,
-  onClose,
-  onConfirm,
-}: ExchangeOfferModalProps) => {
+export const ExchangeOfferModal = ({ isOpen, onClose, onConfirm }: ExchangeOfferModalProps) => {
   return (
     <SuccessModal
       isOpen={isOpen}

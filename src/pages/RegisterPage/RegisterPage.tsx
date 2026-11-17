@@ -1,25 +1,22 @@
 import { useState } from 'react'
 import { generatePath, useNavigate } from 'react-router-dom'
-import {
-  registerSuccess,
-  selectRegisteredUsers,
-} from '@/features/auth/model/authSlice'
+import { registerSuccess, selectRegisteredUsers } from '../../features/auth/model/authSlice'
 import {
   getRegisteredUserSkillId,
   isEmailTaken,
   markCreatedSkillSuccess,
   registerUser,
-} from '@/features/auth/model/authUtils'
-import { RegisterCredentialsForm } from '@/features/auth/ui/RegisterCredentialsForm'
-import { RegisterProfileForm } from '@/features/auth/ui/RegisterProfileForm'
-import { RegisterSkillForm, type ImageFile } from '@/features/auth/ui/RegisterSkillForm'
-import { ROUTES } from '@/shared/lib/constants'
-import { useAppDispatch, useAppSelector } from '@/store'
+} from '../../features/auth/model/authUtils'
+import { RegisterCredentialsForm } from '../../features/auth/ui/RegisterCredentialsForm'
+import { RegisterProfileForm } from '../../features/auth/ui/RegisterProfileForm'
+import { RegisterSkillForm, type ImageFile } from '../../features/auth/ui/RegisterSkillForm'
+import { ROUTES } from '../../shared/lib/constants'
+import { useAppDispatch, useAppSelector } from '../../store'
 import lampImage from '@/shared/assets/images/auth/lampochka.svg'
 import boardImage from '@/shared/assets/images/auth/school-board.svg'
 import userInfoImage from '@/shared/assets/images/auth/user-info.svg'
-import { AuthLayout } from '@/widgets/AuthLayout'
-import { AuthPromoCard } from '@/widgets/AuthPromoCard'
+import { AuthLayout } from '../../widgets/AuthLayout'
+import { AuthPromoCard } from '../../widgets/AuthPromoCard'
 
 type RegisterStep = 1 | 2 | 3
 

@@ -25,7 +25,7 @@
 
 .button:focus-visible {
   outline: none;
-  box-shadow: 0 0 0 3px rgb(171 210 122 / 40%);
+  box-shadow: var(--shadow-focus);
 }
 
 .primary {
@@ -44,7 +44,7 @@
 .outline {
   background-color: transparent;
   border-color: #abd27a;
-  color: #1a202c;
+  color: var(--text-primary);
 }
 
 .outline:hover:not(:disabled) {
@@ -57,7 +57,7 @@
 
 .text {
   background-color: transparent;
-  color: #1a202c;
+  color: var(--text-primary);
   padding: 12px 16px;
 }
 

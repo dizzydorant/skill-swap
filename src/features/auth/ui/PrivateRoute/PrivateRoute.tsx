@@ -1,7 +1,7 @@
 import { Navigate, Outlet, useLocation } from 'react-router-dom'
 
-import { useAuthUser } from '@/features/auth/model/useAuthUser'
-import { ROUTES } from '@/shared/lib/constants'
+import { useAuthUser } from '../../../../features/auth/model/useAuthUser'
+import { ROUTES } from '../../../../shared/lib/constants'
 
 export function PrivateRoute() {
   const { isAuthenticated } = useAuthUser()

@@ -2,7 +2,7 @@
   display: flex;
   flex-direction: column;
   min-height: 100vh;
-  background-color: #f9faf7;
+  background-color: var(--bg-secondary);
 }
 
 .main {
@@ -24,7 +24,7 @@
 }
 
 .bottomGridContainer aside {
-  background-color: #fff;
+  background-color: var(--bg-card);
   border-radius: 12px;
   padding: 24px;
   box-sizing: border-box;
@@ -45,7 +45,7 @@
 
 .loadingText {
   margin: 0;
-  color: #253017;
+  color: var(--text-primary);
   font-size: 20px;
   font-weight: 500;
 }

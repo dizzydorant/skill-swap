@@ -1,6 +1,6 @@
 import type { EnhancedStore } from '@reduxjs/toolkit'
 
-import { LOCAL_STORAGE_KEYS } from '@/shared/lib/constants'
+import { LOCAL_STORAGE_KEYS } from '../shared/lib/constants'
 
 import { removeStorage, writeStorage } from './storage'
 

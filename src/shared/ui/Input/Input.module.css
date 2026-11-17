@@ -12,9 +12,9 @@
   font-family: Roboto, sans-serif;
   font-size: 16px;
   line-height: 1.5;
-  color: #1a1a1a;
-  background-color: #fff;
-  border: 1px solid #69735d;
+  color: var(--text-heading);
+  background-color: var(--bg-input);
+  border: 1px solid var(--bg-border-secondary);
   border-radius: 12px;
   transition: all 0.2s ease-in-out;
   outline: none;
@@ -63,37 +63,37 @@
 
 /* плейсхолдер */
 .input::placeholder {
-  color: #9ca3af;
+  color: var(--text-secondary);
   font-size: 16px;
 }
 
 .input:not(.disabled):hover {
-  border-color: #4a5540;
+  border-color: var(--text-primary);
 }
 
 .input:not(.disabled):focus {
-  border-color: #69735d;
+  border-color: var(--bg-border-secondary);
   box-shadow: 0 0 0 4px rgba(105 115 93 / 15%);
 }
 
 .input.error {
-  border-color: #ef4444;
+  border-color: var(--color-error);
 }
 
 .input.error:not(.disabled):focus {
-  border-color: #ef4444;
+  border-color: var(--color-error);
   box-shadow: 0 0 0 4px rgba(239 68 68 / 10%);
 }
 
 .input.disabled {
-  background-color: #f3f4f6;
-  color: #9ca3af;
+  background-color: var(--bg-secondary);
+  color: var(--text-secondary);
   cursor: not-allowed;
-  border-color: #d1d5db;
+  border-color: var(--border-dashed);
 }
 
 .input.disabled::placeholder {
-  color: #d1d5db;
+  color: var(--border-dashed);
 }
 
 /* описание */
@@ -115,6 +115,6 @@ textarea.input.form {
 .errorText {
   margin-top: 6px;
   font-size: 14px;
-  color: #ef4444;
+  color: var(--color-error);
   line-height: 1.4;
 }

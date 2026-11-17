@@ -1,10 +1,10 @@
 import {
   getRegisteredSkillPageData,
   type RegisteredUser,
-} from '@/features/auth/model/authUtils'
-import type { ProfileOverridesByUserId } from '@/features/profile/model/types'
-import { fetchJson } from '@/pages/CatalogPage/catalogData'
-import type { SwapRequest } from '@/shared/types'
+} from '../../../features/auth/model/authUtils'
+import type { ProfileOverridesByUserId } from '../../../features/profile/model/types'
+import { fetchJson } from '../../../pages/CatalogPage/catalogData'
+import type { SwapRequest } from '../../../shared/types'
 
 export interface NotificationPreview {
   id: string

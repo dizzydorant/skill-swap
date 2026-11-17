@@ -1,6 +1,6 @@
-import type { AuthUser } from '@/shared/types'
-import { LOCAL_STORAGE_KEYS } from '@/shared/lib/constants'
-import type { ProfileOverridesByUserId } from '@/features/profile/model/types'
+import type { AuthUser } from '../../../shared/types'
+import { LOCAL_STORAGE_KEYS } from '../../../shared/lib/constants'
+import type { ProfileOverridesByUserId } from '../../../features/profile/model/types'
 
 interface MockUser {
   id: string
@@ -161,7 +161,9 @@ export const isAuthUser = (value: unknown): value is AuthUser => {
     typeof user.name === 'string' &&
     typeof user.email === 'string' &&
     typeof user.token === 'string' &&
-    (typeof user.avatarUrl === 'string' || user.avatarUrl === null || user.avatarUrl === undefined) &&
+    (typeof user.avatarUrl === 'string' ||
+      user.avatarUrl === null ||
+      user.avatarUrl === undefined) &&
     !('password' in user)
   )
 }

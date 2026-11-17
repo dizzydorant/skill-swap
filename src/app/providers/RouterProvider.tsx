@@ -1,20 +1,20 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import { lazy, Suspense } from 'react'
-import { PrivateRoute } from '@/features/auth/ui/PrivateRoute'
-import { ROUTES } from '@/shared/lib/constants'
+import { PrivateRoute } from '../../features/auth/ui'
+import { ROUTES } from '../../shared/lib/constants'
 
 // импорты для проверки 404 и 500
-import { NotFoundPage } from '@/pages/NotFoundPage'
-import { ServerErrorPage } from '@/pages/ServerErrorPage'
+import { NotFoundPage } from '../../pages/NotFoundPage'
+import { ServerErrorPage } from '../../pages/ServerErrorPage'
 
 // Lazy-загрузка страниц — каждая страница грузится только при переходе на неё
-const CatalogPage = lazy(() => import('@/pages/CatalogPage'))
-const SkillPage = lazy(() => import('@/pages/SkillPage'))
-const ProfilePage = lazy(() => import('@/pages/ProfilePage'))
-const FavoritesPage = lazy(() => import('@/pages/FavoritesPage'))
-const CreateSkillPage = lazy(() => import('@/pages/CreateSkillPage'))
-const LoginPage = lazy(() => import('@/pages/LoginPage'))
-const RegisterPage = lazy(() => import('@/pages/RegisterPage'))
+const CatalogPage = lazy(() => import('../../pages/CatalogPage'))
+const SkillPage = lazy(() => import('../../pages/SkillPage'))
+const ProfilePage = lazy(() => import('../../pages/ProfilePage'))
+const FavoritesPage = lazy(() => import('../../pages/FavoritesPage'))
+const CreateSkillPage = lazy(() => import('../../pages/CreateSkillPage'))
+const LoginPage = lazy(() => import('../../pages/LoginPage'))
+const RegisterPage = lazy(() => import('../../pages/RegisterPage'))
 
 export function AppRouter() {
   return (

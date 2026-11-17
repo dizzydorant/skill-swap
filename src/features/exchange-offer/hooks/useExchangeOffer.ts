@@ -1,12 +1,9 @@
 import { useCallback, useState } from 'react'
 
-import { selectCurrentUserId } from '@/features/auth/model/authSlice'
-import { useAppDispatch, useAppSelector } from '@/store'
+import { selectCurrentUserId } from '../../../features/auth/model/authSlice'
+import { useAppDispatch, useAppSelector } from '../../../store'
 
-import {
-  createRequest,
-  selectHasPendingRequest,
-} from '../model/exchangeRequestsSlice'
+import { createRequest, selectHasPendingRequest } from '../model/exchangeRequestsSlice'
 
 interface UseExchangeOfferParams {
   skillId: string

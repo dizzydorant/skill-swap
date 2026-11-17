@@ -1,10 +1,10 @@
 import { createSelector, createSlice, type PayloadAction } from '@reduxjs/toolkit'
 
-import { selectAllRequests } from '@/features/exchange-offer/model/exchangeRequestsSlice'
-import { LOCAL_STORAGE_KEYS } from '@/shared/lib/constants'
-import type { SwapRequest } from '@/shared/types'
-import type { RootState } from '@/store'
-import { readStorage } from '@/store/storage'
+import { selectAllRequests } from '../../../features/exchange-offer/model/exchangeRequestsSlice'
+import { LOCAL_STORAGE_KEYS } from '../../../shared/lib/constants'
+import type { SwapRequest } from '../../../shared/types'
+import type { RootState } from '../../../store'
+import { readStorage } from '../../../store/storage'
 
 export interface NotificationsState {
   seenIdsByUserId: Record<string, string[]>

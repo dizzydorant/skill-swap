@@ -1,4 +1,4 @@
-import type { User } from '@/shared/types'
+import type { User } from '../shared/types'
 
 const BASE_URL = '/db'
 

@@ -3,7 +3,7 @@
   min-height: 620px;
   padding: 45px 31px;
   border-radius: 14px;
-  background-color: #fff;
+  background-color: var(--bg-sidebar);
 }
 
 .menuList {
@@ -23,29 +23,29 @@
   min-height: 40px;
   padding: 8px 17px;
   border-radius: 9px;
-  color: #253017;
+  color: var(--text-primary);
   font-size: 14px;
   font-weight: 400;
   line-height: 1.2;
   text-align: left;
   background-color: transparent;
   transition:
-    background-color 0.2s ease,
-    color 0.2s ease;
+    background-color var(--transition),
+    color var(--transition);
 }
 
 .menuButton:hover {
-  background-color: #f4f8ec;
+  background-color: var(--bg-sidebar-hover);
 }
 
 .menuButton:focus-visible {
   outline: none;
-  box-shadow: 0 0 0 3px rgb(171 210 122 / 40%);
+  box-shadow: var(--shadow-focus);
 }
 
 .menuButtonActive,
 .menuButtonActive:hover {
-  background-color: #e1efc9;
+  background-color: var(--bg-sidebar-active);
 }
 
 .icon {

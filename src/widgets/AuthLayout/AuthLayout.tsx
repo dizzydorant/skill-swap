@@ -1,7 +1,7 @@
 import { FC, ReactNode } from 'react'
-import { Logo } from '@/shared/ui/Logo'
-import { Button } from '@/shared/ui/Button'
-import { AuthProgress } from './AuthProgress' // Импортируем наш новый компонент
+import { Logo } from '../../shared/ui/Logo'
+import { Button } from '../../shared/ui/Button'
+import { AuthProgress } from './AuthProgress'
 import cls from './AuthLayout.module.css'
 
 interface AuthLayoutProps {
@@ -23,7 +23,6 @@ export const AuthLayout: FC<AuthLayoutProps> = ({
 }) => {
   return (
     <div className={cls.layout}>
-      {/* ВЕРХНЯЯ ПАНЕЛЬ */}
       <div className={cls.topBar}>
         <div className={cls.logoWrapper}>
           <Logo />
@@ -53,10 +52,8 @@ export const AuthLayout: FC<AuthLayoutProps> = ({
 
       <main className={cls.mainContainer}>
         <div className={cls.grid}>
-          {/* Левая белая карточка (Форма) */}
           <div className={cls.card}>{leftSlot}</div>
 
-          {/* Правая белая карточка (Промо) */}
           <div className={cls.card}>{rightSlot}</div>
         </div>
       </main>

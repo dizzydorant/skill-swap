@@ -4,7 +4,7 @@
   justify-content: space-between;
   min-height: 100vh;
   width: 100%;
-  background-color: #f4f4f4;
+  background-color: var(--bg-secondary);
   padding: 32px 48px;
   box-sizing: border-box;
   font-family: sans-serif;
@@ -35,7 +35,7 @@
   margin: 0;
   font-size: 24px;
   font-weight: 500;
-  color: #1a1a1a;
+  color: var(--text-heading);
   line-height: 1.2;
   font-family: Jost, sans-serif;
 }
@@ -56,7 +56,7 @@
   height: 4px;
   width: 56px;
   border-radius: 9999px;
-  background-color: #e5e7eb;
+  background-color: var(--bg-border);
   transition: background-color 0.3s ease;
 }
 
@@ -65,7 +65,7 @@
 }
 
 .customCloseBtn {
-  background-color: #fff;
+  background-color: var(--bg-card);
   border-color: transparent;
   font-size: 16px;
   font-family: Roboto, sans-serif;
@@ -73,13 +73,13 @@
 }
 
 .customCloseBtn:hover:not(:disabled) {
-  background-color: #f9f9f9;
+  background-color: var(--bg-secondary);
 }
 
 .closeIcon {
   margin-left: 4px;
   font-size: 11px;
-  color: #9ca3af;
+  color: var(--text-secondary);
 }
 
 .mainContainer {
@@ -103,7 +103,7 @@
 }
 
 .card {
-  background-color: #fff;
+  background-color: var(--bg-card);
   border-radius: 16px;
   padding: 48px;
   display: flex;
