@@ -5,6 +5,7 @@ import { DatePicker } from '../../../../shared/ui/DatePicker'
 import { Input } from '../../../../shared/ui/Input'
 import { Select, type SelectOption } from '../../../../shared/ui/Select'
 import { IconAdd } from '../../../../shared/assets/icons'
+import { DATA_BASE } from '../../../../shared/lib/dataPaths'
 import cls from './RegisterProfileForm.module.css'
 
 export interface RegisterProfileFormProps {
@@ -68,7 +69,7 @@ export const RegisterProfileForm = ({
   useEffect(() => {
     let isMounted = true
 
-    Promise.all([fetch('/db/cities.json'), fetch('/db/categories.json')])
+    Promise.all([fetch(`${DATA_BASE}cities.json`), fetch(`${DATA_BASE}categories.json`)])
       .then(async ([citiesResponse, categoriesResponse]) => {
         if (!citiesResponse.ok || !categoriesResponse.ok) {
           throw new Error('Failed to load registration dictionaries')

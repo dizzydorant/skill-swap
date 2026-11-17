@@ -1,5 +1,6 @@
 import type { AuthUser } from '../../../shared/types'
 import { LOCAL_STORAGE_KEYS } from '../../../shared/lib/constants'
+import { DATA_BASE } from '../../../shared/lib/dataPaths'
 import type { ProfileOverridesByUserId } from '../../../features/profile/model/types'
 
 interface MockUser {
@@ -169,7 +170,7 @@ export const isAuthUser = (value: unknown): value is AuthUser => {
 }
 
 const getMockUsers = async (): Promise<MockUser[]> => {
-  mockUsersPromise ??= fetch('/db/users.json').then(async (response) => {
+  mockUsersPromise ??= fetch(`${DATA_BASE}users.json`).then(async (response) => {
     if (!response.ok) {
       throw new AuthError('Не удалось загрузить mock-пользователей')
     }

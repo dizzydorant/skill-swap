@@ -5,6 +5,7 @@ import {
 import type { ProfileOverridesByUserId } from '../../../features/profile/model/types'
 import { fetchJson } from '../../../pages/CatalogPage/catalogData'
 import type { SwapRequest } from '../../../shared/types'
+import { DATA_BASE } from '../../../shared/lib/dataPaths'
 
 export interface NotificationPreview {
   id: string
@@ -37,8 +38,8 @@ export const loadNotificationPreviews = async (
   }
 
   const [skills, users] = await Promise.all([
-    fetchJson<SkillDbItem[]>('/db/skills.json'),
-    fetchJson<UserDbItem[]>('/db/users.json'),
+    fetchJson<SkillDbItem[]>(`${DATA_BASE}skills.json`),
+    fetchJson<UserDbItem[]>(`${DATA_BASE}users.json`),
   ])
 
   const registeredData = getRegisteredSkillPageData(registeredUsers, profileOverridesByUserId)

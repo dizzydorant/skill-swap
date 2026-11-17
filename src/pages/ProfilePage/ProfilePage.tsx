@@ -19,6 +19,8 @@ import { Header } from '../../widgets/Header'
 import { ProfilePersonalDataForm } from '../../widgets/ProfilePersonalDataForm'
 import { ProfileSidebar } from '../../widgets/ProfileSidebar'
 
+import { DATA_BASE } from '../../shared/lib/dataPaths'
+
 import styles from './ProfilePage.module.css'
 
 type ProfileDbUser = ProfileData
@@ -78,8 +80,8 @@ export const ProfilePage = () => {
         setLoadError(null)
 
         const [loadedUsers, loadedCities] = await Promise.all([
-          fetchJson<ProfileDbUser[]>('/db/users.json'),
-          fetchJson<CityDbItem[]>('/db/cities.json'),
+          fetchJson<ProfileDbUser[]>(`${DATA_BASE}users.json`),
+          fetchJson<CityDbItem[]>(`${DATA_BASE}cities.json`),
         ])
 
         if (isMounted) {

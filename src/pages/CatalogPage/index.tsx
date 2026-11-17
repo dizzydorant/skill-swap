@@ -20,6 +20,7 @@ import error500 from '../../shared/assets/images/errors/500.svg'
 import error404 from '../../shared/assets/images/errors/404.svg'
 import { Button } from '../../shared/ui/Button'
 import { ROUTES } from '../../shared/lib/constants'
+import { DATA_BASE } from '../../shared/lib/dataPaths'
 
 import {
   fetchJson,
@@ -92,10 +93,10 @@ export const CatalogPage: FC = () => {
         setLoadError(null)
 
         const [users, skills, categories, cities] = await Promise.all([
-          fetchJson<CatalogUser[]>('/db/users.json'),
-          fetchJson<CatalogSkill[]>('/db/skills.json'),
-          fetchJson<SkillCategory[]>('/db/categories.json'),
-          fetchJson<City[]>('/db/cities.json'),
+          fetchJson<CatalogUser[]>(`${DATA_BASE}users.json`),
+          fetchJson<CatalogSkill[]>(`${DATA_BASE}skills.json`),
+          fetchJson<SkillCategory[]>(`${DATA_BASE}categories.json`),
+          fetchJson<City[]>(`${DATA_BASE}cities.json`),
         ])
 
         if (isMounted) {

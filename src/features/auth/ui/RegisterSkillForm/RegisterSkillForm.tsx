@@ -3,6 +3,7 @@ import { Button } from '../../../../shared/ui/Button'
 import { ImageUpload, type ImageFile } from '../../../../shared/ui/ImageUpload'
 import { Input } from '../../../../shared/ui/Input'
 import { Select, type SelectOption } from '../../../../shared/ui/Select'
+import { DATA_BASE } from '../../../../shared/lib/dataPaths'
 import cls from './RegisterSkillForm.module.css'
 
 export type { ImageFile }
@@ -54,7 +55,7 @@ export const RegisterSkillForm = ({
   useEffect(() => {
     let isMounted = true
 
-    fetch('/db/categories.json')
+    fetch(`${DATA_BASE}categories.json`)
       .then(async (response) => {
         if (!response.ok) {
           throw new Error('Failed to load categories')

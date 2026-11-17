@@ -5,8 +5,10 @@ interface MockUserFavorites {
 
 let mockUserFavoritesPromise: Promise<MockUserFavorites[]> | null = null
 
+import { DATA_BASE } from '../../../shared/lib/dataPaths'
+
 export const loadMockUserFavoriteIds = async (userId: string): Promise<string[]> => {
-  mockUserFavoritesPromise ??= fetch('/db/users.json').then(async (response) => {
+  mockUserFavoritesPromise ??= fetch(`${DATA_BASE}users.json`).then(async (response) => {
     if (!response.ok) {
       return []
     }

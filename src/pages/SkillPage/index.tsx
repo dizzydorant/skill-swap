@@ -36,6 +36,7 @@ import error404 from '@/shared/assets/images/errors/404.svg'
 import error500 from '@/shared/assets/images/errors/500.svg'
 import checkCircleIcon from '@/shared/assets/icons/check-circle.svg'
 import { ROUTES } from '../../shared/lib/constants'
+import { DATA_BASE } from '../../shared/lib/dataPaths'
 import type { ChipItem } from '../../shared/ui/ChipList'
 import { SuccessModal } from '../../shared/ui/SuccessModal'
 
@@ -258,9 +259,9 @@ export default function SkillPage() {
         setLoadError(null)
 
         const [skills, users, categories] = await Promise.all([
-          fetchJson<SkillDbItem[]>('/db/skills.json'),
-          fetchJson<UserDbItem[]>('/db/users.json'),
-          fetchJson<SkillCategoryDbItem[]>('/db/categories.json'),
+          fetchJson<SkillDbItem[]>(`${DATA_BASE}skills.json`),
+          fetchJson<UserDbItem[]>(`${DATA_BASE}users.json`),
+          fetchJson<SkillCategoryDbItem[]>(`${DATA_BASE}categories.json`),
         ])
 
         if (isMounted) {
